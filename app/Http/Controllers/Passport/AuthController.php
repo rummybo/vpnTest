@@ -104,6 +104,7 @@ class AuthController extends Controller
                 abort(500, __('Gmail alias is not supported'));
             }
         }
+        
         if ((int)config('v2board.stop_register', 0)) {
             abort(500, __('Registration has closed'));
         }
