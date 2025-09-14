@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绑定推广码 - VPN推广系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .reward-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .reward-info.show {
+            display: block;
+        }
+        
+        .reward-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .reward-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reward-label {
+            color: #666;
+        }
+        
+        .reward-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .unlimited {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info h4 {
+            margin-bottom: 10px;
+        }
+        
+        .info ul {
+            margin-left: 20px;
+        }
+        
+        .info li {
+            margin-bottom: 5px;
+        }
+        
+        .next-steps {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .next-steps.show {
+            display: block;
+        }
+        
+        .next-steps h4 {
+            margin-bottom: 10px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎁 绑定推广码</h1>
+            <p>绑定推广码，立即获得VPN使用时长</p>
+        </div>
+        
+        <div class="info">
+            <h4>📋 绑定说明</h4>
+            <ul>
+                <li>每个设备只能绑定一次推广码</li>
+                <li>绑定成功后立即获得使用时长</li>
+                <li>不能绑定自己的推广码</li>
+                <li>推广者会获得相应奖励</li>
+            </ul>
+        </div>
+        
+        <form id="bindForm">
+            <div class="form-group">
+                <label for="promotionCode">推广码</label>
+                <input type="text" id="promotionCode" name="promotion_code" placeholder="请输入推广码" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="deviceId">您的设备ID</label>
+                <input type="text" id="deviceId" name="user_device_id" placeholder="请输入您的设备唯一标识" required>
+            </div>
+            
+            <button type="submit" class="btn" id="bindBtn">
+                绑定推广码
+            </button>
+        </form>
+        
+        <div id="rewardInfo" class="reward-info">
+            <h3>🎉 绑定成功！您获得了以下奖励：</h3>
+            <div class="reward-item">
+                <span class="reward-label">每日可用时长</span>
+                <span class="reward-value" id="dailyDuration">-</span>
+            </div>
+            <div class="reward-item">
+                <span class="reward-label">单次可用时长</span>
+                <span class="reward-value" id="singleDuration">-</span>
+            </div>
+            <div class="reward-item">
+                <span class="reward-label">使用权限</span>
+                <span class="reward-value" id="unlimited">标准用户</span>
+            </div>
+        </div>
+        
+        <div id="nextSteps" class="next-steps">
+            <h4>🚀 下一步操作</h4>
+            <p>绑定成功！您现在可以：</p>
+            <ul>
+                <li>查看您的使用权限和剩余时长</li>
+                <li>开始使用VPN服务</li>
+                <li>查看使用历史记录</li>
+            </ul>
+            <button class="btn btn-secondary" onclick="window.location.href='device-status.html?device_id=' + encodeURIComponent(document.getElementById('deviceId').value)">
+                查看设备状态
+            </button>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('bindForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const promotionCode = document.getElementById('promotionCode').value.trim();
+            const deviceId = document.getElementById('deviceId').value.trim();
+            const bindBtn = document.getElementById('bindBtn');
+            const messageDiv = document.getElementById('message');
+            const rewardInfoDiv = document.getElementById('rewardInfo');
+            const nextStepsDiv = document.getElementById('nextSteps');
+            
+            if (!promotionCode || !deviceId) {
+                showMessage('请填写完整信息', 'error');
+                return;
+            }
+            
+            bindBtn.disabled = true;
+            bindBtn.textContent = '绑定中...';
+            messageDiv.innerHTML = '';
+            rewardInfoDiv.classList.remove('show');
+            nextStepsDiv.classList.remove('show');
+            
+            try {
+                const response = await fetch('/api/v1/share/bind', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        promotion_code: promotionCode,
+                        user_device_id: deviceId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayReward(data.data);
+                    showMessage(data.message, 'success');
+                    rewardInfoDiv.classList.add('show');
+                    nextStepsDiv.classList.add('show');
+                } else {
+                    showMessage(data.message || '绑定失败', 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                bindBtn.disabled = false;
+                bindBtn.textContent = '绑定推广码';
+            }
+        });
+        
+        function displayReward(data) {
+            document.getElementById('dailyDuration').textContent = formatDuration(data.daily_duration);
+            document.getElementById('singleDuration').textContent = formatDuration(data.single_duration);
+            
+            const unlimitedSpan = document.getElementById('unlimited');
+            if (data.is_unlimited) {
+                unlimitedSpan.textContent = '无限制用户';
+                unlimitedSpan.className = 'reward-value unlimited';
+            } else {
+                unlimitedSpan.textContent = '标准用户';
+                unlimitedSpan.className = 'reward-value';
+            }
+        }
+        
+        function formatDuration(seconds) {
+            if (seconds === -1) {
+                return '无限制';
+            }
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            
+            if (hours > 0 && minutes > 0) {
+                return `${hours}小时${minutes}分钟`;
+            } else if (hours > 0) {
+                return `${hours}小时`;
+            } else if (minutes > 0) {
+                return `${minutes}分钟`;
+            } else {
+                return `${seconds}秒`;
+            }
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+        
+        // 页面加载时自动填充推广码（从URL参数获取）
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const deviceId = urlParams.get('device_id');
+            
+            if (code) {
+                document.getElementById('promotionCode').value = code;
+            }
+            
+            if (deviceId) {
+                document.getElementById('deviceId').value = deviceId;
+            }
+        });
+    </script>
+</body>
+</html>

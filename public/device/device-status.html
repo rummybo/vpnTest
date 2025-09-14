@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备状态 - VPN推广系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .device-input {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-group button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .input-group button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .input-group button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status-card.show {
+            display: block;
+        }
+        
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+        
+        .status-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .status-active {
+            background: #28a745;
+        }
+        
+        .status-inactive {
+            background: #6c757d;
+        }
+        
+        .status-vip {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .unlimited {
+            color: #28a745;
+        }
+        
+        .session-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .session-card.show {
+            display: block;
+        }
+        
+        .session-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .history-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .history-card.show {
+            display: block;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-date {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .history-duration {
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .session-timer {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 设备状态查询</h1>
+            <p>查看您的VPN使用权限、剩余时长和使用历史</p>
+        </div>
+        
+        <div class="device-input">
+            <div class="input-group">
+                <input type="text" id="deviceId" placeholder="请输入您的设备ID">
+                <button id="queryBtn" onclick="queryDeviceStatus()">查询状态</button>
+            </div>
+        </div>
+        
+        <!-- 设备权限状态 -->
+        <div id="statusCard" class="status-card">
+            <div class="status-header">
+                <div class="status-title">设备权限状态</div>
+                <div id="statusBadge" class="status-badge">标准用户</div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="dailyLimit">-</div>
+                    <div class="stat-label">每日限制</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="singleLimit">-</div>
+                    <div class="stat-label">单次限制</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="usedToday">-</div>
+                    <div class="stat-label">今日已用</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="remainingToday">-</div>
+                    <div class="stat-label">今日剩余</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="usageProgress"></div>
+            </div>
+        </div>
+        
+        <!-- 会话管理 -->
+        <div id="sessionCard" class="session-card">
+            <div class="status-header">
+                <div class="status-title">会话管理</div>
+                <div id="sessionStatus" class="status-badge status-inactive">无活跃会话</div>
+            </div>
+            
+            <div id="sessionInfo">
+                <div class="session-timer" id="sessionTimer">00:00:00</div>
+                <div style="text-align: center; color: #666; margin-bottom: 15px;" id="sessionDetails">
+                    点击开始按钮创建新的使用会话
+                </div>
+            </div>
+            
+            <div class="session-controls">
+                <button class="btn btn-success" id="startBtn" onclick="startSession()">开始使用</button>
+                <button class="btn btn-danger" id="endBtn" onclick="endSession()" style="display: none;">结束使用</button>
+                <button class="btn btn-secondary" onclick="refreshSession()">刷新状态</button>
+            </div>
+        </div>
+        
+        <!-- 使用历史 -->
+        <div id="historyCard" class="history-card">
+            <div class="status-header">
+                <div class="status-title">使用历史</div>
+                <button class="btn btn-secondary" onclick="loadUsageHistory()">刷新历史</button>
+            </div>
+            
+            <div id="historyList">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+        
+        <!-- 会话历史记录 -->
+        <div id="sessionHistoryCard" class="history-card">
+            <div class="status-header">
+                <div class="status-title">会话历史记录</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="loadSessionHistory()">刷新记录</button>
+                    <button class="btn btn-secondary" onclick="loadMoreSessions()" id="loadMoreBtn" style="display: none;">加载更多</button>
+                </div>
+            </div>
+            
+            <div id="sessionHistoryList">
+                <div class="loading">加载中...</div>
+            </div>
+            
+            <div id="sessionPagination" style="text-align: center; margin-top: 15px; color: #666; display: none;">
+                <span id="paginationInfo"></span>
+            </div>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        let currentDeviceId = '';
+        let currentSessionId = '';
+        let sessionTimer = null;
+        let sessionStartTime = null;
+        let sessionDuration = 0;
+        let currentPage = 1;
+        let totalPages = 1;
+        let isLoadingMore = false;
+        
+        // 页面加载时自动填充设备ID
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const deviceId = urlParams.get('device_id');
+            if (deviceId) {
+                document.getElementById('deviceId').value = deviceId;
+                queryDeviceStatus();
+            }
+        });
+        
+        async function queryDeviceStatus() {
+            const deviceId = document.getElementById('deviceId').value.trim();
+            if (!deviceId) {
+                showMessage('请输入设备ID', 'error');
+                return;
+            }
+            
+            currentDeviceId = deviceId;
+            const queryBtn = document.getElementById('queryBtn');
+            queryBtn.disabled = true;
+            queryBtn.textContent = '查询中...';
+            
+            try {
+                // 查询设备权限
+                const permissionResponse = await fetch(`/api/v1/device/permission/${deviceId}`);
+                const permissionData = await permissionResponse.json();
+                
+                if (permissionData.success) {
+                    displayDeviceStatus(permissionData.data);
+                    
+                    // 查询活跃会话
+                    await checkActiveSession();
+                    
+                    // 加载使用历史
+                    await loadUsageHistory();
+                    
+                    // 加载会话历史记录
+                    await loadSessionHistory();
+                    
+                    showMessage('设备状态查询成功', 'success');
+                } else {
+                    showMessage(permissionData.message || '查询失败', 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                queryBtn.disabled = false;
+                queryBtn.textContent = '查询状态';
+            }
+        }
+        
+        function displayDeviceStatus(data) {
+            // 显示状态卡片
+            document.getElementById('statusCard').classList.add('show');
+            document.getElementById('sessionCard').classList.add('show');
+            document.getElementById('historyCard').classList.add('show');
+            document.getElementById('sessionHistoryCard').classList.add('show');
+            
+            // 更新状态徽章
+            const statusBadge = document.getElementById('statusBadge');
+            if (data.is_vip) {
+                statusBadge.textContent = 'VIP用户';
+                statusBadge.className = 'status-badge status-vip';
+            } else if (data.is_unlimited) {
+                statusBadge.textContent = '无限制用户';
+                statusBadge.className = 'status-badge status-active';
+            } else {
+                statusBadge.textContent = '标准用户';
+                statusBadge.className = 'status-badge status-inactive';
+            }
+            
+            // 更新统计数据
+            document.getElementById('dailyLimit').innerHTML = formatDuration(data.daily_limit);
+            document.getElementById('singleLimit').innerHTML = formatDuration(data.single_limit);
+            document.getElementById('usedToday').innerHTML = formatDuration(data.used_today);
+            document.getElementById('remainingToday').innerHTML = formatDuration(data.remaining_today);
+            
+            // 更新进度条
+            const progress = document.getElementById('usageProgress');
+            if (data.daily_limit > 0) {
+                const percentage = (data.used_today / data.daily_limit) * 100;
+                progress.style.width = Math.min(percentage, 100) + '%';
+            } else {
+                progress.style.width = '0%';
+            }
+            
+            // 更新开始按钮状态
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = !data.can_start_session;
+            if (!data.can_start_session) {
+                startBtn.textContent = '今日时长已用完';
+            } else {
+                startBtn.textContent = '开始使用';
+            }
+        }
+        
+        async function checkActiveSession() {
+            if (!currentDeviceId) return;
+            
+            try {
+                const response = await fetch(`/api/v1/device/active-session/${currentDeviceId}`);
+                const data = await response.json();
+                
+                if (data.success && data.data.has_active_session) {
+                    const sessionData = data.data;
+                    currentSessionId = sessionData.session_id;
+                    sessionStartTime = new Date(sessionData.start_time);
+                    sessionDuration = sessionData.current_duration;
+                    
+                    updateSessionUI(true);
+                    startSessionTimer();
+                } else {
+                    updateSessionUI(false);
+                }
+            } catch (error) {
+                console.error('Error checking active session:', error);
+            }
+        }
+        
+        function updateSessionUI(hasActiveSession) {
+            const sessionStatus = document.getElementById('sessionStatus');
+            const startBtn = document.getElementById('startBtn');
+            const endBtn = document.getElementById('endBtn');
+            const sessionDetails = document.getElementById('sessionDetails');
+            
+            if (hasActiveSession) {
+                sessionStatus.textContent = '会话进行中';
+                sessionStatus.className = 'status-badge status-active';
+                startBtn.style.display = 'none';
+                endBtn.style.display = 'inline-block';
+                sessionDetails.textContent = `会话ID: ${currentSessionId}`;
+            } else {
+                sessionStatus.textContent = '无活跃会话';
+                sessionStatus.className = 'status-badge status-inactive';
+                startBtn.style.display = 'inline-block';
+                endBtn.style.display = 'none';
+                sessionDetails.textContent = '点击开始按钮创建新的使用会话';
+                stopSessionTimer();
+            }
+        }
+        
+        async function startSession() {
+            if (!currentDeviceId) {
+                showMessage('请先查询设备状态', 'error');
+                return;
+            }
+            
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = true;
+            startBtn.textContent = '启动中...';
+            
+            try {
+                const response = await fetch('/api/v1/device/session/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ device_id: currentDeviceId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentSessionId = data.data.session_id;
+                    sessionStartTime = new Date(data.data.start_time);
+                    sessionDuration = data.data.current_duration || 0;
+                    
+                    updateSessionUI(true);
+                    startSessionTimer();
+                    showMessage('会话启动成功', 'success');
+                } else {
+                    showMessage(data.message || '启动失败', 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                startBtn.disabled = false;
+                startBtn.textContent = '开始使用';
+            }
+        }
+        
+        async function endSession() {
+            if (!currentSessionId) {
+                showMessage('没有活跃会话', 'error');
+                return;
+            }
+            
+            const endBtn = document.getElementById('endBtn');
+            endBtn.disabled = true;
+            endBtn.textContent = '结束中...';
+            
+            try {
+                const response = await fetch('/api/v1/device/session/end', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        final_duration: sessionDuration
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentSessionId = '';
+                    updateSessionUI(false);
+                    showMessage(`会话结束，总时长: ${formatDuration(data.data.total_duration)}`, 'success');
+                    
+                    // 刷新设备状态
+                    await queryDeviceStatus();
+                } else {
+                    showMessage(data.message || '结束失败', 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                endBtn.disabled = false;
+                endBtn.textContent = '结束使用';
+            }
+        }
+        
+        function startSessionTimer() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+            }
+            
+            sessionTimer = setInterval(async () => {
+                if (sessionStartTime) {
+                    const now = new Date();
+                    sessionDuration = Math.floor((now - sessionStartTime) / 1000);
+                    
+                    // 更新显示
+                    document.getElementById('sessionTimer').textContent = formatTime(sessionDuration);
+                    
+                    // 每30秒更新一次服务器
+                    if (sessionDuration % 30 === 0 && currentSessionId) {
+                        await updateSessionOnServer();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function stopSessionTimer() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+            document.getElementById('sessionTimer').textContent = '00:00:00';
+        }
+        
+        async function updateSessionOnServer() {
+            if (!currentSessionId) return;
+            
+            try {
+                await fetch('/api/v1/device/session/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        duration: sessionDuration
+                    })
+                });
+            } catch (error) {
+                console.error('Error updating session:', error);
+            }
+        }
+        
+        async function refreshSession() {
+            await checkActiveSession();
+            showMessage('会话状态已刷新', 'success');
+        }
+        
+        async function loadUsageHistory() {
+            if (!currentDeviceId) return;
+            
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '<div class="loading">加载中...</div>';
+            
+            try {
+                const response = await fetch(`/api/v1/device/usage-history/${currentDeviceId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayUsageHistory(data.data);
+                } else {
+                    historyList.innerHTML = '<div class="error">加载历史记录失败</div>';
+                }
+            } catch (error) {
+                historyList.innerHTML = '<div class="error">网络错误</div>';
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayUsageHistory(data) {
+            const historyList = document.getElementById('historyList');
+            
+            if (data.weekly_usage.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">暂无使用记录</div>';
+                return;
+            }
+            
+            let html = '';
+            data.weekly_usage.forEach(usage => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${usage.date}</div>
+                        <div class="history-duration">
+                            ${formatDuration(usage.duration)} (${usage.session_count}次会话)
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // 添加总体统计
+            html += `
+                <div class="history-item" style="border-top: 2px solid #e9ecef; margin-top: 15px; padding-top: 15px;">
+                    <div class="history-date">总计统计</div>
+                    <div class="history-duration">
+                        总时长: ${formatDuration(data.total_stats.total_duration)} | 
+                        总会话: ${data.total_stats.total_sessions}次 | 
+                        活跃天数: ${data.total_stats.active_days}天
+                    </div>
+                </div>
+            `;
+            
+            historyList.innerHTML = html;
+        }
+        
+        function formatDuration(seconds) {
+            if (seconds === -1) {
+                return '<span class="unlimited">无限制</span>';
+            }
+            
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}小时${minutes}分钟`;
+            } else if (minutes > 0) {
+                return `${minutes}分钟${secs}秒`;
+            } else {
+                return `${secs}秒`;
+            }
+        }
+        
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            
+            // 3秒后自动清除消息
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        // 加载会话历史记录
+        async function loadSessionHistory(page = 1, append = false) {
+            if (!currentDeviceId) return;
+            
+            if (isLoadingMore) return;
+            isLoadingMore = true;
+            
+            const sessionHistoryList = document.getElementById('sessionHistoryList');
+            if (!append) {
+                sessionHistoryList.innerHTML = '<div class="loading">加载中...</div>';
+                currentPage = 1;
+            }
+            
+            try {
+                const response = await fetch(`/api/v1/device/session-history/${currentDeviceId}?per_page=10&page=${page}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displaySessionHistory(data.data, data.pagination, append);
+                } else {
+                    if (!append) {
+                        sessionHistoryList.innerHTML = '<div class="error">加载会话记录失败</div>';
+                    }
+                }
+            } catch (error) {
+                if (!append) {
+                    sessionHistoryList.innerHTML = '<div class="error">网络错误</div>';
+                }
+                console.error('Error:', error);
+            } finally {
+                isLoadingMore = false;
+            }
+        }
+        
+        function displaySessionHistory(sessions, pagination, append = false) {
+            const sessionHistoryList = document.getElementById('sessionHistoryList');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const paginationDiv = document.getElementById('sessionPagination');
+            const paginationInfo = document.getElementById('paginationInfo');
+            
+            if (sessions.length === 0 && !append) {
+                sessionHistoryList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">暂无会话记录</div>';
+                loadMoreBtn.style.display = 'none';
+                paginationDiv.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            sessions.forEach(session => {
+                const startTime = new Date(session.start_time);
+                const endTime = session.end_time ? new Date(session.end_time) : null;
+                const statusClass = session.is_active ? 'status-active' : 'status-inactive';
+                const statusText = session.is_active ? '进行中' : '已结束';
+                
+                html += `
+                    <div class="history-item">
+                        <div style="flex: 1;">
+                            <div class="history-date">
+                                ${startTime.toLocaleString('zh-CN')}
+                                <span class="status-badge ${statusClass}" style="margin-left: 10px; font-size: 10px;">${statusText}</span>
+                            </div>
+                            <div class="history-duration" style="margin-top: 5px;">
+                                会话ID: ${session.session_id} | 
+                                时长: ${formatDuration(session.duration || 0)} | 
+                                类型: ${session.session_type || 'promotion'}
+                            </div>
+                            ${endTime ? `<div style="font-size: 12px; color: #999; margin-top: 2px;">结束时间: ${endTime.toLocaleString('zh-CN')}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (append) {
+                sessionHistoryList.innerHTML += html;
+            } else {
+                sessionHistoryList.innerHTML = html;
+            }
+            
+            // 更新分页信息
+            currentPage = pagination.current_page;
+            totalPages = pagination.last_page;
+            
+            paginationInfo.textContent = `第 ${pagination.current_page} 页，共 ${pagination.last_page} 页 (总计 ${pagination.total} 条记录)`;
+            paginationDiv.style.display = 'block';
+            
+            // 显示/隐藏加载更多按钮
+            if (pagination.current_page < pagination.last_page) {
+                loadMoreBtn.style.display = 'inline-block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+        
+        async function loadMoreSessions() {
+            if (currentPage < totalPages && !isLoadingMore) {
+                await loadSessionHistory(currentPage + 1, true);
+            }
+        }
+        
+        // 页面卸载时结束会话计时器
+        window.addEventListener('beforeunload', function() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+            }
+        });
+    </script>
+</body>
+</html>

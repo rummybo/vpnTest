@@ -139,6 +139,13 @@ class AdminRoute
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');
             $router->post('/theme/getThemeConfig', 'Admin\\ThemeController@getThemeConfig');
+            // Nav Links
+            $router->get ('/nav_links', 'Admin\\NavLinkController@index');
+            $router->get ('/nav_links/create', 'Admin\\NavLinkController@create');
+            $router->post('/nav_links', 'Admin\\NavLinkController@store');
+            $router->get ('/nav_links/{navLink}/edit', 'Admin\\NavLinkController@edit');
+            $router->put ('/nav_links/{navLink}', 'Admin\\NavLinkController@update');
+            $router->delete('/nav_links/{navLink}', 'Admin\\NavLinkController@destroy');
         });
     }
 }

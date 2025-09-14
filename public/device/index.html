@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN推广系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .feature-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .reward-table {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .reward-table h2 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .reward-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .reward-cell {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .reward-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .reward-level-0 { background: #f8d7da; }
+        .reward-level-1 { background: #f8d7da; }
+        .reward-level-2 { background: #f8d7da; }
+        .reward-level-3 { background: #fff3cd; }
+        .reward-level-4 { background: #fff3cd; }
+        .reward-level-5 { background: #d4edda; }
+        .reward-level-6 { background: #f8f9fa; }
+        .reward-level-7 { background: #f8d7da; }
+        .reward-level-8 { background: #d4edda; }
+        
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stats-section h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .stat-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .admin-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .admin-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+            
+            .header p {
+                font-size: 18px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .reward-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .reward-cell {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#" class="admin-link" onclick="checkAdminAccess()">🔧 管理后台</a>
+    
+    <div class="header">
+        <h1>🚀 VPN推广系统</h1>
+        <p>基于设备ID的创新推广模式，无需注册登录，推广即可获得VPN使用时长，支持递进式奖励和金币兑换系统</p>
+    </div>
+    
+    <div class="container">
+        <!-- 功能卡片 -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🎁</span>
+                <h3 class="feature-title">生成推广链接</h3>
+                <p class="feature-description">
+                    输入您的设备ID，立即生成专属推广链接。分享给朋友，获得丰厚奖励！
+                </p>
+                <div class="feature-actions">
+                    <a href="promotion-generate.html" class="btn btn-primary">立即生成</a>
+                    <a href="#reward-rules" class="btn btn-secondary">查看奖励</a>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🔗</span>
+                <h3 class="feature-title">绑定推广码</h3>
+                <p class="feature-description">
+                    通过朋友的推广链接，绑定推广码即可获得VPN使用时长，立即开始免费体验！
+                </p>
+                <div class="feature-actions">
+                    <a href="promotion-bind.html" class="btn btn-primary">立即绑定</a>
+                    <a href="device-status.html" class="btn btn-secondary">查看状态</a>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3 class="feature-title">设备管理</h3>
+                <p class="feature-description">
+                    查看您的设备使用权限、剩余时长、使用历史，管理VPN会话状态。
+                </p>
+                <div class="feature-actions">
+                    <a href="device-status.html" class="btn btn-primary">设备状态</a>
+                    <a href="#" class="btn btn-secondary" onclick="promptDeviceId()">快速查询</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 奖励规则表 -->
+        <div class="reward-table" id="reward-rules">
+            <h2>🏆 推广奖励规则</h2>
+            <div class="reward-grid">
+                <div class="reward-cell reward-header">推广人数</div>
+                <div class="reward-cell reward-header">每日时长</div>
+                <div class="reward-cell reward-header">单次时间</div>
+                
+                <div class="reward-cell reward-level-0">0人</div>
+                <div class="reward-cell reward-level-0">1小时</div>
+                <div class="reward-cell reward-level-0">1小时</div>
+                
+                <div class="reward-cell reward-level-1">1人</div>
+                <div class="reward-cell reward-level-1">2小时</div>
+                <div class="reward-cell reward-level-1">1小时</div>
+                
+                <div class="reward-cell reward-level-2">2人</div>
+                <div class="reward-cell reward-level-2">3小时</div>
+                <div class="reward-cell reward-level-2">1.5小时</div>
+                
+                <div class="reward-cell reward-level-3">3人</div>
+                <div class="reward-cell reward-level-3">4小时</div>
+                <div class="reward-cell reward-level-3">不限</div>
+                
+                <div class="reward-cell reward-level-4">每+1人</div>
+                <div class="reward-cell reward-level-4">+1小时</div>
+                <div class="reward-cell reward-level-4">不限</div>
+                
+                <div class="reward-cell reward-level-5">达23人</div>
+                <div class="reward-cell reward-level-5">永久无限</div>
+                <div class="reward-cell reward-level-5">永久不限</div>
+                
+                <div class="reward-cell reward-header" style="grid-column: 1 / -1;">金币系统</div>
+                
+                <div class="reward-cell reward-level-7">23人后</div>
+                <div class="reward-cell reward-level-7">每推1人</div>
+                <div class="reward-cell reward-level-7">金币+1</div>
+                
+                <div class="reward-cell reward-level-8">满25金币</div>
+                <div class="reward-cell reward-level-8">免费兑换</div>
+                <div class="reward-cell reward-level-8">黄金会员</div>
+            </div>
+        </div>
+        
+        <!-- 系统统计 -->
+        <div class="stats-section">
+            <h2>📊 系统统计</h2>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPromoters">-</div>
+                    <div class="stat-label">推广者总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalReferrals">-</div>
+                    <div class="stat-label">总推广人数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="vipUsers">-</div>
+                    <div class="stat-label">VIP用户</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="activeSessions">-</div>
+                    <div class="stat-label">活跃会话</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 VPN推广系统 - 创新的推广模式，让分享更有价值</p>
+    </div>
+
+    <script>
+        // 页面加载时获取统计数据
+        window.addEventListener('load', function() {
+            loadSystemStats();
+        });
+        
+        async function loadSystemStats() {
+            try {
+                const response = await fetch('/api/v1/admin/promotion/stats-overview');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateStats(data.data);
+                }
+            } catch (error) {
+                console.log('统计数据加载失败，使用默认值');
+            }
+        }
+        
+        function updateStats(data) {
+            document.getElementById('totalPromoters').textContent = data.promotion_stats.total_promoters || 0;
+            document.getElementById('totalReferrals').textContent = data.promotion_stats.total_referrals || 0;
+            document.getElementById('vipUsers').textContent = data.promotion_stats.vip_users || 0;
+            document.getElementById('activeSessions').textContent = data.usage_stats.active_sessions || 0;
+        }
+        
+        function promptDeviceId() {
+            const deviceId = prompt('请输入您的设备ID:');
+            if (deviceId && deviceId.trim()) {
+                window.location.href = `device-status.html?device_id=${encodeURIComponent(deviceId.trim())}`;
+            }
+        }
+        
+        // 检查管理员访问权限
+        async function checkAdminAccess() {
+            try {
+                // 尝试访问管理员接口来检查权限
+                const response = await fetch('/api/v1/admin/promotion/stats-overview');
+                
+                if (response.ok) {
+                    // 有权限，跳转到管理后台
+                    window.location.href = 'admin-dashboard.html';
+                } else if (response.status === 401 || response.status === 403) {
+                    // 没有权限，跳转到根路由
+                    alert('您没有管理员权限，请先登录管理后台');
+                    window.location.href = '/';
+                } else {
+                    // 其他错误
+                    alert('无法访问管理后台，请检查网络连接');
+                }
+            } catch (error) {
+                // 网络错误或其他异常
+                console.error('检查管理员权限时出错:', error);
+                alert('无法连接到服务器，请检查网络连接');
+                // 仍然跳转到根路由
+                window.location.href = '/';
+            }
+        }
+        
+        // 平滑滚动到奖励规则
+        document.addEventListener('click', function(e) {
+            if (e.target.getAttribute('href') === '#reward-rules') {
+                e.preventDefault();
+                document.getElementById('reward-rules').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+        
+        // 添加一些动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // 观察所有卡片元素
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feature-card, .reward-table, .stats-section');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

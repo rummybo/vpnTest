@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成推广链接 - VPN推广系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .result h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+        }
+        
+        .result-item label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .result-item .value {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e1e5e9;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .stats-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .stats-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stats-label {
+            color: #666;
+        }
+        
+        .stats-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .level-新手 { background: #6c757d; }
+        .level-初级 { background: #28a745; }
+        .level-中级 { background: #ffc107; color: #333; }
+        .level-高级 { background: #17a2b8; }
+        .level-永久 { background: #dc3545; }
+        
+        .vip-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 生成推广链接</h1>
+            <p>输入您的设备ID，生成专属推广链接</p>
+        </div>
+        
+        <form id="generateForm">
+            <div class="form-group">
+                <label for="deviceId">设备ID</label>
+                <input type="text" id="deviceId" name="device_id" placeholder="请输入您的设备唯一标识" required>
+            </div>
+            
+            <button type="submit" class="btn" id="generateBtn">
+                生成推广链接
+            </button>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>🎉 推广链接生成成功</h3>
+            
+            <div class="result-item">
+                <label>推广码</label>
+                <div class="value" id="promotionCode"></div>
+            </div>
+            
+            <div class="result-item">
+                <label>推广链接</label>
+                <div class="value" id="shareUrl">
+                    <span id="shareUrlText"></span>
+                    <button class="copy-btn" onclick="copyToClipboard('shareUrlText')">复制</button>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <h4>当前推广状态</h4>
+                <div class="stats-row">
+                    <span class="stats-label">推广人数</span>
+                    <span class="stats-value" id="currentReferrals">0人</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">奖励等级</span>
+                    <span class="stats-value">
+                        <span class="level-badge" id="rewardLevel">新手</span>
+                        <span id="vipBadge" class="vip-badge" style="display: none;">VIP</span>
+                    </span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">每日时长</span>
+                    <span class="stats-value" id="dailyDuration">1小时</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">单次时长</span>
+                    <span class="stats-value" id="singleDuration">1小时</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">金币数量</span>
+                    <span class="stats-value" id="coins">0个</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('generateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const deviceId = document.getElementById('deviceId').value.trim();
+            const generateBtn = document.getElementById('generateBtn');
+            const messageDiv = document.getElementById('message');
+            const resultDiv = document.getElementById('result');
+            
+            if (!deviceId) {
+                showMessage('请输入设备ID', 'error');
+                return;
+            }
+            
+            generateBtn.disabled = true;
+            generateBtn.textContent = '生成中...';
+            messageDiv.innerHTML = '';
+            resultDiv.classList.remove('show');
+            
+            try {
+                const response = await fetch('/api/v1/share/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ device_id: deviceId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResult(data.data);
+                    showMessage('推广链接生成成功！', 'success');
+                } else {
+                    showMessage(data.message || '生成失败', 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '生成推广链接';
+            }
+        });
+        
+        function displayResult(data) {
+            document.getElementById('promotionCode').textContent = data.promotion_code;
+            document.getElementById('shareUrlText').textContent = data.share_url;
+            document.getElementById('currentReferrals').textContent = data.current_referrals + '人';
+            
+            const rewardLevel = data.reward_level;
+            const levelBadge = document.getElementById('rewardLevel');
+            levelBadge.textContent = rewardLevel.level;
+            levelBadge.className = 'level-badge level-' + rewardLevel.level;
+            
+            const vipBadge = document.getElementById('vipBadge');
+            if (data.is_vip) {
+                vipBadge.style.display = 'inline-block';
+            } else {
+                vipBadge.style.display = 'none';
+            }
+            
+            document.getElementById('dailyDuration').textContent = formatDuration(rewardLevel.daily);
+            document.getElementById('singleDuration').textContent = formatDuration(rewardLevel.single);
+            document.getElementById('coins').textContent = data.coins + '个';
+            
+            document.getElementById('result').classList.add('show');
+        }
+        
+        function formatDuration(seconds) {
+            if (seconds === -1) {
+                return '无限制';
+            }
+            const hours = Math.floor(seconds / 3600);
+            return hours + '小时';
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+        
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                showMessage('链接已复制到剪贴板', 'success');
+            }).catch(function() {
+                // 兼容旧浏览器
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showMessage('链接已复制到剪贴板', 'success');
+            });
+        }
+        
+        // 页面加载时自动填充设备ID（如果有的话）
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const deviceId = urlParams.get('device_id');
+            if (deviceId) {
+                document.getElementById('deviceId').value = deviceId;
+            }
+        });
+    </script>
+</body>
+</html>

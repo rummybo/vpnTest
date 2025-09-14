@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2Board API 接口文档</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            border-right: 1px solid #e9ecef;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            background: #667eea;
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 20px;
+            color: #555;
+            text-decoration: none;
+            border-bottom: 1px solid #f8f9fa;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #667eea;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 16px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .section-header i {
+            margin-right: 10px;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+            text-transform: uppercase;
+        }
+
+        .method.get { background: #28a745; color: white; }
+        .method.post { background: #007bff; color: white; }
+        .method.put { background: #ffc107; color: black; }
+        .method.delete { background: #dc3545; color: white; }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .endpoint-desc {
+            margin-top: 8px;
+            color: #666;
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .param-table th,
+        .param-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .param-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .param-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-list strong {
+            color: #495057;
+            margin-right: 10px;
+        }
+
+        .info-list code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .error-codes {
+            margin: 15px 0;
+        }
+
+        .error-code {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .error-code strong {
+            color: #c53030;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-book"></i> API 文档</h2>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 搜索接口..." id="searchInput">
+        </div>
+        
+        <ul class="sidebar-nav">
+            <li><a href="#basic-info" class="nav-link"><i class="fas fa-info-circle"></i> 基础信息</a></li>
+            <li><a href="#sms-module" class="nav-link"><i class="fas fa-sms"></i> 短信验证</a></li>
+            <li><a href="#auth-module" class="nav-link"><i class="fas fa-user-circle"></i> 账号认证</a></li>
+            <li><a href="#user-module" class="nav-link"><i class="fas fa-users"></i> 用户模块</a></li>
+            <li><a href="#share-module" class="nav-link"><i class="fas fa-share-alt"></i> 推广链接</a></li>
+            <li><a href="#device-module" class="nav-link"><i class="fas fa-mobile-alt"></i> 设备管理</a></li>
+            <li><a href="#nav-module" class="nav-link"><i class="fas fa-link"></i> 福利导航</a></li>
+            <li><a href="#error-codes" class="nav-link"><i class="fas fa-exclamation-triangle"></i> 错误码</a></li>
+        </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 页面标题 -->
+        <div class="header">
+            <h1>V2Board API 接口文档</h1>
+            <p>完整的API接口说明文档，包含短信验证、用户认证、设备管理等功能模块</p>
+        </div>
+
+        <!-- 基础信息 -->
+        <div class="section" id="basic-info">
+            <div class="section-header">
+                <i class="fas fa-info-circle"></i> 基础信息
+            </div>
+            <div class="section-content">
+                <ul class="info-list">
+                    <li><strong>Base URL:</strong> <code>http://192.197.113.52/api/v1/</code></li>
+                    <li><strong>认证方式:</strong> Authorization (需要时)</li>
+                    <li><strong>响应格式:</strong> JSON</li>
+                    <li><strong>字符编码:</strong> UTF-8</li>
+                    <li><strong>请求头:</strong> <code>Content-Type: application/json</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 短信验证模块 -->
+        <div class="section" id="sms-module">
+            <div class="section-header">
+                <i class="fas fa-sms"></i> 短信验证模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/sms/send</span>
+                    </div>
+                    <div class="endpoint-desc">发送短信验证码</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
+                        <tr><td>type</td><td>string</td><td>是</td><td>验证码类型: register|login|reset_password</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+{
+  "success": true,
+  "message": "验证码发送成功",
+  "data": null
+}
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/sms/verify</span>
+                    </div>
+                    <div class="endpoint-desc">验证短信验证码</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
+                        <tr><td>code</td><td>string</td><td>是</td><td>验证码</td></tr>
+                        <tr><td>type</td><td>string</td><td>是</td><td>验证码类型</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 账号认证模块 -->
+        <div class="section" id="auth-module">
+            <div class="section-header">
+                <i class="fas fa-user-circle"></i> 账号认证模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/passport/auth/register</span>
+                    </div>
+                    <div class="endpoint-desc">用户注册 - 支持邮箱、用户名、手机号三种方式</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>email</td><td>string</td><td>否</td><td>邮箱地址（三选一）</td></tr>
+                        <tr><td>username</td><td>string</td><td>否</td><td>用户名（三选一）</td></tr>
+                        <tr><td>phone</td><td>string</td><td>否</td><td>手机号（三选一）</td></tr>
+                        <tr><td>password</td><td>string</td><td>是</td><td>密码</td></tr>
+                        <tr><td>password_confirmation</td><td>string</td><td>是</td><td>确认密码</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/passport/auth/login</span>
+                    </div>
+                    <div class="endpoint-desc">用户登录 - 支持邮箱、用户名、手机号三种方式</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>email</td><td>string</td><td>否</td><td>邮箱/用户名/手机号（三选一）</td></tr>
+                        <tr><td>password</td><td>string</td><td>是</td><td>密码</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 用户模块 -->
+        <div class="section" id="user-module">
+            <div class="section-header">
+                <i class="fas fa-users"></i> 用户模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/user/getSubscribe</span>
+                    </div>
+                    <div class="endpoint-desc">获取用户订阅信息（需要认证）</div>
+                </div>
+
+                <h4>请求头</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Authorization</td><td>string</td><td>是</td><td></td></tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+{
+  "success": true,
+  "message": "获取成功",
+  "data": {
+    "plan_id": 1,
+    "token": "550e8400-e29b-41d4-a716-446655440000",
+    "expired_at": "2024-12-31 23:59:59",
+    "u": 1024000,
+    "d": 512000,
+    "transfer_enable": 10737418240,
+    "email": "user@example.com",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "plan": {
+      "id": 1,
+      "name": "基础套餐",
+      "content": "10GB流量/月",
+      "price": 10.00,
+      "show": 1
+    },
+    "subscribe_url": "https://your-domain.com/api/v1/client/subscribe?token=550e8400-e29b-41d4-a716-446655440000",
+    "reset_day": 1
+  }
+}
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/user/info</span>
+                    </div>
+                    <div class="endpoint-desc">获取用户基本信息（需要认证）</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/user/getStat</span>
+                    </div>
+                    <div class="endpoint-desc">获取用户统计信息（需要认证）</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推广链接模块 -->
+        <div class="section" id="share-module">
+            <div class="section-header">
+                <i class="fas fa-share-alt"></i> 推广链接模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/share/generate</span>
+                    </div>
+                    <div class="endpoint-desc">生成推广链接（需要认证）</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/share/bind</span>
+                    </div>
+                    <div class="endpoint-desc">绑定推广关系</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/share/stats/{promotion_code}</span>
+                    </div>
+                    <div class="endpoint-desc">获取推广统计信息</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/share/exchange-vip</span>
+                    </div>
+                    <div class="endpoint-desc">兑换VIP会员</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备管理模块 -->
+        <div class="section" id="device-module">
+            <div class="section-header">
+                <i class="fas fa-mobile-alt"></i> 设备管理模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/device/permissions/{device_id}</span>
+                    </div>
+                    <div class="endpoint-desc">获取设备权限信息</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/device/session/start</span>
+                    </div>
+                    <div class="endpoint-desc">开始设备会话</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method put">PUT</span>
+                        <span class="url">/device/session/update</span>
+                    </div>
+                    <div class="endpoint-desc">更新设备会话</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/device/session/end</span>
+                    </div>
+                    <div class="endpoint-desc">结束设备会话</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 福利导航模块 -->
+        <div class="section" id="nav-module">
+            <div class="section-header">
+                <i class="fas fa-link"></i> 福利导航模块
+            </div>
+            <div class="section-content">
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/api/nav-links</span>
+                    </div>
+                    <div class="endpoint-desc">获取导航链接列表</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>category</td><td>string</td><td>否</td><td>分类筛选</td></tr>
+                        <tr><td>status</td><td>string</td><td>否</td><td>状态: active/inactive</td></tr>
+                        <tr><td>page</td><td>number</td><td>否</td><td>页码，默认1</td></tr>
+                        <tr><td>per_page</td><td>number</td><td>否</td><td>每页数量，默认15</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/api/nav-links/{id}</span>
+                    </div>
+                    <div class="endpoint-desc">获取单个导航链接详情</div>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/api/nav-links/grouped</span>
+                    </div>
+                    <div class="endpoint-desc">获取分组导航链接</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 错误码 -->
+        <div class="section" id="error-codes">
+            <div class="section-header">
+                <i class="fas fa-exclamation-triangle"></i> 常见错误码
+            </div>
+            <div class="section-content">
+                <div class="error-codes">
+                    <div class="error-code">
+                        <strong>400 Bad Request</strong><br>
+                        请求参数错误或格式不正确
+                    </div>
+                    <div class="error-code">
+                        <strong>401 Unauthorized</strong><br>
+                        未授权访问，需要有效的认证令牌
+                    </div>
+                    <div class="error-code">
+                        <strong>403 Forbidden</strong><br>
+                        权限不足，无法访问该资源
+                    </div>
+                    <div class="error-code">
+                        <strong>404 Not Found</strong><br>
+                        请求的资源不存在
+                    </div>
+                    <div class="error-code">
+                        <strong>422 Unprocessable Entity</strong><br>
+                        请求格式正确但包含语义错误
+                    </div>
+                    <div class="error-code">
+                        <strong>500 Internal Server Error</strong><br>
+                        服务器内部错误
+                    </div>
+                    <div class="error-code">
+                        <strong>SMS_SEND_FAILED</strong><br>
+                        短信发送失败
+                    </div>
+                    <div class="error-code">
+                        <strong>SMS_CODE_INVALID</strong><br>
+                        验证码无效或已过期
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 复制代码功能
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling || button.parentNode.querySelector('code') || button.parentNode;
+            const text = codeBlock.textContent.replace('复制', '').trim();
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '已复制!';
+                button.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#667eea';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            sections.forEach(section => {
+                const sectionText = section.textContent.toLowerCase();
+                const sectionId = section.id;
+                const correspondingNavLink = document.querySelector(`a[href="#${sectionId}"]`);
+                
+                if (searchTerm === '' || sectionText.includes(searchTerm)) {
+                    section.style.display = 'block';
+                    if (correspondingNavLink) {
+                        correspondingNavLink.style.display = 'block';
+                    }
+                } else {
+                    section.style.display = 'none';
+                    if (correspondingNavLink) {
+                        correspondingNavLink.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

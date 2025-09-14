@@ -90,18 +90,45 @@ class AuthController extends Controller
                 abort(500, __('Invalid code is incorrect'));
             }
         }
-        if ((int)config('v2board.email_whitelist_enable', 0)) {
-            if (!Helper::emailSuffixVerify(
-                $request->input('email'),
-                config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
-            ) {
-                abort(500, __('Email suffix is not in the Whitelist'));
-            }
+
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        // 检查是否有username或phone字段，如果有则使用对应的注册方式
+        $registerType = 'email';
+        $identifier = $email;
+        
+        if ($request->has('username') && !empty($request->input('username'))) {
+            $registerType = 'username';
+            $identifier = $request->input('username');
+        } elseif ($request->has('phone') && !empty($request->input('phone'))) {
+            $registerType = 'phone';
+            $identifier = $request->input('phone');
         }
-        if ((int)config('v2board.email_gmail_limit_enable', 0)) {
-            $prefix = explode('@', $request->input('email'))[0];
-            if (strpos($prefix, '.') !== false || strpos($prefix, '+') !== false) {
-                abort(500, __('Gmail alias is not supported'));
+
+        // 邮箱相关验证（如果是邮箱注册）
+        if ($registerType === 'email') {
+            if ((int)config('v2board.email_whitelist_enable', 0)) {
+                if (!Helper::emailSuffixVerify(
+                    $identifier,
+                    config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
+                ) {
+                    abort(500, __('Email suffix is not in the Whitelist'));
+                }
+            }
+            if ((int)config('v2board.email_gmail_limit_enable', 0)) {
+                $prefix = explode('@', $identifier)[0];
+                if (strpos($prefix, '.') !== false || strpos($prefix, '+') !== false) {
+                    abort(500, __('Gmail alias is not supported'));
+                }
+            }
+            if ((int)config('v2board.email_verify', 0)) {
+                if (empty($request->input('email_code'))) {
+                    abort(500, __('Email verification code cannot be empty'));
+                }
+                if ((string)Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $identifier)) !== (string)$request->input('email_code')) {
+                    abort(500, __('Incorrect email verification code'));
+                }
             }
         }
 
@@ -113,22 +140,23 @@ class AuthController extends Controller
                 abort(500, __('You must use the invitation code to register'));
             }
         }
-        if ((int)config('v2board.email_verify', 0)) {
-            if (empty($request->input('email_code'))) {
-                abort(500, __('Email verification code cannot be empty'));
-            }
-            if ((string)Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== (string)$request->input('email_code')) {
-                abort(500, __('Incorrect email verification code'));
-            }
-        }
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $exist = User::where('email', $email)->first();
+
+        // 检查用户是否已存在
+        $exist = $this->checkUserExists($registerType, $identifier);
         if ($exist) {
-            abort(500, __('Email already exists'));
+            abort(500, __(ucfirst($registerType) . ' already exists'));
         }
+
         $user = new User();
-        $user->email = $email;
+        // 根据注册类型设置相应字段
+        if ($registerType === 'email') {
+            $user->email = $identifier;
+        } elseif ($registerType === 'username') {
+            $user->username = $identifier;
+        } elseif ($registerType === 'phone') {
+            $user->phone = $identifier;
+        }
+        
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
@@ -164,8 +192,9 @@ class AuthController extends Controller
         if (!$user->save()) {
             abort(500, __('Register failed'));
         }
-        if ((int)config('v2board.email_verify', 0)) {
-            Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
+        // 清除邮箱验证码缓存（如果是邮箱注册）
+        if ($registerType === 'email' && (int)config('v2board.email_verify', 0)) {
+            Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $identifier));
         }
 
         $user->last_login_at = time();
@@ -188,11 +217,19 @@ class AuthController extends Controller
 
     public function login(AuthLogin $request)
     {
-        $email = $request->input('email');
         $password = $request->input('password');
+        
+        // 使用getLoginType方法确定登录类型
+        $loginType = $this->getLoginType($request);
+        $identifier = $request->input($loginType);
+        
+        // 确保email字段有值（用于验证规则）
+        if ($loginType === 'email') {
+            $request->merge(['email' => $identifier]);
+        }
 
         if ((int)config('v2board.password_limit_enable', 1)) {
-            $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email), 0);
+            $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier), 0);
             if ($passwordErrorCount >= (int)config('v2board.password_limit_count', 5)) {
                 abort(500, __('There are too many password errors, please try again after :minute minutes.', [
                     'minute' => config('v2board.password_limit_expire', 60)
@@ -200,7 +237,8 @@ class AuthController extends Controller
             }
         }
 
-        $user = User::where('email', $email)->first();
+        // 根据登录类型查找用户
+        $user = $this->findUserByIdentifier($loginType, $identifier);
         if (!$user) {
             abort(500, __('Incorrect email or password'));
         }
@@ -212,7 +250,7 @@ class AuthController extends Controller
         ) {
             if ((int)config('v2board.password_limit_enable')) {
                 Cache::put(
-                    CacheKey::get('PASSWORD_ERROR_LIMIT', $email),
+                    CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier),
                     (int)$passwordErrorCount + 1,
                     60 * (int)config('v2board.password_limit_expire', 60)
                 );
@@ -304,5 +342,65 @@ class AuthController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    /**
+     * 获取注册类型
+     */
+    private function getRegisterType($request)
+    {
+        if ($request->has('username') && !empty($request->input('username'))) {
+            return 'username';
+        }
+        if ($request->has('phone') && !empty($request->input('phone'))) {
+            return 'phone';
+        }
+        return 'email';
+    }
+
+    /**
+     * 获取登录类型
+     */
+    private function getLoginType($request)
+    {
+        if ($request->has('username') && !empty($request->input('username'))) {
+            return 'username';
+        }
+        if ($request->has('phone') && !empty($request->input('phone'))) {
+            return 'phone';
+        }
+        return 'email';
+    }
+
+    /**
+     * 检查用户是否已存在
+     */
+    private function checkUserExists($type, $identifier)
+    {
+        switch ($type) {
+            case 'username':
+                return User::where('username', $identifier)->first();
+            case 'phone':
+                return User::where('phone', $identifier)->first();
+            case 'email':
+            default:
+                return User::where('email', $identifier)->first();
+        }
+    }
+
+    /**
+     * 根据标识符查找用户
+     */
+    private function findUserByIdentifier($type, $identifier)
+    {
+        switch ($type) {
+            case 'username':
+                return User::where('username', $identifier)->first();
+            case 'phone':
+                return User::where('phone', $identifier)->first();
+            case 'email':
+            default:
+                return User::where('email', $identifier)->first();
+        }
     }
 }
