@@ -16,11 +16,11 @@ class SmsController extends Controller
      */
     public function send(Request $request): \Illuminate\Http\JsonResponse
     {
-        $mobile = $request->input('mobile');
+        $mobile = $request->input('phone');
         if (!$mobile) {
             return response()->json([
                 'code' => 0,
-                'msg'  => '缺少必要参数 mobile'
+                'msg'  => '缺少必要参数 phone'
             ]);
         }
 
@@ -68,7 +68,7 @@ class SmsController extends Controller
      */
     public function verify(Request $request): \Illuminate\Http\JsonResponse
     {
-        $mobile = $request->input('mobile', '');
+        $mobile = $request->input('phone', '');
         $code   = $request->input('code', '');
 
         if (!$mobile || !$code) {
