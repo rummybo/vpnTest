@@ -149,22 +149,37 @@ class NavLinkController extends Controller
     {
         $rules = [
             'title' => 'required|string|max:100',
-            'url' => 'required|url|max:255',
+            'url' => 'required|string|max:255',
             'logo' => 'nullable|string|max:255',
             'sort' => 'nullable|integer|min:0',
             'status' => 'required|in:normal,hidden'
         ];
 
-        $validator = \Validator::make($request->all(), $rules);
+        $messages = [
+            'title.required' => '标题不能为空',
+            'title.max' => '标题长度不能超过100个字符',
+            'url.required' => 'URL不能为空',
+            'url.max' => 'URL长度不能超过255个字符',
+            'status.required' => '状态不能为空',
+            'status.in' => '状态值必须是normal或hidden'
+        ];
+
+        $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()->first()
             ], 422);
         }
 
+        // 处理URL格式 - 如果没有协议前缀，自动添加https://
+        $url = $request->input('url');
+        if (!preg_match('/^https?:\/\//', $url)) {
+            $url = 'https://' . $url;
+        }
+
         $data = [
             'title' => $request->input('title'),
-            'url' => $request->input('url'),
+            'url' => $url, // 使用处理后的URL
             'logo' => $request->input('logo'),
             'sort' => $request->input('sort', 0),
             'status' => $request->input('status', 'normal'),
