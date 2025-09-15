@@ -40,8 +40,18 @@ class UploadController extends Controller
                 throw new \Exception('文件保存验证失败');
             }
             
-            // 生成完整的URL，包含正确的协议和端口
-            $baseUrl = $request->getScheme() . '://' . $request->getHttpHost();
+            // 生成完整的URL，显式包含端口号
+            $scheme = $request->getScheme(); // http 或 https
+            $host = $request->getHost(); // 192.197.113.52
+            $port = $request->getPort(); // 2053
+            
+            // 构建完整URL，确保包含端口号
+            if (($scheme === 'http' && $port !== 80) || ($scheme === 'https' && $port !== 443)) {
+                $baseUrl = $scheme . '://' . $host . ':' . $port;
+            } else {
+                $baseUrl = $scheme . '://' . $host;
+            }
+            
             $url = $baseUrl . '/' . $relativePath;
             
             return response()->json([
