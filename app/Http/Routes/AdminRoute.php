@@ -139,13 +139,13 @@ class AdminRoute
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');
             $router->post('/theme/getThemeConfig', 'Admin\\ThemeController@getThemeConfig');
-            // Nav Links
-            $router->get ('/nav_links', 'Admin\\NavLinkController@index');
-            $router->get ('/nav_links/create', 'Admin\\NavLinkController@create');
-            $router->post('/nav_links', 'Admin\\NavLinkController@store');
-            $router->get ('/nav_links/{navLink}/edit', 'Admin\\NavLinkController@edit');
-            $router->put ('/nav_links/{navLink}', 'Admin\\NavLinkController@update');
-            $router->delete('/nav_links/{navLink}', 'Admin\\NavLinkController@destroy');
+            // Nav Links - 福利导航管理
+            $router->get ('/nav_links/fetch', 'Admin\\NavLinkController@fetch');
+            $router->post('/nav_links/save', 'Admin\\NavLinkController@save');
+            $router->post('/nav_links/update', 'Admin\\NavLinkController@update');
+            $router->post('/nav_links/drop', 'Admin\\NavLinkController@drop');
+            $router->post('/nav_links/show', 'Admin\\NavLinkController@show');
+            $router->post('/nav_links/sort', 'Admin\\NavLinkController@sort');
         });
     }
 }
