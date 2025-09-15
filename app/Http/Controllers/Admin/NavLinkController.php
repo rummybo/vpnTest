@@ -149,10 +149,10 @@ class NavLinkController extends Controller
     {
         $rules = [
             'title' => 'required|string|max:100',
-            'link' => 'required|url|max:255',
-            'icon' => 'nullable|string|max:50',
+            'url' => 'required|url|max:255',
+            'logo' => 'nullable|string|max:255',
             'sort' => 'nullable|integer|min:0',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:normal,hidden'
         ];
 
         $validator = \Validator::make($request->all(), $rules);
@@ -162,7 +162,17 @@ class NavLinkController extends Controller
             ], 422);
         }
 
-        NavLink::create($request->all());
+        $data = [
+            'title' => $request->input('title'),
+            'url' => $request->input('url'),
+            'logo' => $request->input('logo'),
+            'sort' => $request->input('sort', 0),
+            'status' => $request->input('status', 'normal'),
+            'createtime' => time(),
+            'updatetime' => time()
+        ];
+
+        NavLink::create($data);
 
         return response()->json([
             'message' => '福利导航创建成功'
@@ -203,7 +213,7 @@ class NavLinkController extends Controller
         $id = $request->input('id');
         $status = $request->input('status');
         
-        if (!$id || !in_array($status, [0, 1])) {
+        if (!$id || !in_array($status, ['normal', 'hidden'])) {
             return response()->json([
                 'message' => '参数错误'
             ], 422);
@@ -216,7 +226,10 @@ class NavLinkController extends Controller
             ], 404);
         }
 
-        $navLink->update(['status' => $status]);
+        $navLink->update([
+            'status' => $status,
+            'updatetime' => time()
+        ]);
 
         return response()->json([
             'message' => '操作成功'
@@ -237,7 +250,10 @@ class NavLinkController extends Controller
 
         foreach ($sorts as $sort) {
             if (isset($sort['id']) && isset($sort['sort'])) {
-                NavLink::where('id', $sort['id'])->update(['sort' => $sort['sort']]);
+                NavLink::where('id', $sort['id'])->update([
+                    'sort' => $sort['sort'],
+                    'updatetime' => time()
+                ]);
             }
         }
 

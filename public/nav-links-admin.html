@@ -281,11 +281,16 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">导航链接 *</label>
-                    <input type="url" id="nav-link" class="form-control" placeholder="https://example.com" required>
+                    <input type="url" id="nav-url" class="form-control" placeholder="https://example.com" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">图标类名</label>
-                    <input type="text" id="nav-icon" class="form-control" placeholder="si si-link" value="si si-link">
+                    <label class="form-label">Logo图片</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="nav-logo" class="form-control" placeholder="图片URL或上传图片">
+                        <button type="button" class="btn" onclick="uploadImage()" style="white-space: nowrap;">上传图片</button>
+                    </div>
+                    <input type="file" id="logoFile" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
+                    <small style="color: #666; font-size: 12px;">支持 JPG, PNG, GIF, SVG 格式，最大2MB</small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">排序</label>
@@ -294,8 +299,8 @@
                 <div class="form-group">
                     <label class="form-label">状态</label>
                     <select id="nav-status" class="form-control">
-                        <option value="1">显示</option>
-                        <option value="0">隐藏</option>
+                        <option value="normal">显示</option>
+                        <option value="hidden">隐藏</option>
                     </select>
                 </div>
             </form>
@@ -377,7 +382,7 @@
                             <th>ID</th>
                             <th>标题</th>
                             <th>链接</th>
-                            <th>图标</th>
+                            <th>Logo</th>
                             <th>排序</th>
                             <th>状态</th>
                             <th>创建时间</th>
@@ -389,19 +394,19 @@
                             <tr>
                                 <td>${item.id}</td>
                                 <td>${escapeHtml(item.title)}</td>
-                                <td><a href="${escapeHtml(item.link)}" target="_blank">${escapeHtml(item.link)}</a></td>
-                                <td><i class="${escapeHtml(item.icon)}"></i> ${escapeHtml(item.icon)}</td>
+                                <td><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.url)}</a></td>
+                                <td>${item.logo ? `<img src="${escapeHtml(item.logo)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;"> ${escapeHtml(item.logo)}` : '-'}</td>
                                 <td>${item.sort}</td>
                                 <td>
-                                    <span class="status-badge ${item.status == 1 ? 'status-active' : 'status-inactive'}">
-                                        ${item.status == 1 ? '显示' : '隐藏'}
+                                    <span class="status-badge ${item.status == 'normal' ? 'status-active' : 'status-inactive'}">
+                                        ${item.status == 'normal' ? '显示' : '隐藏'}
                                     </span>
                                 </td>
                                 <td>${formatDate(item.created_at)}</td>
                                 <td>
                                     <div class="actions">
                                         <button class="btn btn-sm" onclick="editNavLink(${item.id})">编辑</button>
-                                        <button class="btn btn-sm" onclick="toggleStatus(${item.id}, ${item.status})">${item.status == 1 ? '隐藏' : '显示'}</button>
+                                        <button class="btn btn-sm" onclick="toggleStatus(${item.id}, '${item.status}')">${item.status == 'normal' ? '隐藏' : '显示'}</button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteNavLink(${item.id})">删除</button>
                                     </div>
                                 </td>
@@ -436,9 +441,9 @@
             currentEditId = null;
             document.getElementById('modal-title').textContent = '添加福利导航';
             document.getElementById('edit-form').reset();
-            document.getElementById('nav-icon').value = 'si si-link';
+            document.getElementById('nav-logo').value = '';
             document.getElementById('nav-sort').value = '0';
-            document.getElementById('nav-status').value = '1';
+            document.getElementById('nav-status').value = 'normal';
             document.getElementById('edit-modal').style.display = 'block';
         }
         
@@ -450,8 +455,8 @@
             currentEditId = id;
             document.getElementById('modal-title').textContent = '编辑福利导航';
             document.getElementById('nav-title').value = item.title;
-            document.getElementById('nav-link').value = item.link;
-            document.getElementById('nav-icon').value = item.icon;
+            document.getElementById('nav-url').value = item.url;
+            document.getElementById('nav-logo').value = item.logo;
             document.getElementById('nav-sort').value = item.sort;
             document.getElementById('nav-status').value = item.status;
             document.getElementById('edit-modal').style.display = 'block';
@@ -460,12 +465,12 @@
         // 保存导航
         async function saveNavLink() {
             const title = document.getElementById('nav-title').value.trim();
-            const link = document.getElementById('nav-link').value.trim();
-            const icon = document.getElementById('nav-icon').value.trim();
+            const url = document.getElementById('nav-url').value.trim();
+            const logo = document.getElementById('nav-logo').value.trim();
             const sort = parseInt(document.getElementById('nav-sort').value) || 0;
-            const status = parseInt(document.getElementById('nav-status').value);
+            const status = document.getElementById('nav-status').value;
             
-            if (!title || !link) {
+            if (!title || !url) {
                 showMessage('请填写必填字段', 'error');
                 return;
             }
@@ -473,8 +478,8 @@
             try {
                 const data = {
                     title,
-                    link,
-                    icon: icon || 'si si-link',
+                    url,
+                    logo: logo || '',
                     sort,
                     status
                 };
@@ -515,6 +520,7 @@
         // 切换状态
         async function toggleStatus(id, currentStatus) {
             try {
+                const newStatus = currentStatus === 'normal' ? 'hidden' : 'normal';
                 const response = await fetch(`${API_BASE}/nav_links/show`, {
                     method: 'POST',
                     headers: {
@@ -522,7 +528,7 @@
                         'Accept': 'application/json'
                     },
                     credentials: 'include',
-                    body: JSON.stringify({ id })
+                    body: JSON.stringify({ id, status: newStatus })
                 });
                 
                 if (!response.ok) {
@@ -608,6 +614,61 @@
             }
         });
         
+        // 图片上传功能
+        function uploadImage() {
+            document.getElementById('logoFile').click();
+        }
+        
+        async function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // 检查文件大小 (2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showMessage('图片大小不能超过2MB', 'error');
+                return;
+            }
+            
+            // 检查文件类型
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'];
+            if (!allowedTypes.includes(file.type)) {
+                showMessage('只支持 JPG, PNG, GIF, SVG 格式的图片', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                showMessage('正在上传图片...', 'info');
+                
+                const response = await fetch(`${API_BASE}/upload/image`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.url) {
+                    document.getElementById('nav-logo').value = result.url;
+                    showMessage('图片上传成功');
+                } else {
+                    throw new Error(result.message || '上传失败');
+                }
+            } catch (error) {
+                console.error('图片上传失败:', error);
+                showMessage('图片上传失败: ' + error.message, 'error');
+            }
+            
+            // 清空文件输入
+            input.value = '';
+        }
+
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadNavLinks();
