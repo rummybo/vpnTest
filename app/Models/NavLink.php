@@ -20,7 +20,9 @@ class NavLink extends Model
         'url',        // 使用实际字段名
         'logo',       // 使用实际字段名 
         'sort',
-        'status'
+        'status',
+        'createtime',
+        'updatetime'
     ];
 
     protected $casts = [
@@ -29,24 +31,28 @@ class NavLink extends Model
         'updatetime' => 'integer'
     ];
     
-    // 状态访问器 - 将enum转换为数字
-    public function getStatusAttribute($value)
-    {
-        return $value === 'normal' ? 1 : 0;
-    }
-    
-    // 状态修改器 - 将数字转换为enum
-    public function setStatusAttribute($value)
-    {
-        $this->attributes['status'] = $value == 1 ? 'normal' : 'hidden';
-    }
-
     /**
      * 获取状态文本
      */
     public function getStatusTextAttribute()
     {
-        return $this->status ? '显示' : '隐藏';
+        return $this->attributes['status'] === 'normal' ? '显示' : '隐藏';
+    }
+    
+    /**
+     * 获取启用的导航链接
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'normal');
+    }
+
+    /**
+     * 按排序字段排序
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort', 'asc')->orderBy('id', 'asc');
     }
     
     /**

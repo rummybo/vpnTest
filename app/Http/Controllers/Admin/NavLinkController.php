@@ -126,7 +126,7 @@ class NavLinkController extends Controller
 
         // 排序
         $sortType = $request->input('sort_type', 'desc');
-        $sortField = $request->input('sort', 'created_at');
+        $sortField = $request->input('sort', 'createtime');
         $query->orderBy($sortField, $sortType);
 
         // 分页
@@ -177,17 +177,32 @@ class NavLinkController extends Controller
             $url = 'https://' . $url;
         }
 
+        // 检查是否是更新操作
+        $isUpdate = $request->has('id') && $request->input('id');
+        
         $data = [
             'title' => $request->input('title'),
             'url' => $url, // 使用处理后的URL
-            'logo' => $request->input('logo'),
+            'logo' => $request->input('logo', ''),
             'sort' => $request->input('sort', 0),
             'status' => $request->input('status', 'normal'),
-            'createtime' => time(),
             'updatetime' => time()
         ];
-
-        NavLink::create($data);
+        
+        if ($isUpdate) {
+            // 更新操作
+            $navLink = NavLink::find($request->input('id'));
+            if (!$navLink) {
+                return response()->json([
+                    'message' => '记录不存在'
+                ], 404);
+            }
+            $navLink->update($data);
+        } else {
+            // 新增操作
+            $data['createtime'] = time();
+            NavLink::create($data);
+        }
 
         return response()->json([
             'message' => '福利导航创建成功'
