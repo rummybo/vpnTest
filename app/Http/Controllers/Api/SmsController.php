@@ -108,8 +108,7 @@ class SmsController extends Controller
             'data' => [
                 'type' => $type,
                 'expire_time' => $expireTime,
-                'sms_result' => $rs,
-                'code' => $code
+                'sms_result' => $rs
             ]
         ]);
     }
