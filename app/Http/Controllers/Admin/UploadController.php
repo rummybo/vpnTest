@@ -65,7 +65,7 @@ class UploadController extends Controller
                 }
             }
             
-            $url = $scheme . '://' . $finalHost . '/' . $relativePath;
+            $url = $scheme . '://' . $finalHost.':2053' . '/' . $relativePath;
             
             // 记录调试信息
             \Log::info('Upload URL Final Generation', [
