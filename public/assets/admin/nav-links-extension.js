@@ -41,15 +41,36 @@
         return '/api/v1/149544e4';
     }
     
+    // 获取认证headers
+    function getAuthHeaders() {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+        
+        // 添加CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            headers['X-CSRF-TOKEN'] = csrfToken.content;
+        }
+        
+        // 添加Authorization token（如果存在）
+        const authToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+        if (authToken) {
+            headers['Authorization'] = `Bearer ${authToken}`;
+        }
+        
+        return headers;
+    }
+    
     // 检查福利导航是否启用
     function checkNavLinksEnabled() {
         const apiPath = getApiBasePath() + '/menu/config';
         
         return fetch(apiPath, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: getAuthHeaders(),
+            credentials: 'include' // 包含cookies
         })
         .then(response => {
             console.log('菜单配置API响应状态:', response.status);
