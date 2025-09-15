@@ -293,6 +293,7 @@
             <li><a href="#share-module" class="nav-link"><i class="fas fa-share-alt"></i> 推广链接</a></li>
             <li><a href="#device-module" class="nav-link"><i class="fas fa-mobile-alt"></i> 设备管理</a></li>
             <li><a href="#nav-module" class="nav-link"><i class="fas fa-link"></i> 福利导航</a></li>
+            <li><a href="#common-links-module" class="nav-link"><i class="fas fa-compass"></i> 常用导航</a></li>
             <li><a href="#error-codes" class="nav-link"><i class="fas fa-exclamation-triangle"></i> 错误码</a></li>
         </ul>
     </div>
@@ -619,6 +620,175 @@
                     </div>
                     <div class="endpoint-desc">获取分组导航链接</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 常用导航模块 -->
+        <div class="section" id="common-links-module">
+            <div class="section-header">
+                <i class="fas fa-compass"></i> 常用导航模块
+            </div>
+            <div class="section-content">
+                <p>常用导航管理功能，支持完整的 CRUD 操作，包括新增、编辑、删除、排序等功能。</p>
+                
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/api/v1/{secure_path}/common_links/fetch</span>
+                    </div>
+                    <div class="endpoint-desc">获取常用导航列表</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>current</td><td>number</td><td>否</td><td>当前页码，默认1</td></tr>
+                        <tr><td>pageSize</td><td>number</td><td>否</td><td>每页数量，默认10</td></tr>
+                        <tr><td>sort</td><td>string</td><td>否</td><td>排序字段，默认weigh</td></tr>
+                        <tr><td>sort_type</td><td>string</td><td>否</td><td>排序方式：asc/desc，默认desc</td></tr>
+                        <tr><td>filter</td><td>array</td><td>否</td><td>筛选条件数组</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>{
+  "data": [
+    {
+      "id": 1,
+      "title": "Google",
+      "url": "https://www.google.com",
+      "logo": "https://www.google.com/favicon.ico",
+      "weigh": 100,
+      "status": "normal",
+      "createtime": 1726387200,
+      "updatetime": 1726387200
+    }
+  ],
+  "total": 1
+}</code></pre>
+                </div>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/api/v1/{secure_path}/common_links/save</span>
+                    </div>
+                    <div class="endpoint-desc">保存常用导航（新增/编辑）</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>id</td><td>number</td><td>否</td><td>编辑时需要传入ID</td></tr>
+                        <tr><td>title</td><td>string</td><td>是</td><td>导航标题，最大100字符</td></tr>
+                        <tr><td>url</td><td>string</td><td>是</td><td>链接地址，最大255字符</td></tr>
+                        <tr><td>logo</td><td>string</td><td>否</td><td>图标URL，最大255字符</td></tr>
+                        <tr><td>weigh</td><td>number</td><td>否</td><td>权重，数值越大排序越靠前</td></tr>
+                        <tr><td>status</td><td>string</td><td>是</td><td>状态：normal/hidden</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/api/v1/{secure_path}/common_links/drop</span>
+                    </div>
+                    <div class="endpoint-desc">删除常用导航</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>id</td><td>number</td><td>是</td><td>要删除的导航ID</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="url">/api/v1/{secure_path}/common_links/show</span>
+                    </div>
+                    <div class="endpoint-desc">显示/隐藏常用导航</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>id</td><td>number</td><td>是</td><td>导航ID</td></tr>
+                        <tr><td>status</td><td>string</td><td>是</td><td>状态：normal/hidden</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/api/v1/{secure_path}/common_links/sort</span>
+                    </div>
+                    <div class="endpoint-desc">批量更新排序</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>sorts</td><td>array</td><td>是</td><td>排序数组，格式：[{"id": 1, "weigh": 100}]</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="endpoint">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="url">/api/v1/{secure_path}/upload/image</span>
+                    </div>
+                    <div class="endpoint-desc">上传图片文件</div>
+                </div>
+
+                <h4>请求参数</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>file</td><td>file</td><td>是</td><td>图片文件，支持JPG/PNG/GIF/SVG，最大2MB</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>{
+  "message": "图片上传成功",
+  "url": "http://192.197.113.52:2053/uploads/nav_links/1726387200_abc123.jpg",
+  "path": "uploads/nav_links/1726387200_abc123.jpg",
+  "filename": "1726387200_abc123.jpg",
+  "size": 102400
+}</code></pre>
+                </div>
+
+                <h4>重要说明</h4>
+                <ul class="info-list">
+                    <li><strong>权重排序：</strong>weigh 字段数值越大，排序越靠前（降序排列）</li>
+                    <li><strong>状态管理：</strong>normal=显示，hidden=隐藏</li>
+                    <li><strong>URL自动处理：</strong>如果URL没有协议前缀，系统会自动添加https://</li>
+                    <li><strong>图片存储：</strong>上传的图片保存在public/uploads/nav_links/目录</li>
+                    <li><strong>认证要求：</strong>所有接口都需要JWT认证，在请求头中包含Authorization</li>
+                </ul>
             </div>
         </div>
 

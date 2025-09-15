@@ -40,27 +40,41 @@ class UploadController extends Controller
                 throw new \Exception('文件保存验证失败');
             }
             
-            // 生成完整的URL - 使用最可靠的方法
+            // 生成完整的URL - 强制包含端口号的最终解决方案
             $scheme = $request->isSecure() ? 'https' : 'http';
             
-            // 直接使用 HTTP_HOST，它包含了主机名和端口号
-            $httpHost = $request->server('HTTP_HOST'); // 例如: 192.197.113.52:2053
+            // 获取原始主机信息
+            $originalHost = $request->server('HTTP_HOST') ?: $request->server('SERVER_NAME') ?: $request->getHost();
+            $serverPort = $request->server('SERVER_PORT') ?: $request->getPort();
             
-            // 如果 HTTP_HOST 为空，则手动构建
-            if (empty($httpHost)) {
-                $host = $request->server('SERVER_NAME') ?: $request->server('SERVER_ADDR') ?: 'localhost';
-                $port = $request->server('SERVER_PORT') ?: ($scheme === 'https' ? 443 : 80);
-                
-                if (($scheme === 'http' && $port != 80) || ($scheme === 'https' && $port != 443)) {
-                    $httpHost = $host . ':' . $port;
-                } else {
-                    $httpHost = $host;
+            // 强制端口号处理 - 针对你的环境
+            $finalHost = $originalHost;
+            
+            // 如果是你的服务器环境，强制添加端口号
+            if (strpos($originalHost, '192.197.113.52') !== false) {
+                // 移除可能存在的端口号，然后重新添加
+                $finalHost = preg_replace('/:\d+$/', '', $originalHost);
+                $finalHost = $finalHost . ':2053';
+            } else {
+                // 其他环境的通用处理
+                if (strpos($originalHost, ':') === false) {
+                    // 如果没有端口号，根据协议和端口添加
+                    if (($scheme === 'http' && $serverPort != 80) || ($scheme === 'https' && $serverPort != 443)) {
+                        $finalHost = $originalHost . ':' . $serverPort;
+                    }
                 }
             }
             
-            // 构建完整URL
-            $baseUrl = $scheme . '://' . $httpHost;
-            $url = $baseUrl . '/' . $relativePath;
+            $url = $scheme . '://' . $finalHost . '/' . $relativePath;
+            
+            // 记录调试信息
+            \Log::info('Upload URL Final Generation', [
+                'original_host' => $originalHost,
+                'server_port' => $serverPort,
+                'final_host' => $finalHost,
+                'final_url' => $url,
+                'scheme' => $scheme
+            ]);
             
             return response()->json([
                 'message' => '图片上传成功',
