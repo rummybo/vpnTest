@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福利导航管理 - V2Board</title>
+    
+    <!-- 引入v2board的样式 -->
+    <link rel="stylesheet" href="/assets/admin/components.chunk.css">
+    <link rel="stylesheet" href="/assets/admin/umi.css">
+    
+    <!-- 自定义样式 -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .nav-links-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        
+        .page-header {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #262626;
+            margin: 0;
+        }
+        
+        .page-description {
+            color: #8c8c8c;
+            margin: 8px 0 0 0;
+        }
+        
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #1890ff;
+            border-color: #1890ff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #40a9ff;
+            border-color: #40a9ff;
+        }
+        
+        .btn:hover {
+            border-color: #40a9ff;
+            color: #40a9ff;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table th {
+            background: #fafafa;
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .table tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .status-inactive {
+            background: #fff2e8;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        
+        .btn-danger {
+            background: #ff4d4f;
+            border-color: #ff4d4f;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ff7875;
+            border-color: #ff7875;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 500px;
+            max-width: 90vw;
+        }
+        
+        .modal-header {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            border-color: #40a9ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 24px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8c8c8c;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #8c8c8c;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .alert-success {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        
+        .alert-error {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links-container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <h1 class="page-title">福利导航管理</h1>
+            <p class="page-description">管理前端显示的福利导航链接，支持添加、编辑、删除和排序功能</p>
+        </div>
+        
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div>
+                <button class="btn btn-primary" onclick="showAddModal()">
+                    <i class="si si-plus"></i> 添加导航
+                </button>
+                <button class="btn" onclick="refreshList()">
+                    <i class="si si-refresh"></i> 刷新
+                </button>
+            </div>
+            <div>
+                <span id="total-count">总计: 0 条</span>
+            </div>
+        </div>
+        
+        <!-- 消息提示 -->
+        <div id="message-container"></div>
+        
+        <!-- 数据表格 -->
+        <div id="table-container">
+            <div class="loading">
+                <i class="si si-refresh"></i> 加载中...
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑模态框 -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title">添加福利导航</span>
+            </div>
+            <form id="edit-form">
+                <div class="form-group">
+                    <label class="form-label">导航标题 *</label>
+                    <input type="text" id="nav-title" class="form-control" placeholder="请输入导航标题" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">导航链接 *</label>
+                    <input type="url" id="nav-link" class="form-control" placeholder="https://example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图标类名</label>
+                    <input type="text" id="nav-icon" class="form-control" placeholder="si si-link" value="si si-link">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">排序</label>
+                    <input type="number" id="nav-sort" class="form-control" placeholder="数字越小越靠前" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <select id="nav-status" class="form-control">
+                        <option value="1">显示</option>
+                        <option value="0">隐藏</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn" onclick="hideModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveNavLink()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentEditId = null;
+        let navLinks = [];
+        
+        // API基础路径
+        const API_BASE = '/api/v1/' + getSecurePath();
+        
+        // 获取安全路径
+        function getSecurePath() {
+            const currentPath = window.location.pathname;
+            const pathMatch = currentPath.match(/\/([a-f0-9]{8})/);
+            if (pathMatch) {
+                return pathMatch[1];
+            }
+            return '149544e4'; // 备用
+        }
+        
+        // 显示消息
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('message-container');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+        
+        // 加载导航列表
+        async function loadNavLinks() {
+            try {
+                const response = await fetch(`${API_BASE}/nav_links/fetch`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                navLinks = data.data || [];
+                renderTable();
+                updateTotalCount();
+            } catch (error) {
+                console.error('加载导航列表失败:', error);
+                showMessage('加载导航列表失败: ' + error.message, 'error');
+                renderEmptyTable();
+            }
+        }
+        
+        // 渲染表格
+        function renderTable() {
+            const container = document.getElementById('table-container');
+            
+            if (navLinks.length === 0) {
+                renderEmptyTable();
+                return;
+            }
+            
+            const tableHtml = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>链接</th>
+                            <th>图标</th>
+                            <th>排序</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${navLinks.map(item => `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${escapeHtml(item.title)}</td>
+                                <td><a href="${escapeHtml(item.link)}" target="_blank">${escapeHtml(item.link)}</a></td>
+                                <td><i class="${escapeHtml(item.icon)}"></i> ${escapeHtml(item.icon)}</td>
+                                <td>${item.sort}</td>
+                                <td>
+                                    <span class="status-badge ${item.status == 1 ? 'status-active' : 'status-inactive'}">
+                                        ${item.status == 1 ? '显示' : '隐藏'}
+                                    </span>
+                                </td>
+                                <td>${formatDate(item.created_at)}</td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="btn btn-sm" onclick="editNavLink(${item.id})">编辑</button>
+                                        <button class="btn btn-sm" onclick="toggleStatus(${item.id}, ${item.status})">${item.status == 1 ? '隐藏' : '显示'}</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteNavLink(${item.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHtml;
+        }
+        
+        // 渲染空表格
+        function renderEmptyTable() {
+            const container = document.getElementById('table-container');
+            container.innerHTML = `
+                <div class="empty">
+                    <i class="si si-info"></i><br>
+                    暂无福利导航数据<br>
+                    <button class="btn btn-primary" onclick="showAddModal()" style="margin-top: 16px;">添加第一个导航</button>
+                </div>
+            `;
+        }
+        
+        // 更新总数
+        function updateTotalCount() {
+            document.getElementById('total-count').textContent = `总计: ${navLinks.length} 条`;
+        }
+        
+        // 显示添加模态框
+        function showAddModal() {
+            currentEditId = null;
+            document.getElementById('modal-title').textContent = '添加福利导航';
+            document.getElementById('edit-form').reset();
+            document.getElementById('nav-icon').value = 'si si-link';
+            document.getElementById('nav-sort').value = '0';
+            document.getElementById('nav-status').value = '1';
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+        
+        // 编辑导航
+        function editNavLink(id) {
+            const item = navLinks.find(nav => nav.id === id);
+            if (!item) return;
+            
+            currentEditId = id;
+            document.getElementById('modal-title').textContent = '编辑福利导航';
+            document.getElementById('nav-title').value = item.title;
+            document.getElementById('nav-link').value = item.link;
+            document.getElementById('nav-icon').value = item.icon;
+            document.getElementById('nav-sort').value = item.sort;
+            document.getElementById('nav-status').value = item.status;
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+        
+        // 保存导航
+        async function saveNavLink() {
+            const title = document.getElementById('nav-title').value.trim();
+            const link = document.getElementById('nav-link').value.trim();
+            const icon = document.getElementById('nav-icon').value.trim();
+            const sort = parseInt(document.getElementById('nav-sort').value) || 0;
+            const status = parseInt(document.getElementById('nav-status').value);
+            
+            if (!title || !link) {
+                showMessage('请填写必填字段', 'error');
+                return;
+            }
+            
+            try {
+                const data = {
+                    title,
+                    link,
+                    icon: icon || 'si si-link',
+                    sort,
+                    status
+                };
+                
+                if (currentEditId) {
+                    data.id = currentEditId;
+                }
+                
+                const response = await fetch(`${API_BASE}/nav_links/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.data) {
+                    showMessage(currentEditId ? '更新成功' : '添加成功');
+                    hideModal();
+                    loadNavLinks();
+                } else {
+                    throw new Error(result.message || '保存失败');
+                }
+            } catch (error) {
+                console.error('保存失败:', error);
+                showMessage('保存失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 切换状态
+        async function toggleStatus(id, currentStatus) {
+            try {
+                const response = await fetch(`${API_BASE}/nav_links/show`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ id })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.data) {
+                    showMessage('状态更新成功');
+                    loadNavLinks();
+                } else {
+                    throw new Error(result.message || '状态更新失败');
+                }
+            } catch (error) {
+                console.error('状态更新失败:', error);
+                showMessage('状态更新失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 删除导航
+        async function deleteNavLink(id) {
+            if (!confirm('确定要删除这个导航吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/nav_links/drop`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ id })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.data) {
+                    showMessage('删除成功');
+                    loadNavLinks();
+                } else {
+                    throw new Error(result.message || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+                showMessage('删除失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 隐藏模态框
+        function hideModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+        
+        // 刷新列表
+        function refreshList() {
+            loadNavLinks();
+        }
+        
+        // 工具函数
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN');
+        }
+        
+        // 点击模态框外部关闭
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideModal();
+            }
+        });
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNavLinks();
+        });
+    </script>
+</body>
+</html>

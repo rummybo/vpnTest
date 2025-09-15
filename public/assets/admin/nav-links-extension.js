@@ -51,7 +51,7 @@
         // 创建v2board风格的菜单项HTML
         const menuItemHtml = `
             <li class="nav-main-item">
-                <a class="nav-main-link" href="#/nav_links">
+                <a class="nav-main-link" href="/nav-links-admin.html" target="_blank">
                     <i class="nav-main-link-icon si si-link"></i>
                     <span class="nav-main-link-name">福利导航</span>
                 </a>
@@ -66,8 +66,8 @@
             attempts++;
             
             // 检查是否已经添加过了（多种方式检查）
-            const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]') ||
-                                  document.querySelector('a[href="#/nav_links"]');
+            const existingNavLink = document.querySelector('.nav-main-link[href="/nav-links-admin.html"]') ||
+                                  document.querySelector('a[href="/nav-links-admin.html"]');
             
             // 检查是否有包含"福利导航"文本的菜单项
             const navLinkNames = document.querySelectorAll('.nav-main-link-name');
@@ -164,7 +164,7 @@
                 // 延迟更长时间，确保新页面完全渲染
                 setTimeout(() => {
                     // 只有当菜单项不存在时才添加
-                    const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]');
+                    const existingNavLink = document.querySelector('.nav-main-link[href="/nav-links-admin.html"]');
                     if (!existingNavLink) {
                         console.log('路由变化检测到菜单项丢失，重新添加...');
                         addNavLinksMenuItem();
@@ -175,22 +175,24 @@
         
         // 使用更精确的观察器，只监听必要的变化
         if (!isObserving) {
-            const observer = new MutationObserver((mutations) => {
-                // 只在URL实际变化时处理
-                handleRouteChange();
-            });
+            // 使用防抖机制，减少频繁触发
+            let debounceTimer = null;
             
-            // 只观察body的直接子元素变化，减少触发频率
-            observer.observe(document.body, { 
-                childList: true, 
-                subtree: false 
-            });
+            const debouncedHandleRouteChange = () => {
+                if (debounceTimer) {
+                    clearTimeout(debounceTimer);
+                }
+                debounceTimer = setTimeout(handleRouteChange, 2000); // 增加延迟到2秒
+            };
+            
+            // 只监听hash变化，这是v2board路由变化的主要方式
+            window.addEventListener('hashchange', debouncedHandleRouteChange);
             
             // 也监听popstate事件（浏览器前进后退）
-            window.addEventListener('popstate', handleRouteChange);
+            window.addEventListener('popstate', debouncedHandleRouteChange);
             
             isObserving = true;
-            console.log('路由变化监听器已启动');
+            console.log('路由变化监听器已启动（优化版）');
         }
     }
     
