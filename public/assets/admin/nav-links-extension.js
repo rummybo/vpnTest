@@ -41,16 +41,12 @@
         
         const securePath = getSecurePath();
         
-        // 创建菜单项HTML
+        // 创建v2board风格的菜单项HTML
         const menuItemHtml = `
-            <li class="ant-menu-item" role="menuitem">
-                <a href="/#/nav_links" class="nav-links-menu-item">
-                    <span class="ant-menu-item-icon">
-                        <svg viewBox="64 64 896 896" focusable="false" data-icon="link" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-                            <path d="M574 665.4a8.03 8.03 0 00-11.3 0L446.5 781.6c-53.8 53.8-144.6 59.5-204 0-59.5-59.5-53.8-150.2 0-204l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3l-39.8-39.8a8.03 8.03 0 00-11.3 0L191.4 526.5c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3L574 665.4zm258.6-474c-84.6-84.6-221.5-84.6-306 0L410.3 307.6a8.03 8.03 0 000 11.3l39.7 39.7c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c53.8-53.8 144.6-59.5 204 0 59.5 59.5 53.8 150.2 0 204L665.3 562.6a8.03 8.03 0 000 11.3l39.8 39.8c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c84.5-84.6 84.5-221.5 0-306.1zM610.1 372.3a8.03 8.03 0 00-11.3 0L372.3 598.7a8.03 8.03 0 000 11.3l39.6 39.6c3.1 3.1 8.2 3.1 11.3 0l226.4-226.4c3.1-3.1 3.1-8.2 0-11.3l-39.5-39.6z"></path>
-                        </svg>
-                    </span>
-                    <span class="ant-menu-title-content">福利导航</span>
+            <li class="nav-main-item">
+                <a class="nav-main-link" href="#/nav_links">
+                    <i class="nav-main-link-icon si si-link"></i>
+                    <span class="nav-main-link-name">福利导航</span>
                 </a>
             </li>
         `;
@@ -62,38 +58,56 @@
         function tryAddMenuItem() {
             attempts++;
             
-            // 方法1: 查找侧边栏菜单
-            const sidebarMenu = document.querySelector('.ant-menu-root, .ant-menu, [role="menu"]');
-            if (sidebarMenu) {
-                // 查找合适的插入位置（在"系统管理"或最后一个菜单项后）
-                const systemMenuItem = sidebarMenu.querySelector('li:contains("系统管理"), li:contains("System")');
-                const lastMenuItem = sidebarMenu.querySelector('li:last-child');
+            // 检查是否已经添加过了
+            const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]');
+            if (existingNavLink) {
+                console.log('福利导航菜单项已存在，跳过添加');
+                return true;
+            }
+            
+            // 方法1: 查找v2board的主导航菜单
+            const navMain = document.querySelector('ul.nav-main');
+            if (navMain) {
+                // 查找合适的插入位置
+                const lastHeading = navMain.querySelector('li.nav-main-heading:last-of-type');
+                const lastMenuItem = navMain.querySelector('li.nav-main-item:last-of-type');
                 
-                if (systemMenuItem) {
-                    systemMenuItem.insertAdjacentHTML('beforebegin', menuItemHtml);
-                    console.log('福利导航菜单项已添加到系统管理前');
+                if (lastHeading) {
+                    // 在最后一个分组标题后添加
+                    lastHeading.insertAdjacentHTML('afterend', menuItemHtml);
+                    console.log('福利导航菜单项已添加到最后一个分组后');
                     return true;
                 } else if (lastMenuItem) {
+                    // 在最后一个菜单项后添加
                     lastMenuItem.insertAdjacentHTML('afterend', menuItemHtml);
                     console.log('福利导航菜单项已添加到菜单末尾');
+                    return true;
+                } else {
+                    // 直接添加到导航容器末尾
+                    navMain.insertAdjacentHTML('beforeend', menuItemHtml);
+                    console.log('福利导航菜单项已添加到导航容器末尾');
                     return true;
                 }
             }
             
-            // 方法2: 查找特定的菜单容器
-            const menuContainer = document.querySelector('.ant-layout-sider .ant-menu');
-            if (menuContainer) {
-                menuContainer.insertAdjacentHTML('beforeend', menuItemHtml);
-                console.log('福利导航菜单项已添加到菜单容器');
-                return true;
+            // 方法2: 查找包含nav的容器
+            const navContainers = document.querySelectorAll('[class*="nav"]');
+            for (let container of navContainers) {
+                if (container.tagName === 'UL' && container.querySelector('li.nav-main-item')) {
+                    container.insertAdjacentHTML('beforeend', menuItemHtml);
+                    console.log('福利导航菜单项已添加到nav容器');
+                    return true;
+                }
             }
             
             // 如果还没找到，继续尝试
             if (attempts < maxAttempts) {
+                console.log(`第${attempts}次尝试失败，${maxAttempts - attempts}次后放弃...`);
                 setTimeout(tryAddMenuItem, 500);
                 return false;
             } else {
                 console.warn('无法找到合适的菜单容器添加福利导航菜单项');
+                console.log('当前页面的导航结构:', document.querySelector('ul.nav-main'));
                 return false;
             }
         }
