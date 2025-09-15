@@ -8,6 +8,13 @@
     
     console.log('福利导航扩展已加载 - 简化版');
     
+    // 全局标记，防止重复添加
+    if (window.navLinksExtensionLoaded) {
+        console.log('福利导航扩展已经加载过，跳过重复加载');
+        return;
+    }
+    window.navLinksExtensionLoaded = true;
+    
     // 检查福利导航是否启用（从配置中读取）
     function isNavLinksEnabled() {
         // 从window.settings中读取配置
@@ -58,10 +65,21 @@
         function tryAddMenuItem() {
             attempts++;
             
-            // 检查是否已经添加过了
-            const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]');
+            // 检查是否已经添加过了（多种方式检查）
+            const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]') ||
+                                  document.querySelector('a[href="#/nav_links"]');
+            
+            // 检查是否有包含"福利导航"文本的菜单项
+            const navLinkNames = document.querySelectorAll('.nav-main-link-name');
+            for (let nameElement of navLinkNames) {
+                if (nameElement.textContent && nameElement.textContent.includes('福利导航')) {
+                    console.log('福利导航菜单项已存在（通过文本检查），跳过添加');
+                    return true;
+                }
+            }
+            
             if (existingNavLink) {
-                console.log('福利导航菜单项已存在，跳过添加');
+                console.log('福利导航菜单项已存在（通过链接检查），跳过添加');
                 return true;
             }
             
@@ -137,13 +155,43 @@
         
         // 监听路由变化，重新添加菜单项（如果需要）
         let lastUrl = location.href;
-        new MutationObserver(() => {
+        let isObserving = false;
+        
+        function handleRouteChange() {
             const url = location.href;
             if (url !== lastUrl) {
                 lastUrl = url;
-                setTimeout(addNavLinksMenuItem, 500);
+                // 延迟更长时间，确保新页面完全渲染
+                setTimeout(() => {
+                    // 只有当菜单项不存在时才添加
+                    const existingNavLink = document.querySelector('.nav-main-link[href="#/nav_links"]');
+                    if (!existingNavLink) {
+                        console.log('路由变化检测到菜单项丢失，重新添加...');
+                        addNavLinksMenuItem();
+                    }
+                }, 1000);
             }
-        }).observe(document, { subtree: true, childList: true });
+        }
+        
+        // 使用更精确的观察器，只监听必要的变化
+        if (!isObserving) {
+            const observer = new MutationObserver((mutations) => {
+                // 只在URL实际变化时处理
+                handleRouteChange();
+            });
+            
+            // 只观察body的直接子元素变化，减少触发频率
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: false 
+            });
+            
+            // 也监听popstate事件（浏览器前进后退）
+            window.addEventListener('popstate', handleRouteChange);
+            
+            isObserving = true;
+            console.log('路由变化监听器已启动');
+        }
     }
     
     // 启动扩展
