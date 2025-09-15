@@ -329,6 +329,23 @@
             return '149544e4'; // 备用
         }
         
+        // 获取认证token
+        function getAuthToken() {
+            return localStorage.getItem('authorization');
+        }
+        
+        // 获取通用请求头
+        function getHeaders(includeContentType = true) {
+            const headers = {
+                'Accept': 'application/json',
+                'Authorization': getAuthToken()
+            };
+            if (includeContentType) {
+                headers['Content-Type'] = 'application/json';
+            }
+            return headers;
+        }
+        
         // 显示消息
         function showMessage(message, type = 'success') {
             const container = document.getElementById('message-container');
@@ -344,10 +361,7 @@
             try {
                 const response = await fetch(`${API_BASE}/nav_links/fetch`, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: getHeaders(),
                     credentials: 'include'
                 });
                 
@@ -490,10 +504,7 @@
                 
                 const response = await fetch(`${API_BASE}/nav_links/save`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: getHeaders(),
                     credentials: 'include',
                     body: JSON.stringify(data)
                 });
@@ -523,10 +534,7 @@
                 const newStatus = currentStatus === 'normal' ? 'hidden' : 'normal';
                 const response = await fetch(`${API_BASE}/nav_links/show`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: getHeaders(),
                     credentials: 'include',
                     body: JSON.stringify({ id, status: newStatus })
                 });
@@ -558,10 +566,7 @@
             try {
                 const response = await fetch(`${API_BASE}/nav_links/drop`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: getHeaders(),
                     credentials: 'include',
                     body: JSON.stringify({ id })
                 });
@@ -644,6 +649,7 @@
                 
                 const response = await fetch(`${API_BASE}/upload/image`, {
                     method: 'POST',
+                    headers: getHeaders(false), // 不包含Content-Type，让FormData自动设置
                     credentials: 'include',
                     body: formData
                 });
