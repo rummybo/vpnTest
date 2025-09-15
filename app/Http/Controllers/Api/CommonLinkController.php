@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\NavLink;
+use App\Models\CommonLink;
 use Illuminate\Http\Request;
 
-class NavLinkController extends Controller
+class CommonLinkController extends Controller
 {
     /**
-     * 获取前端福利导航列表
+     * 获取前端常用导航列表
      * 
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         try {
-            $links = NavLink::where('status', 'normal')
-                ->orderBy('sort', 'asc')
+            $links = CommonLink::where('status', 'normal')
+                ->orderBy('weigh', 'desc')
                 ->orderBy('id', 'asc')
-                ->get(['id', 'title', 'url', 'logo', 'sort']);
+                ->get(['id', 'title', 'url', 'logo', 'weigh']);
 
             return response()->json([
                 'code' => 200,
@@ -36,20 +36,20 @@ class NavLinkController extends Controller
     }
 
     /**
-     * 按分类获取福利导航
+     * 按权重分组获取常用导航
      * 
      * @return \Illuminate\Http\JsonResponse
      */
     public function grouped()
     {
         try {
-            $links = NavLink::where('status', 'normal')
-                ->orderBy('sort', 'asc')
+            $links = CommonLink::where('status', 'normal')
+                ->orderBy('weigh', 'desc')
                 ->orderBy('id', 'asc')
-                ->get(['id', 'title', 'url', 'logo', 'sort']);
+                ->get(['id', 'title', 'url', 'logo', 'weigh']);
 
-            // 按排序值分组
-            $grouped = $links->groupBy('sort')->map(function ($group) {
+            // 按权重分组
+            $grouped = $links->groupBy('weigh')->map(function ($group) {
                 return $group->values();
             });
 

@@ -48,25 +48,27 @@
             border-bottom: 1px solid #e9ecef;
         }
 
-        .search-input {
+        .search-box input {
             width: 100%;
-            padding: 10px;
+            padding: 8px 12px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 4px;
             font-size: 14px;
         }
 
-        .sidebar-nav {
+        .nav-menu {
             list-style: none;
-            padding: 0;
+        }
+
+        .nav-item {
+            border-bottom: 1px solid #f1f3f4;
         }
 
         .nav-link {
             display: block;
             padding: 12px 20px;
-            color: #555;
+            color: #333;
             text-decoration: none;
-            border-bottom: 1px solid #f8f9fa;
             transition: all 0.2s;
         }
 
@@ -75,76 +77,57 @@
             color: #667eea;
         }
 
+        .nav-link.active {
+            background: #667eea;
+            color: white;
+        }
+
         .nav-link i {
-            margin-right: 10px;
+            margin-right: 8px;
             width: 16px;
         }
 
         .main-content {
             margin-left: 280px;
-            padding: 20px;
-        }
-
-        .header {
-            background: white;
             padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 100vh;
         }
 
-        .header h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2.2em;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .section {
+        .content-section {
+            display: none;
             background: white;
-            margin-bottom: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .section-header {
-            background: #667eea;
-            color: white;
-            padding: 20px;
-            font-size: 1.3em;
-            font-weight: 600;
+        .content-section.active {
+            display: block;
         }
 
-        .section-header i {
-            margin-right: 10px;
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
         }
 
-        .section-content {
-            padding: 20px;
-        }
-
-        .endpoint {
+        .api-endpoint {
             background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
 
         .method {
             display: inline-block;
             padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+            border-radius: 4px;
             font-weight: bold;
+            font-size: 12px;
             margin-right: 10px;
-            text-transform: uppercase;
         }
 
         .method.get { background: #28a745; color: white; }
@@ -152,750 +135,1503 @@
         .method.put { background: #ffc107; color: black; }
         .method.delete { background: #dc3545; color: white; }
 
-        .url {
+        .endpoint-url {
             font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: #495057;
-        }
-
-        .endpoint-desc {
-            margin-top: 8px;
-            color: #666;
-        }
-
-        .param-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-
-        .param-table th,
-        .param-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .param-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .param-table tr:hover {
-            background: #f8f9fa;
+            font-size: 16px;
+            color: #333;
         }
 
         .code-block {
             background: #2d3748;
             color: #e2e8f0;
-            padding: 15px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 8px;
             margin: 15px 0;
             overflow-x: auto;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
-            position: relative;
+            font-size: 14px;
         }
 
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .copy-btn:hover {
-            background: #5a67d8;
-        }
-
-        .info-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .info-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .info-list strong {
-            color: #495057;
-            margin-right: 10px;
-        }
-
-        .info-list code {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .error-codes {
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
             margin: 15px 0;
         }
 
-        .error-code {
-            background: #fff5f5;
-            border: 1px solid #fed7d7;
+        .params-table th,
+        .params-table td {
+            border: 1px solid #ddd;
             padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            text-align: left;
         }
 
-        .error-code strong {
-            color: #c53030;
+        .params-table th {
+            background: #f8f9fa;
+            font-weight: 600;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .badge.required { background: #dc3545; color: white; }
+        .badge.optional { background: #6c757d; color: white; }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response-example {
+            margin-top: 20px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .tab-button {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- 侧边栏 -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2><i class="fas fa-book"></i> API 文档</h2>
         </div>
         
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="🔍 搜索接口..." id="searchInput">
+            <input type="text" id="searchInput" placeholder="搜索接口...">
         </div>
         
-        <ul class="sidebar-nav">
-            <li><a href="#basic-info" class="nav-link"><i class="fas fa-info-circle"></i> 基础信息</a></li>
-            <li><a href="#sms-module" class="nav-link"><i class="fas fa-sms"></i> 短信验证</a></li>
-            <li><a href="#auth-module" class="nav-link"><i class="fas fa-user-circle"></i> 账号认证</a></li>
-            <li><a href="#user-module" class="nav-link"><i class="fas fa-users"></i> 用户模块</a></li>
-            <li><a href="#share-module" class="nav-link"><i class="fas fa-share-alt"></i> 推广链接</a></li>
-            <li><a href="#device-module" class="nav-link"><i class="fas fa-mobile-alt"></i> 设备管理</a></li>
-            <li><a href="#nav-module" class="nav-link"><i class="fas fa-link"></i> 福利导航</a></li>
-            <li><a href="#common-links-module" class="nav-link"><i class="fas fa-compass"></i> 常用导航</a></li>
-            <li><a href="#error-codes" class="nav-link"><i class="fas fa-exclamation-triangle"></i> 错误码</a></li>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#overview" class="nav-link active">
+                    <i class="fas fa-home"></i> 概览
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#auth" class="nav-link">
+                    <i class="fas fa-user-shield"></i> 用户认证
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#sms" class="nav-link">
+                    <i class="fas fa-sms"></i> 短信验证
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#user" class="nav-link">
+                    <i class="fas fa-user"></i> 用户信息
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#promotion" class="nav-link">
+                    <i class="fas fa-share-alt"></i> 推广链接
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#nav-links" class="nav-link">
+                    <i class="fas fa-link"></i> 福利导航
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#common-links" class="nav-link">
+                    <i class="fas fa-bookmark"></i> 常用导航
+                </a>
+            </li>
         </ul>
     </div>
 
-    <!-- 主内容区 -->
     <div class="main-content">
-        <!-- 页面标题 -->
-        <div class="header">
-            <h1>V2Board API 接口文档</h1>
-            <p>完整的API接口说明文档，包含短信验证、用户认证、设备管理等功能模块</p>
+        <!-- 概览 -->
+        <div id="overview" class="content-section active">
+            <h1 class="section-title">V2Board API 接口文档</h1>
+            
+            <div class="alert info">
+                <strong>基础信息：</strong><br>
+                • 基础URL: <code>http://192.197.113.52:2053/api/v1</code><br>
+                • 所有接口均返回JSON格式数据<br>
+                • 前端公开接口无需认证<br>
+                • 响应格式统一为: <code>{"code": 200, "message": "success", "data": {...}}</code>
+            </div>
+
+            <h3>通用响应格式</h3>
+            <div class="code-block">
+{
+  "code": 200,
+  "message": "success", 
+  "data": {...}
+}
+            </div>
+
+            <h3>错误响应格式</h3>
+            <div class="code-block">
+{
+  "code": 500,
+  "message": "Internal Server Error",
+  "data": []
+}
+            </div>
         </div>
 
-        <!-- 基础信息 -->
-        <div class="section" id="basic-info">
-            <div class="section-header">
-                <i class="fas fa-info-circle"></i> 基础信息
+        <!-- 用户认证 -->
+        <div id="auth" class="content-section">
+            <h1 class="section-title">用户认证 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 用户认证接口支持邮箱、用户名、手机号三种方式进行注册和登录。
             </div>
-            <div class="section-content">
-                <ul class="info-list">
-                    <li><strong>Base URL:</strong> <code>http://192.197.113.52:2053/api/v1/</code></li>
-                    <li><strong>认证方式:</strong> Authorization (需要时)</li>
-                    <li><strong>响应格式:</strong> JSON</li>
-                    <li><strong>字符编码:</strong> UTF-8</li>
-                    <li><strong>请求头:</strong> <code>Content-Type: application/json</code></li>
-                </ul>
-            </div>
-        </div>
 
-        <!-- 短信验证模块 -->
-        <div class="section" id="sms-module">
-            <div class="section-header">
-                <i class="fas fa-sms"></i> 短信验证模块
-            </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/sms/send</span>
-                    </div>
-                    <div class="endpoint-desc">发送短信验证码</div>
+            <!-- 用户注册 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/register</span>
                 </div>
-
+                <p><strong>描述：</strong> 用户注册接口，支持邮箱、用户名、手机号三种注册方式</p>
+                
                 <h4>请求参数</h4>
-                <table class="param-table">
+                <table class="params-table">
                     <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
-                        <tr><td>type</td><td>string</td><td>是</td><td>验证码类型: register|login|reset_password</td></tr>
+                        <tr>
+                            <td>email</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>邮箱地址（邮箱注册时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>username</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>用户名（用户名注册时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>手机号（手机注册时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>密码</td>
+                        </tr>
+                        <tr>
+                            <td>invite_code</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>邀请码</td>
+                        </tr>
+                        <tr>
+                            <td>email_code</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>邮箱验证码（开启邮箱验证时必填）</td>
+                        </tr>
                     </tbody>
                 </table>
 
+                <h4>请求示例</h4>
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('register-email')">邮箱注册</div>
+                    <div class="tab-button" onclick="showTab('register-username')">用户名注册</div>
+                    <div class="tab-button" onclick="showTab('register-phone')">手机注册</div>
+                </div>
+                
+                <div id="register-email" class="tab-content active">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "invite_code": "ABC123"
+}
+                    </div>
+                </div>
+                
+                <div id="register-username" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/register
+Content-Type: application/json
+
+{
+  "username": "myusername",
+  "password": "password123",
+  "invite_code": "ABC123"
+}
+                    </div>
+                </div>
+                
+                <div id="register-phone" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/register
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "password": "password123",
+  "invite_code": "ABC123"
+}
+                    </div>
+                </div>
+
                 <h4>响应示例</h4>
                 <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
 {
-  "success": true,
-  "message": "验证码发送成功",
-  "data": null
+  "data": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+    "auth_data": "encrypted_auth_data",
+    "is_admin": false
+  }
+}
+                </div>
+            </div>
+
+            <!-- 用户登录 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/login</span>
+                </div>
+                <p><strong>描述：</strong> 用户登录接口，支持邮箱、用户名、手机号三种登录方式</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>email</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>邮箱地址（邮箱登录时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>username</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>用户名（用户名登录时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>手机号（手机登录时必填）</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>密码</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('login-email')">邮箱登录</div>
+                    <div class="tab-button" onclick="showTab('login-username')">用户名登录</div>
+                    <div class="tab-button" onclick="showTab('login-phone')">手机登录</div>
+                </div>
+                
+                <div id="login-email" class="tab-content active">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+                    </div>
+                </div>
+                
+                <div id="login-username" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/login
+Content-Type: application/json
+
+{
+  "username": "myusername",
+  "password": "password123"
+}
+                    </div>
+                </div>
+                
+                <div id="login-phone" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/login
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "password": "password123"
+}
+                    </div>
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+    "auth_data": "encrypted_auth_data",
+    "is_admin": false
+  }
+}
+                </div>
+            </div>
+
+            <!-- 忘记密码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/forget</span>
+                </div>
+                <p><strong>描述：</strong> 重置密码接口</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>email</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>邮箱地址</td>
+                        </tr>
+                        <tr>
+                            <td>email_code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>邮箱验证码</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>新密码</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/forget
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "email_code": "123456",
+  "password": "newpassword123"
 }
                 </div>
 
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/sms/verify</span>
-                    </div>
-                    <div class="endpoint-desc">验证短信验证码</div>
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": true
+}
                 </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
-                        <tr><td>code</td><td>string</td><td>是</td><td>验证码</td></tr>
-                        <tr><td>type</td><td>string</td><td>是</td><td>验证码类型</td></tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
-        <!-- 账号认证模块 -->
-        <div class="section" id="auth-module">
-            <div class="section-header">
-                <i class="fas fa-user-circle"></i> 账号认证模块
+        <!-- 短信验证 -->
+        <div id="sms" class="content-section">
+            <h1 class="section-title">短信验证 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 短信验证接口用于发送和验证手机短信验证码。
             </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/passport/auth/register</span>
-                    </div>
-                    <div class="endpoint-desc">用户注册 - 支持邮箱、用户名、手机号三种方式</div>
-                </div>
 
+            <!-- 发送短信验证码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/sms/send</span>
+                </div>
+                <p><strong>描述：</strong> 发送短信验证码到指定手机号</p>
+                
                 <h4>请求参数</h4>
-                <table class="param-table">
+                <table class="params-table">
                     <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>email</td><td>string</td><td>否</td><td>邮箱地址（三选一）</td></tr>
-                        <tr><td>username</td><td>string</td><td>否</td><td>用户名（三选一）</td></tr>
-                        <tr><td>phone</td><td>string</td><td>否</td><td>手机号（三选一）</td></tr>
-                        <tr><td>password</td><td>string</td><td>是</td><td>密码</td></tr>
-                        <tr><td>password_confirmation</td><td>string</td><td>是</td><td>确认密码</td></tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>手机号码</td>
+                        </tr>
                     </tbody>
                 </table>
 
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/passport/auth/login</span>
-                    </div>
-                    <div class="endpoint-desc">用户登录 - 支持邮箱、用户名、手机号三种方式</div>
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/sms/send
+Content-Type: application/json
+
+{
+  "phone": "13800138000"
+}
                 </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>email</td><td>string</td><td>否</td><td>邮箱/用户名/手机号（三选一）</td></tr>
-                        <tr><td>password</td><td>string</td><td>是</td><td>密码</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- 用户模块 -->
-        <div class="section" id="user-module">
-            <div class="section-header">
-                <i class="fas fa-users"></i> 用户模块
-            </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/user/getSubscribe</span>
-                    </div>
-                    <div class="endpoint-desc">获取用户订阅信息（需要认证）</div>
-                </div>
-
-                <h4>请求头</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Authorization</td><td>string</td><td>是</td><td></td></tr>
-                    </tbody>
-                </table>
 
                 <h4>响应示例</h4>
                 <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
 {
-  "success": true,
-  "message": "获取成功",
+  "code": 1,
+  "msg": "短信发送成功",
   "data": {
-    "plan_id": 1,
-    "token": "550e8400-e29b-41d4-a716-446655440000",
-    "expired_at": "2024-12-31 23:59:59",
-    "u": 1024000,
-    "d": 512000,
-    "transfer_enable": 10737418240,
-    "email": "user@example.com",
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "plan": {
-      "id": 1,
-      "name": "基础套餐",
-      "content": "10GB流量/月",
-      "price": 10.00,
-      "show": 1
-    },
-    "subscribe_url": "https://your-domain.com/api/v1/client/subscribe?token=550e8400-e29b-41d4-a716-446655440000",
-    "reset_day": 1
+    "result": true,
+    "msgid": "1234567890"
   }
 }
                 </div>
 
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/user/info</span>
-                    </div>
-                    <div class="endpoint-desc">获取用户基本信息（需要认证）</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/user/getStat</span>
-                    </div>
-                    <div class="endpoint-desc">获取用户统计信息（需要认证）</div>
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "code": 0,
+  "msg": "缺少必要参数 phone"
+}
                 </div>
             </div>
-        </div>
 
-        <!-- 推广链接模块 -->
-        <div class="section" id="share-module">
-            <div class="section-header">
-                <i class="fas fa-share-alt"></i> 推广链接模块
-            </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/share/generate</span>
-                    </div>
-                    <div class="endpoint-desc">生成推广链接（需要认证）</div>
+            <!-- 验证短信验证码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/sms/verify</span>
                 </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/share/bind</span>
-                    </div>
-                    <div class="endpoint-desc">绑定推广关系</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/share/stats/{promotion_code}</span>
-                    </div>
-                    <div class="endpoint-desc">获取推广统计信息</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/share/exchange-vip</span>
-                    </div>
-                    <div class="endpoint-desc">兑换VIP会员</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 设备管理模块 -->
-        <div class="section" id="device-module">
-            <div class="section-header">
-                <i class="fas fa-mobile-alt"></i> 设备管理模块
-            </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/device/permissions/{device_id}</span>
-                    </div>
-                    <div class="endpoint-desc">获取设备权限信息</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/device/session/start</span>
-                    </div>
-                    <div class="endpoint-desc">开始设备会话</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method put">PUT</span>
-                        <span class="url">/device/session/update</span>
-                    </div>
-                    <div class="endpoint-desc">更新设备会话</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/device/session/end</span>
-                    </div>
-                    <div class="endpoint-desc">结束设备会话</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 福利导航模块 -->
-        <div class="section" id="nav-module">
-            <div class="section-header">
-                <i class="fas fa-link"></i> 福利导航模块
-            </div>
-            <div class="section-content">
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/api/nav-links</span>
-                    </div>
-                    <div class="endpoint-desc">获取导航链接列表</div>
-                </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>category</td><td>string</td><td>否</td><td>分类筛选</td></tr>
-                        <tr><td>status</td><td>string</td><td>否</td><td>状态: active/inactive</td></tr>
-                        <tr><td>page</td><td>number</td><td>否</td><td>页码，默认1</td></tr>
-                        <tr><td>per_page</td><td>number</td><td>否</td><td>每页数量，默认15</td></tr>
-                    </tbody>
-                </table>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/api/nav-links/{id}</span>
-                    </div>
-                    <div class="endpoint-desc">获取单个导航链接详情</div>
-                </div>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/api/nav-links/grouped</span>
-                    </div>
-                    <div class="endpoint-desc">获取分组导航链接</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 常用导航模块 -->
-        <div class="section" id="common-links-module">
-            <div class="section-header">
-                <i class="fas fa-compass"></i> 常用导航模块
-            </div>
-            <div class="section-content">
-                <p>常用导航管理功能，支持完整的 CRUD 操作，包括新增、编辑、删除、排序等功能。</p>
+                <p><strong>描述：</strong> 验证手机短信验证码</p>
                 
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/api/v1/{secure_path}/common_links/fetch</span>
-                    </div>
-                    <div class="endpoint-desc">获取常用导航列表</div>
-                </div>
-
                 <h4>请求参数</h4>
-                <table class="param-table">
+                <table class="params-table">
                     <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>current</td><td>number</td><td>否</td><td>当前页码，默认1</td></tr>
-                        <tr><td>pageSize</td><td>number</td><td>否</td><td>每页数量，默认10</td></tr>
-                        <tr><td>sort</td><td>string</td><td>否</td><td>排序字段，默认weigh</td></tr>
-                        <tr><td>sort_type</td><td>string</td><td>否</td><td>排序方式：asc/desc，默认desc</td></tr>
-                        <tr><td>filter</td><td>array</td><td>否</td><td>筛选条件数组</td></tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>手机号码</td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>6位验证码</td>
+                        </tr>
                     </tbody>
                 </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/sms/verify
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "code": "123456"
+}
+                </div>
 
                 <h4>响应示例</h4>
                 <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
-                    <pre><code>{
+{
+  "code": 1,
+  "msg": "验证码验证成功"
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "code": 0,
+  "msg": "验证码错误"
+}
+                </div>
+
+                <div class="alert info">
+                    <strong>注意：</strong><br>
+                    • 验证码有效期为1分钟<br>
+                    • 验证成功后验证码会被自动删除<br>
+                    • 验证码为6位数字
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户信息 -->
+        <div id="user" class="content-section">
+            <h1 class="section-title">用户信息 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 用户信息相关接口，需要用户登录后携带认证信息访问。
+            </div>
+
+            <!-- 检查登录状态 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/user/checkLogin</span>
+                </div>
+                <p><strong>描述：</strong> 检查用户登录状态</p>
+                
+                <h4>请求头</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authorization</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>Bearer {token}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/user/checkLogin
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": {
+    "is_login": true,
+    "is_admin": false
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取用户信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/user/info</span>
+                </div>
+                <p><strong>描述：</strong> 获取当前登录用户的详细信息</p>
+                
+                <h4>请求头</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authorization</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>Bearer {token}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/user/info
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": {
+    "email": "user@example.com",
+    "transfer_enable": 107374182400,
+    "last_login_at": 1640995200,
+    "created_at": "2021-12-31T16:00:00.000000Z",
+    "banned": 0,
+    "remind_expire": 1,
+    "remind_traffic": 1,
+    "expired_at": 1672531200,
+    "balance": 0,
+    "commission_balance": 0,
+    "plan_id": 1,
+    "discount": null,
+    "commission_rate": 0.1,
+    "telegram_id": null,
+    "uuid": "12345678-1234-1234-1234-123456789012",
+    "avatar_url": "https://cdn.v2ex.com/gravatar/..."
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取订阅信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/user/getSubscribe</span>
+                </div>
+                <p><strong>描述：</strong> 获取用户订阅信息和订阅链接</p>
+                
+                <h4>请求头</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authorization</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>Bearer {token}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/user/getSubscribe
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": {
+    "plan_id": 1,
+    "token": "abcd1234-5678-90ef-ghij-klmnopqrstuv",
+    "expired_at": 1672531200,
+    "u": 1073741824,
+    "d": 2147483648,
+    "transfer_enable": 107374182400,
+    "email": "user@example.com",
+    "uuid": "12345678-1234-1234-1234-123456789012",
+    "plan": {
+      "id": 1,
+      "name": "基础套餐",
+      "transfer_enable": 100,
+      "price": [
+        {"1": 10, "3": 28, "12": 100}
+      ]
+    },
+    "subscribe_url": "https://example.com/api/v1/client/subscribe?token=...",
+    "reset_day": 1
+  }
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- 推广链接 -->
+        <div id="promotion" class="content-section">
+            <h1 class="section-title">推广链接 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 推广链接系统允许用户生成推广码，邀请新用户获得奖励。支持多级奖励机制和金币兑换功能。
+            </div>
+
+            <!-- 生成推广链接 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/share/generate</span>
+                </div>
+                <p><strong>描述：</strong> 为指定设备生成推广链接和推广码</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备唯一标识，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/share/generate
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "device_id": "device_12345678",
+    "promotion_code": "PROMO123456",
+    "share_url": "http://192.197.113.52:2053/device/promotion-bind.html?code=PROMO123456",
+    "current_referrals": 0,
+    "reward_level": {
+      "daily": 60,
+      "single": 30
+    },
+    "coins": 0,
+    "is_vip": false
+  }
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>promotion_code</td>
+                            <td>string</td>
+                            <td>推广码</td>
+                        </tr>
+                        <tr>
+                            <td>share_url</td>
+                            <td>string</td>
+                            <td>推广链接</td>
+                        </tr>
+                        <tr>
+                            <td>current_referrals</td>
+                            <td>integer</td>
+                            <td>当前推荐人数</td>
+                        </tr>
+                        <tr>
+                            <td>reward_level</td>
+                            <td>object</td>
+                            <td>奖励等级（daily: 每日时长分钟，single: 单次时长分钟）</td>
+                        </tr>
+                        <tr>
+                            <td>coins</td>
+                            <td>integer</td>
+                            <td>金币数量</td>
+                        </tr>
+                        <tr>
+                            <td>is_vip</td>
+                            <td>boolean</td>
+                            <td>是否为VIP用户</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 绑定推广码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/share/bind</span>
+                </div>
+                <p><strong>描述：</strong> 新用户绑定推广码，获得基础体验时长</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>promotion_code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>推广码，最大32字符</td>
+                        </tr>
+                        <tr>
+                            <td>user_device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>用户设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/share/bind
+Content-Type: application/json
+
+{
+  "promotion_code": "PROMO123456",
+  "user_device_id": "user_device_87654321"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "绑定成功，您获得了基础体验时长",
+  "data": {
+    "daily_duration": 60,
+    "single_duration": 30,
+    "is_unlimited": false,
+    "promoter_info": {
+      "total_referrals": 1,
+      "reward_level": {
+        "daily": 120,
+        "single": 30
+      },
+      "coins": 0
+    }
+  }
+}
+                </div>
+
+                <div class="alert info">
+                    <strong>绑定规则：</strong><br>
+                    • 每个设备只能绑定一次推广码<br>
+                    • 不能绑定自己的推广码<br>
+                    • 新用户绑定后获得60分钟/天的基础体验时长<br>
+                    • 推广者根据推荐人数获得相应奖励等级
+                </div>
+            </div>
+
+            <!-- 查询推广统计 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/share/stats/{promotion_code}</span>
+                </div>
+                <p><strong>描述：</strong> 查询指定推广码的统计信息</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>promotion_code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>推广码</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/share/stats/PROMO123456
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "promotion_code": "PROMO123456",
+    "device_id": "device_12345678",
+    "total_referrals": 5,
+    "coins": 0,
+    "is_vip": false,
+    "reward_level": {
+      "daily": -1,
+      "single": -1
+    },
+    "can_earn_coins": false,
+    "stats": {
+      "total_uses": 150,
+      "active_users": 5,
+      "total_duration": 7200
+    }
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取推广者信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/share/promoter/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取推广者的详细信息和奖励状态</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/share/promoter/device_12345678
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "device_id": "device_12345678",
+    "promotion_code": "PROMO123456",
+    "total_referrals": 5,
+    "coins": 0,
+    "is_vip": false,
+    "reward_level": {
+      "daily": -1,
+      "single": -1
+    },
+    "can_earn_coins": false,
+    "next_milestone": {
+      "target": 23,
+      "reward": "无限制使用 + 金币奖励"
+    },
+    "share_url": "http://192.197.113.52:2053/device/promotion-bind.html?code=PROMO123456"
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取奖励状态 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/share/reward-status/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取推广者的当前奖励状态和使用权限</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/share/reward-status/device_12345678
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "device_id": "device_12345678",
+    "promotion_code": "PROMO123456",
+    "total_referrals": 5,
+    "coins": 0,
+    "is_vip": false,
+    "current_reward": {
+      "daily": -1,
+      "single": -1
+    },
+    "usage_permission": {
+      "daily_duration": -1,
+      "single_duration": -1,
+      "is_unlimited": true
+    },
+    "next_milestone": {
+      "target": 23,
+      "reward": "无限制使用 + 金币奖励"
+    }
+  }
+}
+                </div>
+            </div>
+
+            <!-- 兑换VIP -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/share/exchange-vip</span>
+                </div>
+                <p><strong>描述：</strong> 使用金币兑换黄金会员</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/share/exchange-vip
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "兑换成功，您已成为黄金会员",
+  "data": {
+    "is_vip": true,
+    "remaining_coins": 5
+  }
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>奖励等级说明：</strong><br>
+                    • 推荐1人：每日2小时使用时长<br>
+                    • 推荐2人：每日3小时使用时长<br>
+                    • 推荐3人：单次无限制使用<br>
+                    • 推荐23人：无限制使用 + 开始获得金币奖励<br>
+                    • 金币可用于兑换黄金会员等特权
+                </div>
+            </div>
+        </div>
+
+        <!-- 福利导航 -->
+        <div id="nav-links" class="content-section">
+            <h1 class="section-title">福利导航 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 福利导航接口提供前端展示用的导航链接数据，无需认证即可访问。
+            </div>
+
+            <!-- 获取福利导航列表 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/nav-links</span>
+                </div>
+                <p><strong>描述：</strong> 获取所有状态为正常的福利导航列表</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/nav-links
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
   "data": [
     {
       "id": 1,
-      "title": "Google",
-      "url": "https://www.google.com",
-      "logo": "https://www.google.com/favicon.ico",
-      "weigh": 100,
-      "status": "normal",
-      "createtime": 1726387200,
-      "updatetime": 1726387200
+      "title": "示例网站",
+      "url": "https://example.com",
+      "logo": "http://192.197.113.52:2053/uploads/nav_links/logo.png",
+      "sort": 1
     }
-  ],
-  "total": 1
-}</code></pre>
+  ]
+}
                 </div>
 
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/api/v1/{secure_path}/common_links/save</span>
-                    </div>
-                    <div class="endpoint-desc">保存常用导航（新增/编辑）</div>
-                </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
+                <h4>响应字段说明</h4>
+                <table class="params-table">
                     <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>id</td><td>number</td><td>否</td><td>编辑时需要传入ID</td></tr>
-                        <tr><td>title</td><td>string</td><td>是</td><td>导航标题，最大100字符</td></tr>
-                        <tr><td>url</td><td>string</td><td>是</td><td>链接地址，最大255字符</td></tr>
-                        <tr><td>logo</td><td>string</td><td>否</td><td>图标URL，最大255字符</td></tr>
-                        <tr><td>weigh</td><td>number</td><td>否</td><td>权重，数值越大排序越靠前</td></tr>
-                        <tr><td>status</td><td>string</td><td>是</td><td>状态：normal/hidden</td></tr>
+                        <tr>
+                            <td>id</td>
+                            <td>integer</td>
+                            <td>导航ID</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>导航标题</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>string</td>
+                            <td>导航链接</td>
+                        </tr>
+                        <tr>
+                            <td>logo</td>
+                            <td>string</td>
+                            <td>导航图标URL</td>
+                        </tr>
+                        <tr>
+                            <td>sort</td>
+                            <td>integer</td>
+                            <td>排序值（升序）</td>
+                        </tr>
                     </tbody>
                 </table>
+            </div>
 
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/api/v1/{secure_path}/common_links/drop</span>
-                    </div>
-                    <div class="endpoint-desc">删除常用导航</div>
+            <!-- 获取分组福利导航 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/nav-links/grouped</span>
                 </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>id</td><td>number</td><td>是</td><td>要删除的导航ID</td></tr>
-                    </tbody>
-                </table>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method get">GET</span>
-                        <span class="url">/api/v1/{secure_path}/common_links/show</span>
-                    </div>
-                    <div class="endpoint-desc">显示/隐藏常用导航</div>
+                <p><strong>描述：</strong> 按排序值分组获取福利导航</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/nav-links/grouped
                 </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>id</td><td>number</td><td>是</td><td>导航ID</td></tr>
-                        <tr><td>status</td><td>string</td><td>是</td><td>状态：normal/hidden</td></tr>
-                    </tbody>
-                </table>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/api/v1/{secure_path}/common_links/sort</span>
-                    </div>
-                    <div class="endpoint-desc">批量更新排序</div>
-                </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>sorts</td><td>array</td><td>是</td><td>排序数组，格式：[{"id": 1, "weigh": 100}]</td></tr>
-                    </tbody>
-                </table>
-
-                <div class="endpoint">
-                    <div>
-                        <span class="method post">POST</span>
-                        <span class="url">/api/v1/{secure_path}/upload/image</span>
-                    </div>
-                    <div class="endpoint-desc">上传图片文件</div>
-                </div>
-
-                <h4>请求参数</h4>
-                <table class="param-table">
-                    <thead>
-                        <tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>file</td><td>file</td><td>是</td><td>图片文件，支持JPG/PNG/GIF/SVG，最大2MB</td></tr>
-                    </tbody>
-                </table>
 
                 <h4>响应示例</h4>
                 <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
-                    <pre><code>{
-  "message": "图片上传成功",
-  "url": "http://192.197.113.52:2053/uploads/nav_links/1726387200_abc123.jpg",
-  "path": "uploads/nav_links/1726387200_abc123.jpg",
-  "filename": "1726387200_abc123.jpg",
-  "size": 102400
-}</code></pre>
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "1": [
+      {
+        "id": 1,
+        "title": "示例网站1",
+        "url": "https://example1.com",
+        "logo": "http://192.197.113.52:2053/uploads/nav_links/logo1.png",
+        "sort": 1
+      }
+    ],
+    "2": [
+      {
+        "id": 2,
+        "title": "示例网站2", 
+        "url": "https://example2.com",
+        "logo": "http://192.197.113.52:2053/uploads/nav_links/logo2.png",
+        "sort": 2
+      }
+    ]
+  }
+}
                 </div>
-
-                <h4>重要说明</h4>
-                <ul class="info-list">
-                    <li><strong>权重排序：</strong>weigh 字段数值越大，排序越靠前（降序排列）</li>
-                    <li><strong>状态管理：</strong>normal=显示，hidden=隐藏</li>
-                    <li><strong>URL自动处理：</strong>如果URL没有协议前缀，系统会自动添加https://</li>
-                    <li><strong>图片存储：</strong>上传的图片保存在public/uploads/nav_links/目录</li>
-                    <li><strong>认证要求：</strong>所有接口都需要JWT认证，在请求头中包含Authorization</li>
-                </ul>
             </div>
         </div>
 
-        <!-- 错误码 -->
-        <div class="section" id="error-codes">
-            <div class="section-header">
-                <i class="fas fa-exclamation-triangle"></i> 常见错误码
+        <!-- 常用导航 -->
+        <div id="common-links" class="content-section">
+            <h1 class="section-title">常用导航 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 常用导航接口提供前端展示用的常用链接数据，无需认证即可访问。按权重值降序排列。
             </div>
-            <div class="section-content">
-                <div class="error-codes">
-                    <div class="error-code">
-                        <strong>400 Bad Request</strong><br>
-                        请求参数错误或格式不正确
-                    </div>
-                    <div class="error-code">
-                        <strong>401 Unauthorized</strong><br>
-                        未授权访问，需要有效的认证令牌
-                    </div>
-                    <div class="error-code">
-                        <strong>403 Forbidden</strong><br>
-                        权限不足，无法访问该资源
-                    </div>
-                    <div class="error-code">
-                        <strong>404 Not Found</strong><br>
-                        请求的资源不存在
-                    </div>
-                    <div class="error-code">
-                        <strong>422 Unprocessable Entity</strong><br>
-                        请求格式正确但包含语义错误
-                    </div>
-                    <div class="error-code">
-                        <strong>500 Internal Server Error</strong><br>
-                        服务器内部错误
-                    </div>
-                    <div class="error-code">
-                        <strong>SMS_SEND_FAILED</strong><br>
-                        短信发送失败
-                    </div>
-                    <div class="error-code">
-                        <strong>SMS_CODE_INVALID</strong><br>
-                        验证码无效或已过期
-                    </div>
+
+            <!-- 获取常用导航列表 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/common-links</span>
+                </div>
+                <p><strong>描述：</strong> 获取所有状态为正常的常用导航列表</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/common-links
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "常用网站",
+      "url": "https://common.com",
+      "logo": "http://192.197.113.52:2053/uploads/nav_links/common_logo.png",
+      "weigh": 100
+    }
+  ]
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>integer</td>
+                            <td>导航ID</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>导航标题</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>string</td>
+                            <td>导航链接</td>
+                        </tr>
+                        <tr>
+                            <td>logo</td>
+                            <td>string</td>
+                            <td>导航图标URL</td>
+                        </tr>
+                        <tr>
+                            <td>weigh</td>
+                            <td>integer</td>
+                            <td>权重值（降序排列）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 获取分组常用导航 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/common-links/grouped</span>
+                </div>
+                <p><strong>描述：</strong> 按权重值分组获取常用导航</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/common-links/grouped
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "100": [
+      {
+        "id": 1,
+        "title": "高权重网站",
+        "url": "https://high-priority.com",
+        "logo": "http://192.197.113.52:2053/uploads/nav_links/high_logo.png",
+        "weigh": 100
+      }
+    ],
+    "50": [
+      {
+        "id": 2,
+        "title": "中权重网站",
+        "url": "https://medium-priority.com", 
+        "logo": "http://192.197.113.52:2053/uploads/nav_links/medium_logo.png",
+        "weigh": 50
+      }
+    ]
+  }
+}
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 复制代码功能
-        function copyCode(button) {
-            const codeBlock = button.nextElementSibling || button.parentNode.querySelector('code') || button.parentNode;
-            const text = codeBlock.textContent.replace('复制', '').trim();
-            
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = '已复制!';
-                button.style.background = '#28a745';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '#667eea';
-                }, 2000);
-            }).catch(err => {
-                console.error('复制失败:', err);
-            });
-        }
-
-        // 搜索功能
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const sections = document.querySelectorAll('.section');
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            sections.forEach(section => {
-                const sectionText = section.textContent.toLowerCase();
-                const sectionId = section.id;
-                const correspondingNavLink = document.querySelector(`a[href="#${sectionId}"]`);
-                
-                if (searchTerm === '' || sectionText.includes(searchTerm)) {
-                    section.style.display = 'block';
-                    if (correspondingNavLink) {
-                        correspondingNavLink.style.display = 'block';
-                    }
-                } else {
-                    section.style.display = 'none';
-                    if (correspondingNavLink) {
-                        correspondingNavLink.style.display = 'none';
-                    }
-                }
-            });
-        });
-
-        // 平滑滚动到锚点
+        // 导航切换
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
                 
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                // 移除所有active类
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                
+                // 添加active类
+                this.classList.add('active');
+                const targetId = this.getAttribute('href').substring(1);
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
                 }
             });
         });
+
+        // 代码块复制功能
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('click', function() {
+                navigator.clipboard.writeText(this.textContent.trim()).then(() => {
+                    // 可以添加复制成功的提示
+                });
+            });
+        });
+
+        // Tab切换功能
+        function showTab(tabId) {
+            // 隐藏所有tab内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有tab按钮的active类
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // 显示选中的tab内容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 添加active类到对应的按钮
+            event.target.classList.add('active');
+        }
     </script>
 </body>
 </html>

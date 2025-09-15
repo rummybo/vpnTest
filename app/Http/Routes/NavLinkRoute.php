@@ -13,7 +13,6 @@ class NavLinkRoute
             'prefix' => 'nav-links'
         ], function ($router) {
             $router->get('', 'Api\\NavLinkController@index');
-            $router->get('{id}', 'Api\\NavLinkController@show');
             $router->get('grouped', 'Api\\NavLinkController@grouped');
         });
     }
