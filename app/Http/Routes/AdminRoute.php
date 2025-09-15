@@ -146,6 +146,13 @@ class AdminRoute
             $router->post('/nav_links/drop', 'Admin\\NavLinkController@drop');
             $router->post('/nav_links/show', 'Admin\\NavLinkController@show');
             $router->post('/nav_links/sort', 'Admin\\NavLinkController@sort');
+            // Common Links - 常用导航管理
+            $router->get ('/common_links/fetch', 'Admin\\CommonLinkController@fetch');
+            $router->post('/common_links/save', 'Admin\\CommonLinkController@save');
+            $router->post('/common_links/update', 'Admin\\CommonLinkController@update');
+            $router->post('/common_links/drop', 'Admin\\CommonLinkController@drop');
+            $router->post('/common_links/show', 'Admin\\CommonLinkController@show');
+            $router->post('/common_links/sort', 'Admin\\CommonLinkController@sort');
             // Upload - 文件上传
             $router->post('/upload/image', 'Admin\\UploadController@uploadImage');
             // Menu Configuration - 菜单配置
