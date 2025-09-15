@@ -160,6 +160,9 @@ class ConfigController extends Controller
             ],
             'nav_links' => [
                 'nav_links_enable' => (int)config('v2board.nav_links_enable', 1)
+            ],
+            'common_links' => [
+                'common_links_enable' => (int)config('v2board.common_links_enable', 1)
             ]
         ];
         if ($key && isset($data[$key])) {
@@ -216,6 +219,13 @@ class ConfigController extends Controller
                     'icon' => 'link',
                     'path' => '/nav_links',
                     'api_prefix' => '/nav_links'
+                ],
+                'common_links' => [
+                    'enabled' => (int)config('v2board.common_links_enable', 1),
+                    'title' => '常用导航',
+                    'icon' => 'compass',
+                    'path' => '/common_links',
+                    'api_prefix' => '/common_links'
                 ]
             ]
         ]);

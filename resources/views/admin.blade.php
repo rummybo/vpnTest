@@ -22,7 +22,8 @@
             background_url: '{{$background_url}}',
             logo: '{{$logo}}',
             secure_path: '{{$secure_path}}',
-            nav_links_enable: {{config('v2board.nav_links_enable', 1)}}
+            nav_links_enable: {{config('v2board.nav_links_enable', 1)}},
+            common_links_enable: {{config('v2board.common_links_enable', 1)}}
         }
     </script>
 </head>
@@ -34,6 +35,8 @@
 <script src="/assets/admin/umi.js?v={{$version}}"></script>
 <!-- 福利导航扩展 -->
 <script src="/assets/admin/nav-links-extension.js?v={{$version}}"></script>
+<!-- 常用导航扩展 -->
+<script src="/assets/admin/common-links-extension.js?v={{$version}}"></script>
 </body>
 
 </html>

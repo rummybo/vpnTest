@@ -50,3 +50,13 @@ Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_pa
         'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key'))))
     ]);
 });
+
+// 福利导航管理路由
+Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+    Route::resource('nav_links', 'App\Http\Controllers\Admin\NavLinkController');
+});
+
+// 常用导航管理路由
+Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+    Route::resource('common_links', 'App\Http\Controllers\Admin\CommonLinkController');
+});

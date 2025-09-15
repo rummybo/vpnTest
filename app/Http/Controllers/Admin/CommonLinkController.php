@@ -9,6 +9,125 @@ use App\Http\Controllers\Controller;
 class CommonLinkController extends Controller
 {
     /**
+     * 显示常用导航列表 - 传统后台视图
+     */
+    public function index(Request $request)
+    {
+        $query = CommonLink::query();
+        
+        // 搜索条件
+        if ($request->has('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
+        }
+        
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        $commonLinks = $query->orderBy('weigh', 'desc')
+                           ->orderBy('id', 'desc')
+                           ->paginate(15);
+        
+        return view('admin.common_links.index', compact('commonLinks'));
+    }
+
+    /**
+     * 显示创建表单 - 传统后台视图
+     */
+    public function create()
+    {
+        return view('admin.common_links.create');
+    }
+
+    /**
+     * 保存新常用导航 - 传统后台视图
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'url' => 'required|string|max:255',
+            'logo' => 'nullable|string|max:255',
+            'weigh' => 'nullable|integer',
+            'status' => 'required|in:normal,hidden'
+        ]);
+
+        // 处理URL格式
+        $url = $validated['url'];
+        if (!preg_match('/^https?:\/\//', $url)) {
+            $url = 'https://' . $url;
+        }
+
+        $data = [
+            'title' => $validated['title'],
+            'url' => $url,
+            'logo' => $validated['logo'] ?? '',
+            'weigh' => $validated['weigh'] ?? 0,
+            'status' => $validated['status'],
+            'createtime' => time(),
+            'updatetime' => time()
+        ];
+
+        CommonLink::create($data);
+
+        return redirect()->route('admin.common_links.index')
+                        ->with('success', '常用导航创建成功');
+    }
+
+    /**
+     * 显示编辑表单 - 传统后台视图
+     */
+    public function edit(CommonLink $commonLink)
+    {
+        return view('admin.common_links.edit', compact('commonLink'));
+    }
+
+    /**
+     * 更新常用导航 - 传统后台视图
+     */
+    public function update(Request $request, CommonLink $commonLink)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'url' => 'required|string|max:255',
+            'logo' => 'nullable|string|max:255',
+            'weigh' => 'nullable|integer',
+            'status' => 'required|in:normal,hidden'
+        ]);
+
+        // 处理URL格式
+        $url = $validated['url'];
+        if (!preg_match('/^https?:\/\//', $url)) {
+            $url = 'https://' . $url;
+        }
+
+        $data = [
+            'title' => $validated['title'],
+            'url' => $url,
+            'logo' => $validated['logo'] ?? '',
+            'weigh' => $validated['weigh'] ?? 0,
+            'status' => $validated['status'],
+            'updatetime' => time()
+        ];
+
+        $commonLink->update($data);
+
+        return redirect()->route('admin.common_links.index')
+                        ->with('success', '常用导航更新成功');
+    }
+
+    /**
+     * 删除常用导航 - 传统后台视图
+     */
+    public function destroy(Request $request, CommonLink $commonLink)
+    {
+        $commonLink->delete();
+
+        return redirect()->route('admin.common_links.index')
+                        ->with('success', '常用导航删除成功');
+    }
+
+    /**
      * 获取常用导航列表 - API格式 (v2board后台使用)
      */
     public function fetch(Request $request)

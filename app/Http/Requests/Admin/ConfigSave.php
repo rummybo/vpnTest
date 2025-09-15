@@ -92,6 +92,8 @@ class ConfigSave extends FormRequest
         'password_limit_expire' => 'integer',
         // nav_links - 福利导航
         'nav_links_enable' => 'in:0,1',
+        // common_links - 常用导航
+        'common_links_enable' => 'in:0,1',
     ];
     /**
      * Get the validation rules that apply to the request.
