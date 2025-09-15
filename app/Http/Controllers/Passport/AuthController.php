@@ -344,6 +344,62 @@ class AuthController extends Controller
         ]);
     }
 
+    public function resetPasswordByPhone(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|regex:/^1[3-9]\d{9}$/',
+            'code' => 'required|string|size:6',
+            'password' => 'required|string|min:6|max:32'
+        ]);
+
+        $phone = $request->input('phone');
+        $code = $request->input('code');
+        $password = $request->input('password');
+
+        // 验证短信验证码
+        $cacheKey = 'sms_code:reset_password:' . $phone;
+        $cacheCode = Cache::get($cacheKey);
+        
+        if (!$cacheCode) {
+            abort(500, __('验证码已过期'));
+        }
+
+        if ($cacheCode !== $code) {
+            abort(500, __('验证码错误'));
+        }
+
+        // 查找用户
+        $user = User::where('phone', $phone)->first();
+        if (!$user) {
+            abort(500, __('密码重置失败'));
+        }
+
+        // 更新密码
+        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->password_algo = NULL;
+        $user->password_salt = NULL;
+        
+        if (!$user->save()) {
+            abort(500, __('密码重置失败'));
+        }
+
+        // 清除验证码缓存
+        Cache::forget($cacheKey);
+
+        // 记录日志
+        \Log::info('用户通过手机号重置密码', [
+            'user_id' => $user->id,
+            'phone' => $phone,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        return response([
+            'data' => true,
+            'message' => '密码重置成功'
+        ]);
+    }
+
     /**
      * 获取注册类型
      */
