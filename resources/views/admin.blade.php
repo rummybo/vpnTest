@@ -21,7 +21,8 @@
             version: '{{$version}}',
             background_url: '{{$background_url}}',
             logo: '{{$logo}}',
-            secure_path: '{{$secure_path}}'
+            secure_path: '{{$secure_path}}',
+            nav_links_enable: {{config('v2board.nav_links_enable', 1)}}
         }
     </script>
 </head>
