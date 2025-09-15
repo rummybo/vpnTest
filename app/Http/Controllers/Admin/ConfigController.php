@@ -157,6 +157,9 @@ class ConfigController extends Controller
                 'password_limit_enable' => (int)config('v2board.password_limit_enable', 1),
                 'password_limit_count' => config('v2board.password_limit_count', 5),
                 'password_limit_expire' => config('v2board.password_limit_expire', 60)
+            ],
+            'nav_links' => [
+                'nav_links_enable' => (int)config('v2board.nav_links_enable', 1)
             ]
         ];
         if ($key && isset($data[$key])) {
@@ -197,6 +200,24 @@ class ConfigController extends Controller
         Artisan::call('config:cache');
         return response([
             'data' => true
+        ]);
+    }
+
+    /**
+     * 获取菜单配置 - 用于前端动态显示菜单项
+     */
+    public function getMenuConfig(Request $request)
+    {
+        return response([
+            'data' => [
+                'nav_links' => [
+                    'enabled' => (int)config('v2board.nav_links_enable', 1),
+                    'title' => '福利导航',
+                    'icon' => 'link',
+                    'path' => '/nav_links',
+                    'api_prefix' => '/nav_links'
+                ]
+            ]
         ]);
     }
 }

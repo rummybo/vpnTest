@@ -146,6 +146,8 @@ class AdminRoute
             $router->post('/nav_links/drop', 'Admin\\NavLinkController@drop');
             $router->post('/nav_links/show', 'Admin\\NavLinkController@show');
             $router->post('/nav_links/sort', 'Admin\\NavLinkController@sort');
+            // Menu Configuration - 菜单配置
+            $router->get ('/menu/config', 'Admin\\ConfigController@getMenuConfig');
         });
     }
 }
