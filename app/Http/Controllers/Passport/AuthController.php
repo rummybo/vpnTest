@@ -534,4 +534,39 @@ class AuthController extends Controller
         // 默认为用户名
         return 'username';
     }
+
+    /**
+     * 获取系统用户订阅信息
+     */
+    public function getSubscribe()
+    {
+        //获取系统用户
+        $user = User::where('is_system', 1)
+            ->select([
+                'plan_id',
+                'token',
+                'expired_at',
+                'u',
+                'd',
+                'transfer_enable',
+                'email',
+                'uuid'
+            ])
+            ->first();
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+        // if ($user->plan_id) {
+        //     $user['plan'] = Plan::find($user->plan_id);
+        //     if (!$user['plan']) {
+        //         abort(500, __('Subscription plan does not exist'));
+        //     }
+        // }
+        $user['subscribe_url'] = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
+       
+        return response([
+            'data' => $user
+        ]);
+    }
+
 }

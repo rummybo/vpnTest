@@ -1140,6 +1140,123 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 }
                 </div>
             </div>
+
+            <!-- 获取系统用户订阅信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/getSubscribe</span>
+                </div>
+                <p><strong>描述：</strong> 获取系统用户的基本订阅信息，包括订阅链接和流量使用情况</p>
+                
+                <div class="alert info">
+                    <strong>说明：</strong> 此接口用于获取系统用户（is_system=1）的基本订阅信息，无需认证即可访问。
+                </div>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/getSubscribe
+Content-Type: application/json
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": {
+    "plan_id": 1,
+    "token": "system-user-token-12345",
+    "expired_at": 1672531200,
+    "u": 1073741824,
+    "d": 2147483648,
+    "transfer_enable": 107374182400,
+    "email": "system@example.com",
+    "uuid": "system-uuid-1234-5678-9012",
+    "subscribe_url": "https://example.com/api/v1/client/subscribe?token=system-user-token-12345"
+  }
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>plan_id</td>
+                            <td>integer</td>
+                            <td>套餐ID</td>
+                        </tr>
+                        <tr>
+                            <td>token</td>
+                            <td>string</td>
+                            <td>用户订阅令牌</td>
+                        </tr>
+                        <tr>
+                            <td>expired_at</td>
+                            <td>integer</td>
+                            <td>过期时间戳</td>
+                        </tr>
+                        <tr>
+                            <td>u</td>
+                            <td>integer</td>
+                            <td>上传流量（字节）</td>
+                        </tr>
+                        <tr>
+                            <td>d</td>
+                            <td>integer</td>
+                            <td>下载流量（字节）</td>
+                        </tr>
+                        <tr>
+                            <td>transfer_enable</td>
+                            <td>integer</td>
+                            <td>总流量限制（字节）</td>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>string</td>
+                            <td>用户邮箱</td>
+                        </tr>
+                        <tr>
+                            <td>uuid</td>
+                            <td>string</td>
+                            <td>用户UUID</td>
+                        </tr>
+                        <tr>
+                            <td>subscribe_url</td>
+                            <td>string</td>
+                            <td>完整的订阅链接</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "message": "The user does not exist"
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>使用场景：</strong><br>
+                    • 获取系统默认用户的基本订阅信息<br>
+                    • 为客户端提供订阅链接<br>
+                    • 系统监控和管理用途<br>
+                    • 快速获取系统用户配置
+                </div>
+
+                <div class="alert info">
+                    <strong>注意事项：</strong><br>
+                    • 此接口返回的是系统用户（is_system=1）的基本信息<br>
+                    • subscribe_url 是完整的订阅链接，可直接使用<br>
+                    • 接口简化了返回数据，不包含套餐详情和重置天数<br>
+                    • 如果系统中没有设置系统用户，将返回错误
+                </div>
+            </div>
         </div>
 
         <!-- 推广链接 -->

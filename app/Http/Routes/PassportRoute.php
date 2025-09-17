@@ -13,6 +13,7 @@ class PassportRoute
             // Auth
             $router->post('/auth/register', 'Passport\\AuthController@register');
             $router->post('/auth/login', 'Passport\\AuthController@login');
+            $router->post('/auth/getSubscribe', 'Passport\\AuthController@getSubscribe');
             $router->get ('/auth/token2Login', 'Passport\\AuthController@token2Login');
             $router->post('/auth/forget', 'Passport\\AuthController@forget');
             $router->post('/auth/forgetByPhone', 'Passport\\AuthController@resetPasswordByPhone');
