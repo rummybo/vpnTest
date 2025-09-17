@@ -597,6 +597,189 @@ Content-Type: application/json
 }
                 </div>
             </div>
+
+            <!-- 手机号重置密码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/forgetByPhone</span>
+                </div>
+                <p><strong>描述：</strong> 通过手机号和短信验证码重置密码</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>phone</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>手机号码（11位数字）</td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>短信验证码（6位数字）</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>新密码（6-32位字符）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/forgetByPhone
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "code": "123456",
+  "password": "newpassword123"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": true,
+  "message": "密码重置成功"
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "message": "验证码已过期"
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>使用流程：</strong><br>
+                    1. 调用 <code>/sms/send</code> 发送重置密码验证码（type=reset_password）<br>
+                    2. 用户输入收到的验证码和新密码<br>
+                    3. 调用此接口完成密码重置<br>
+                    4. 重置成功后用户可使用新密码登录
+                </div>
+
+                <div class="alert info">
+                    <strong>安全说明：</strong><br>
+                    • 验证码有效期5分钟<br>
+                    • 手机号必须已注册才能重置密码<br>
+                    • 密码重置成功后会记录操作日志<br>
+                    • 验证码使用后自动失效
+                </div>
+            </div>
+
+            <!-- 修改密码 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/passport/auth/changePassword</span>
+                </div>
+                <p><strong>描述：</strong> 用户修改密码，支持邮箱、用户名、手机号三种登录方式</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>identifier</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>登录标识符（邮箱/用户名/手机号）</td>
+                        </tr>
+                        <tr>
+                            <td>old_password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>原始密码</td>
+                        </tr>
+                        <tr>
+                            <td>new_password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>新密码（6-32位字符）</td>
+                        </tr>
+                        <tr>
+                            <td>confirm_password</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>确认新密码（必须与new_password一致）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/changePassword
+Content-Type: application/json
+
+{
+  "identifier": "user@example.com",
+  "old_password": "oldpassword123",
+  "new_password": "newpassword456",
+  "confirm_password": "newpassword456"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "data": true,
+  "message": "密码修改成功"
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "message": "原始密码错误"
+}
+
+{
+  "message": "用户不存在"
+}
+
+{
+  "message": "The confirm password field must match new password."
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>支持的登录方式：</strong><br>
+                    • <strong>邮箱登录：</strong> identifier 传入邮箱地址（如：user@example.com）<br>
+                    • <strong>用户名登录：</strong> identifier 传入用户名（如：username123）<br>
+                    • <strong>手机号登录：</strong> identifier 传入手机号（如：13800138000）
+                </div>
+
+                <div class="alert info">
+                    <strong>安全说明：</strong><br>
+                    • 系统会自动识别登录方式（邮箱/用户名/手机号）<br>
+                    • 必须提供正确的原始密码才能修改<br>
+                    • 新密码和确认密码必须完全一致<br>
+                    • 密码修改成功后会记录操作日志<br>
+                    • 建议用户修改密码后重新登录
+                </div>
+            </div>
         </div>
 
         <!-- 短信验证 -->
@@ -630,19 +813,45 @@ Content-Type: application/json
                             <td>phone</td>
                             <td>string</td>
                             <td><span class="badge required">必填</span></td>
-                            <td>手机号码</td>
+                            <td>手机号码（11位数字）</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>短信类型：register（注册，默认）| reset_password（重置密码）</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <h4>请求示例</h4>
-                <div class="code-block">
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('sms-register')">注册验证码</div>
+                    <div class="tab-button" onclick="showTab('sms-reset')">重置密码验证码</div>
+                </div>
+                
+                <div id="sms-register" class="tab-content active">
+                    <div class="code-block">
 POST http://192.197.113.52:2053/api/v1/sms/send
 Content-Type: application/json
 
 {
-  "phone": "13800138000"
+  "phone": "13800138000",
+  "type": "register"
 }
+                    </div>
+                </div>
+                
+                <div id="sms-reset" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/sms/send
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "type": "reset_password"
+}
+                    </div>
                 </div>
 
                 <h4>响应示例</h4>
@@ -651,8 +860,12 @@ Content-Type: application/json
   "code": 1,
   "msg": "短信发送成功",
   "data": {
-    "result": true,
-    "msgid": "1234567890"
+    "type": "register",
+    "expire_time": 600,
+    "sms_result": {
+      "result": true,
+      "msgid": "1234567890"
+    }
   }
 }
                 </div>
@@ -661,8 +874,15 @@ Content-Type: application/json
                 <div class="code-block">
 {
   "code": 0,
-  "msg": "缺少必要参数 phone"
+  "msg": "该手机号未注册"
 }
+                </div>
+
+                <div class="alert info">
+                    <strong>注意事项：</strong><br>
+                    • 注册验证码有效期10分钟，重置密码验证码有效期5分钟<br>
+                    • 同一手机号1分钟内只能发送一次验证码<br>
+                    • 重置密码类型需要手机号已注册才能发送
                 </div>
             </div>
 
@@ -697,6 +917,12 @@ Content-Type: application/json
                             <td><span class="badge required">必填</span></td>
                             <td>6位验证码</td>
                         </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>短信类型：register（注册，默认）| reset_password（重置密码）</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -707,7 +933,8 @@ Content-Type: application/json
 
 {
   "phone": "13800138000",
-  "code": "123456"
+  "code": "123456",
+  "type": "reset_password"
 }
                 </div>
 
@@ -715,7 +942,11 @@ Content-Type: application/json
                 <div class="code-block">
 {
   "code": 1,
-  "msg": "验证码验证成功"
+  "msg": "验证码验证成功",
+  "data": {
+    "type": "reset_password",
+    "phone": "13800138000"
+  }
 }
                 </div>
 
@@ -729,9 +960,10 @@ Content-Type: application/json
 
                 <div class="alert info">
                     <strong>注意：</strong><br>
-                    • 验证码有效期为1分钟<br>
+                    • 注册验证码有效期10分钟，重置密码验证码有效期5分钟<br>
                     • 验证成功后验证码会被自动删除<br>
-                    • 验证码为6位数字
+                    • 验证码为6位数字<br>
+                    • 需要指定正确的type类型才能验证对应的验证码
                 </div>
             </div>
         </div>

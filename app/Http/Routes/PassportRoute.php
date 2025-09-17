@@ -16,6 +16,7 @@ class PassportRoute
             $router->get ('/auth/token2Login', 'Passport\\AuthController@token2Login');
             $router->post('/auth/forget', 'Passport\\AuthController@forget');
             $router->post('/auth/forgetByPhone', 'Passport\\AuthController@resetPasswordByPhone');
+            $router->post('/auth/changePassword', 'Passport\\AuthController@changePassword');
             $router->post('/auth/getQuickLoginUrl', 'Passport\\AuthController@getQuickLoginUrl');
             $router->post('/auth/loginWithMailLink', 'Passport\\AuthController@loginWithMailLink');
             // Comm

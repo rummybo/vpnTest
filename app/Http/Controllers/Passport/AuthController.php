@@ -459,4 +459,79 @@ class AuthController extends Controller
                 return User::where('email', $identifier)->first();
         }
     }
+
+    /**
+     * 修改密码
+     * 支持三种登录方式：邮箱、用户名、手机号
+     */
+    public function changePassword(Request $request)
+    {
+        // 1. 参数验证
+        $request->validate([
+            'identifier' => 'required|string', // 邮箱/用户名/手机号
+            'old_password' => 'required|string',
+            'new_password' => 'required|string|min:6|max:32',
+            'confirm_password' => 'required|string|same:new_password'
+        ]);
+
+        $identifier = $request->input('identifier');
+        $oldPassword = $request->input('old_password');
+        $newPassword = $request->input('new_password');
+
+        // 2. 判断登录类型并查找用户
+        $loginType = $this->determineLoginType($identifier);
+        $user = $this->findUserByIdentifier($loginType, $identifier);
+
+        if (!$user) {
+            abort(500, __('用户不存在'));
+        }
+
+        // 3. 验证原始密码
+        // 使用 PHP 内置的 password_verify 函数验证原始密码是否正确
+        if (!password_verify($oldPassword, $user->password)) {
+            abort(500, __('原始密码错误'));
+        }
+
+        // 4. 更新为新密码
+        $user->password = password_hash($newPassword, PASSWORD_DEFAULT);
+        $user->password_algo = NULL;
+        $user->password_salt = NULL;
+        
+        if (!$user->save()) {
+            abort(500, __('密码修改失败'));
+        }
+
+        // 5. 记录日志
+        \Log::info('用户修改密码', [
+            'user_id' => $user->id,
+            'login_type' => $loginType,
+            'identifier' => $identifier,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        return response([
+            'data' => true,
+            'message' => '密码修改成功'
+        ]);
+    }
+
+    /**
+     * 判断登录类型
+     */
+    private function determineLoginType($identifier)
+    {
+        // 手机号正则：1开头，第二位3-9，总共11位
+        if (preg_match('/^1[3-9]\d{9}$/', $identifier)) {
+            return 'phone';
+        }
+        
+        // 邮箱正则
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            return 'email';
+        }
+        
+        // 默认为用户名
+        return 'username';
+    }
 }
