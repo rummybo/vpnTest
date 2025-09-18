@@ -73,7 +73,7 @@ class AuthController extends Controller
 
     }
 
-    public function register(AuthRegister $request)
+    public function register(Request $request)
     {
         if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
             $registerCountByIP = Cache::get(CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip())) ?? 0;
@@ -102,7 +102,7 @@ class AuthController extends Controller
         // 检查是否有username或phone字段，如果有则使用对应的注册方式
         $registerType = 'email';
         $identifier = $email;
-        
+
         if ($request->has('username') && !empty($request->input('username'))) {
             $registerType = 'username';
             $identifier = $request->input('username');
@@ -161,7 +161,7 @@ class AuthController extends Controller
             } elseif ($registerType === 'phone') {
                 $user->phone = $identifier;
             }
-            
+
             $user->password = password_hash($password, PASSWORD_DEFAULT);
             $user->uuid = Helper::guid(true);
             $user->token = Helper::guid();
@@ -221,11 +221,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(AuthLogin $request)
+    public function login(Request $request)
     {
         $password = $request->input('password');
         $smsCode = $request->input('sms_code');
-        
+
         // 使用getLoginType方法确定登录类型
         $loginType = $this->getLoginType($request);
         $identifier = $request->input($loginType);
@@ -246,15 +246,15 @@ class AuthController extends Controller
             // 使用短信验证码登录
             $cacheKey = 'sms_code:login:' . $identifier;
             $cacheCode = Cache::get($cacheKey);
-            
+
             if (!$cacheCode) {
                 abort(500, __('验证码已过期'));
             }
-            
+
             if ($cacheCode !== $smsCode) {
                 abort(500, __('验证码错误'));
             }
-            
+
             // 验证码正确，清除缓存
             Cache::forget($cacheKey);
         } else {
@@ -390,7 +390,7 @@ class AuthController extends Controller
         // 验证短信验证码
         $cacheKey = 'sms_code:reset_password:' . $phone;
         $cacheCode = Cache::get($cacheKey);
-        
+
         if (!$cacheCode) {
             abort(500, __('验证码已过期'));
         }
@@ -409,7 +409,7 @@ class AuthController extends Controller
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->password_algo = NULL;
         $user->password_salt = NULL;
-        
+
         if (!$user->save()) {
             abort(500, __('密码重置失败'));
         }
@@ -527,7 +527,7 @@ class AuthController extends Controller
         $user->password = password_hash($newPassword, PASSWORD_DEFAULT);
         $user->password_algo = NULL;
         $user->password_salt = NULL;
-        
+
         if (!$user->save()) {
             abort(500, __('密码修改失败'));
         }
@@ -556,12 +556,12 @@ class AuthController extends Controller
         if (preg_match('/^1[3-9]\d{9}$/', $identifier)) {
             return 'phone';
         }
-        
+
         // 邮箱正则
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             return 'email';
         }
-        
+
         // 默认为用户名
         return 'username';
     }
@@ -594,7 +594,7 @@ class AuthController extends Controller
         //     }
         // }
         $user['subscribe_url'] = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
-       
+
         return response([
             'data' => $user
         ]);
