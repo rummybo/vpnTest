@@ -269,6 +269,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="#device-management" class="nav-link">
+                    <i class="fas fa-mobile-alt"></i> 设备管理
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#nav-links" class="nav-link">
                     <i class="fas fa-link"></i> 福利导航
                 </a>
@@ -1724,6 +1729,581 @@ Content-Type: application/json
                     • 推荐3人：单次无限制使用<br>
                     • 推荐23人：无限制使用 + 开始获得金币奖励<br>
                     • 金币可用于兑换黄金会员等特权
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备管理 -->
+        <div id="device-management" class="content-section">
+            <h1 class="section-title">设备管理 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 设备管理接口用于管理设备的使用权限、会话记录和使用统计。所有接口都需要提供设备ID参数。
+            </div>
+
+            <!-- 获取设备权限信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/device/permission/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取指定设备的使用权限信息，包括每日时长限制、单次时长限制等</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/device/permission/device_12345678
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "device_id": "device_12345678",
+    "daily_duration": 7200,
+    "single_duration": 3600,
+    "is_unlimited": false,
+    "is_vip": false,
+    "remaining_daily": 5400,
+    "can_start_session": true
+  }
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>daily_duration</td>
+                            <td>integer</td>
+                            <td>每日允许使用时长（秒），-1表示无限制</td>
+                        </tr>
+                        <tr>
+                            <td>single_duration</td>
+                            <td>integer</td>
+                            <td>单次允许使用时长（秒），-1表示无限制</td>
+                        </tr>
+                        <tr>
+                            <td>is_unlimited</td>
+                            <td>boolean</td>
+                            <td>是否无限制使用</td>
+                        </tr>
+                        <tr>
+                            <td>is_vip</td>
+                            <td>boolean</td>
+                            <td>是否为VIP用户</td>
+                        </tr>
+                        <tr>
+                            <td>remaining_daily</td>
+                            <td>integer</td>
+                            <td>今日剩余可用时长（秒）</td>
+                        </tr>
+                        <tr>
+                            <td>can_start_session</td>
+                            <td>boolean</td>
+                            <td>是否可以开始新会话</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 开始使用会话 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/device/start-session</span>
+                </div>
+                <p><strong>描述：</strong> 开始一个新的设备使用会话</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/device/start-session
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "会话开始成功",
+  "data": {
+    "session_id": "session_987654321",
+    "device_id": "device_12345678",
+    "start_time": "2025-01-18T10:30:00Z",
+    "max_duration": 3600,
+    "remaining_daily": 5400
+  }
+}
+                </div>
+            </div>
+
+            <!-- 更新会话时长 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/device/update-session</span>
+                </div>
+                <p><strong>描述：</strong> 更新当前活跃会话的使用时长</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                        <tr>
+                            <td>duration</td>
+                            <td>integer</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>本次使用时长（秒）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/device/update-session
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678",
+  "duration": 1800
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "会话时长更新成功",
+  "data": {
+    "session_id": "session_987654321",
+    "total_duration": 1800,
+    "remaining_daily": 3600,
+    "can_continue": true
+  }
+}
+                </div>
+            </div>
+
+            <!-- 结束使用会话 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/device/end-session</span>
+                </div>
+                <p><strong>描述：</strong> 结束当前的设备使用会话</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/device/end-session
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "会话结束成功",
+  "data": {
+    "session_id": "session_987654321",
+    "device_id": "device_12345678",
+    "start_time": "2025-01-18T10:30:00Z",
+    "end_time": "2025-01-18T11:00:00Z",
+    "total_duration": 1800,
+    "remaining_daily": 3600
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取设备使用历史 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/device/history/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取设备的使用历史记录</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>查询参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>page</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>页码，默认为1</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>每页数量，默认为20</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/device/history/device_12345678?page=1&limit=10
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 25,
+    "last_page": 3,
+    "data": [
+      {
+        "id": 1,
+        "device_id": "device_12345678",
+        "start_time": "2025-01-18T10:30:00Z",
+        "end_time": "2025-01-18T11:00:00Z",
+        "duration": 1800,
+        "status": "completed"
+      }
+    ]
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取活跃会话 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/device/active-session/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取设备当前的活跃会话信息</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/device/active-session/device_12345678
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "session_id": "session_987654321",
+    "device_id": "device_12345678",
+    "start_time": "2025-01-18T10:30:00Z",
+    "current_duration": 1200,
+    "max_duration": 3600,
+    "remaining_time": 2400,
+    "status": "active"
+  }
+}
+                </div>
+            </div>
+
+            <!-- 强制结束会话 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/device/force-end-session</span>
+                </div>
+                <p><strong>描述：</strong> 强制结束设备的活跃会话（管理员功能）</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                        <tr>
+                            <td>reason</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>强制结束原因</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/device/force-end-session
+Content-Type: application/json
+
+{
+  "device_id": "device_12345678",
+  "reason": "系统维护"
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "会话已强制结束",
+  "data": {
+    "session_id": "session_987654321",
+    "device_id": "device_12345678",
+    "end_reason": "系统维护",
+    "total_duration": 1200
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取设备会话历史记录 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/device/session-history/{device_id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取设备的详细会话历史记录</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>设备ID，最大128字符</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>查询参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>start_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>开始日期 (YYYY-MM-DD)</td>
+                        </tr>
+                        <tr>
+                            <td>end_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>结束日期 (YYYY-MM-DD)</td>
+                        </tr>
+                        <tr>
+                            <td>page</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>页码，默认为1</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>每页数量，默认为20</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/device/session-history/device_12345678?start_date=2025-01-01&end_date=2025-01-31&page=1&limit=10
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 50,
+    "last_page": 5,
+    "summary": {
+      "total_sessions": 50,
+      "total_duration": 90000,
+      "average_duration": 1800,
+      "longest_session": 3600
+    },
+    "data": [
+      {
+        "session_id": "session_987654321",
+        "device_id": "device_12345678",
+        "start_time": "2025-01-18T10:30:00Z",
+        "end_time": "2025-01-18T11:00:00Z",
+        "duration": 1800,
+        "status": "completed",
+        "end_reason": "normal"
+      }
+    ]
+  }
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>设备权限说明：</strong><br>
+                    • 普通用户：每日2-3小时使用时长<br>
+                    • 推广用户：根据推荐人数获得不同时长奖励<br>
+                    • VIP用户：无限制使用<br>
+                    • 单次会话最长时间根据用户等级确定<br>
+                    • 会话超时或达到限制时自动结束
                 </div>
             </div>
         </div>
