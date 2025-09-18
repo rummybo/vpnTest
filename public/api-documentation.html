@@ -484,8 +484,14 @@ Content-Type: application/json
                         <tr>
                             <td>password</td>
                             <td>string</td>
-                            <td><span class="badge required">必填</span></td>
-                            <td>密码</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>密码（手机号登录时可用验证码代替）</td>
+                        </tr>
+                        <tr>
+                            <td>sms_code</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>短信验证码（手机号登录时可用，优先级高于密码）</td>
                         </tr>
                     </tbody>
                 </table>
@@ -529,6 +535,17 @@ Content-Type: application/json
 {
   "phone": "13800138000",
   "password": "password123"
+}
+                    </div>
+                    
+                    <h5>手机号验证码登录示例</h5>
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/passport/auth/login
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "sms_code": "123456"
 }
                     </div>
                 </div>
@@ -773,9 +790,19 @@ Content-Type: application/json
 
                 <div class="alert success">
                     <strong>支持的登录方式：</strong><br>
-                    • <strong>邮箱登录：</strong> identifier 传入邮箱地址（如：user@example.com）<br>
-                    • <strong>用户名登录：</strong> identifier 传入用户名（如：username123）<br>
-                    • <strong>手机号登录：</strong> identifier 传入手机号（如：13800138000）
+                    • <strong>邮箱登录：</strong> 使用邮箱 + 密码<br>
+                    • <strong>用户名登录：</strong> 使用用户名 + 密码<br>
+                    • <strong>手机号登录：</strong> 支持两种方式<br>
+                    &nbsp;&nbsp;- 手机号 + 密码<br>
+                    &nbsp;&nbsp;- 手机号 + 短信验证码（需先调用 /sms/send 发送登录验证码）
+                </div>
+
+                <div class="alert info">
+                    <strong>手机号登录说明：</strong><br>
+                    • 如果同时提供 password 和 sms_code，优先使用验证码验证<br>
+                    • 登录验证码有效期5分钟<br>
+                    • 手机号必须已注册才能发送登录验证码<br>
+                    • 验证码使用后自动失效
                 </div>
 
                 <div class="alert info">
@@ -826,7 +853,7 @@ Content-Type: application/json
                             <td>type</td>
                             <td>string</td>
                             <td><span class="badge optional">可选</span></td>
-                            <td>短信类型：register（注册，默认）| reset_password（重置密码）</td>
+                            <td>短信类型：register（注册，默认）| reset_password（重置密码）| login（登录）</td>
                         </tr>
                     </tbody>
                 </table>
@@ -835,6 +862,7 @@ Content-Type: application/json
                 <div class="tab-buttons">
                     <div class="tab-button active" onclick="showTab('sms-register')">注册验证码</div>
                     <div class="tab-button" onclick="showTab('sms-reset')">重置密码验证码</div>
+                    <div class="tab-button" onclick="showTab('sms-login')">登录验证码</div>
                 </div>
                 
                 <div id="sms-register" class="tab-content active">
@@ -857,6 +885,18 @@ Content-Type: application/json
 {
   "phone": "13800138000",
   "type": "reset_password"
+}
+                    </div>
+                </div>
+                
+                <div id="sms-login" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/sms/send
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "type": "login"
 }
                     </div>
                 </div>
@@ -887,9 +927,9 @@ Content-Type: application/json
 
                 <div class="alert info">
                     <strong>注意事项：</strong><br>
-                    • 注册验证码有效期10分钟，重置密码验证码有效期5分钟<br>
+                    • 注册验证码有效期10分钟，重置密码和登录验证码有效期5分钟<br>
                     • 同一手机号1分钟内只能发送一次验证码<br>
-                    • 重置密码类型需要手机号已注册才能发送
+                    • 重置密码和登录类型需要手机号已注册才能发送
                 </div>
             </div>
 
@@ -928,7 +968,7 @@ Content-Type: application/json
                             <td>type</td>
                             <td>string</td>
                             <td><span class="badge optional">可选</span></td>
-                            <td>短信类型：register（注册，默认）| reset_password（重置密码）</td>
+                            <td>短信类型：register（注册，默认）| reset_password（重置密码）| login（登录）</td>
                         </tr>
                     </tbody>
                 </table>
@@ -967,7 +1007,7 @@ Content-Type: application/json
 
                 <div class="alert info">
                     <strong>注意：</strong><br>
-                    • 注册验证码有效期10分钟，重置密码验证码有效期5分钟<br>
+                    • 注册验证码有效期10分钟，重置密码和登录验证码有效期5分钟<br>
                     • 验证成功后验证码会被自动删除<br>
                     • 验证码为6位数字<br>
                     • 需要指定正确的type类型才能验证对应的验证码

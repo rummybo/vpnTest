@@ -36,15 +36,15 @@ class SmsController extends Controller
         }
 
         // 验证短信类型
-        if (!in_array($type, ['register', 'reset_password'])) {
+        if (!in_array($type, ['register', 'reset_password', 'login'])) {
             return response()->json([
                 'code' => 0,
                 'msg'  => '短信类型不正确'
             ]);
         }
 
-        // 如果是重置密码，需要验证手机号是否已注册
-        if ($type === 'reset_password') {
+        // 如果是重置密码或登录，需要验证手机号是否已注册
+        if (in_array($type, ['reset_password', 'login'])) {
             $user = \App\Models\User::where('phone', $mobile)->first();
             if (!$user) {
                 return response()->json([
@@ -141,7 +141,7 @@ class SmsController extends Controller
         }
 
         // 验证短信类型
-        if (!in_array($type, ['register', 'reset_password'])) {
+        if (!in_array($type, ['register', 'reset_password', 'login'])) {
             return response()->json(['code' => 0, 'msg' => '短信类型不正确']);
         }
 

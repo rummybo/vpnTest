@@ -223,6 +223,7 @@ class AuthController extends Controller
     public function login(AuthLogin $request)
     {
         $password = $request->input('password');
+        $smsCode = $request->input('sms_code');
         
         // 使用getLoginType方法确定登录类型
         $loginType = $this->getLoginType($request);
@@ -233,34 +234,58 @@ class AuthController extends Controller
             $request->merge(['email' => $identifier]);
         }
 
-        if ((int)config('v2board.password_limit_enable', 1)) {
-            $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier), 0);
-            if ($passwordErrorCount >= (int)config('v2board.password_limit_count', 5)) {
-                abort(500, __('There are too many password errors, please try again after :minute minutes.', [
-                    'minute' => config('v2board.password_limit_expire', 60)
-                ]));
-            }
-        }
-
         // 根据登录类型查找用户
         $user = $this->findUserByIdentifier($loginType, $identifier);
         if (!$user) {
             abort(500, __('Incorrect email or password'));
         }
-        if (!Helper::multiPasswordVerify(
-            $user->password_algo,
-            $user->password_salt,
-            $password,
-            $user->password)
-        ) {
-            if ((int)config('v2board.password_limit_enable')) {
-                Cache::put(
-                    CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier),
-                    (int)$passwordErrorCount + 1,
-                    60 * (int)config('v2board.password_limit_expire', 60)
-                );
+
+        // 手机号登录支持验证码和密码两种方式
+        if ($loginType === 'phone' && !empty($smsCode)) {
+            // 使用短信验证码登录
+            $cacheKey = 'sms_code:login:' . $identifier;
+            $cacheCode = Cache::get($cacheKey);
+            
+            if (!$cacheCode) {
+                abort(500, __('验证码已过期'));
             }
-            abort(500, __('Incorrect email or password'));
+            
+            if ($cacheCode !== $smsCode) {
+                abort(500, __('验证码错误'));
+            }
+            
+            // 验证码正确，清除缓存
+            Cache::forget($cacheKey);
+        } else {
+            // 使用密码登录（用户名、邮箱、手机号密码登录）
+            if (empty($password)) {
+                abort(500, __('密码不能为空'));
+            }
+
+            if ((int)config('v2board.password_limit_enable', 1)) {
+                $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier), 0);
+                if ($passwordErrorCount >= (int)config('v2board.password_limit_count', 5)) {
+                    abort(500, __('There are too many password errors, please try again after :minute minutes.', [
+                        'minute' => config('v2board.password_limit_expire', 60)
+                    ]));
+                }
+            }
+
+            if (!Helper::multiPasswordVerify(
+                $user->password_algo,
+                $user->password_salt,
+                $password,
+                $user->password)
+            ) {
+                if ((int)config('v2board.password_limit_enable')) {
+                    Cache::put(
+                        CacheKey::get('PASSWORD_ERROR_LIMIT', $identifier),
+                        (int)$passwordErrorCount + 1,
+                        60 * (int)config('v2board.password_limit_expire', 60)
+                    );
+                }
+                abort(500, __('Incorrect email or password'));
+            }
         }
 
         if ($user->banned) {
