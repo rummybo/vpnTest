@@ -93,7 +93,7 @@ class AuthController extends Controller
 
         $email = $request->input('email');
         $password = $request->input('password');
-        
+
         // 如果没有提供密码（邮箱或手机验证码注册），使用默认密码
         if (empty($password)) {
             $password = config('v2board.default_register_password', '123456789');
@@ -149,53 +149,54 @@ class AuthController extends Controller
         // 检查用户是否已存在
         $exist = $this->checkUserExists($registerType, $identifier);
         if ($exist) {
-            abort(500, __(ucfirst($registerType) . ' already exists'));
-        }
-
-        $user = new User();
-        // 根据注册类型设置相应字段
-        if ($registerType === 'email') {
-            $user->email = $identifier;
-        } elseif ($registerType === 'username') {
-            $user->username = $identifier;
-        } elseif ($registerType === 'phone') {
-            $user->phone = $identifier;
-        }
-        
-        $user->password = password_hash($password, PASSWORD_DEFAULT);
-        $user->uuid = Helper::guid(true);
-        $user->token = Helper::guid();
-        if ($request->input('invite_code')) {
-            $inviteCode = InviteCode::where('code', $request->input('invite_code'))
-                ->where('status', 0)
-                ->first();
-            if (!$inviteCode) {
-                if ((int)config('v2board.invite_force', 0)) {
-                    abort(500, __('Invalid invitation code'));
-                }
-            } else {
-                $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
-                if (!(int)config('v2board.invite_never_expire', 0)) {
-                    $inviteCode->status = 1;
-                    $inviteCode->save();
+            $user = $exist;
+            //abort(500, __(ucfirst($registerType) . ' already exists'));
+        }else{
+            $user = new User();
+            // 根据注册类型设置相应字段
+            if ($registerType === 'email') {
+                $user->email = $identifier;
+            } elseif ($registerType === 'username') {
+                $user->username = $identifier;
+            } elseif ($registerType === 'phone') {
+                $user->phone = $identifier;
+            }
+            
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->uuid = Helper::guid(true);
+            $user->token = Helper::guid();
+            if ($request->input('invite_code')) {
+                $inviteCode = InviteCode::where('code', $request->input('invite_code'))
+                    ->where('status', 0)
+                    ->first();
+                if (!$inviteCode) {
+                    if ((int)config('v2board.invite_force', 0)) {
+                        abort(500, __('Invalid invitation code'));
+                    }
+                } else {
+                    $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
+                    if (!(int)config('v2board.invite_never_expire', 0)) {
+                        $inviteCode->status = 1;
+                        $inviteCode->save();
+                    }
                 }
             }
-        }
 
-        // try out
-        if ((int)config('v2board.try_out_plan_id', 0)) {
-            $plan = Plan::find(config('v2board.try_out_plan_id'));
-            if ($plan) {
-                $user->transfer_enable = $plan->transfer_enable * 1073741824;
-                $user->plan_id = $plan->id;
-                $user->group_id = $plan->group_id;
-                $user->expired_at = time() + (config('v2board.try_out_hour', 1) * 3600);
-                $user->speed_limit = $plan->speed_limit;
+            // try out
+            if ((int)config('v2board.try_out_plan_id', 0)) {
+                $plan = Plan::find(config('v2board.try_out_plan_id'));
+                if ($plan) {
+                    $user->transfer_enable = $plan->transfer_enable * 1073741824;
+                    $user->plan_id = $plan->id;
+                    $user->group_id = $plan->group_id;
+                    $user->expired_at = time() + (config('v2board.try_out_hour', 1) * 3600);
+                    $user->speed_limit = $plan->speed_limit;
+                }
             }
-        }
 
-        if (!$user->save()) {
-            abort(500, __('Register failed'));
+            if (!$user->save()) {
+                abort(500, __('Register failed'));
+            }
         }
         // 清除邮箱验证码缓存（如果是邮箱注册）
         if ($registerType === 'email' && (int)config('v2board.email_verify', 0)) {
