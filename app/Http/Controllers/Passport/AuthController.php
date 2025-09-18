@@ -93,6 +93,11 @@ class AuthController extends Controller
 
         $email = $request->input('email');
         $password = $request->input('password');
+        
+        // 如果没有提供密码（邮箱或手机验证码注册），使用默认密码
+        if (empty($password)) {
+            $password = config('v2board.default_register_password', '123456789');
+        }
 
         // 检查是否有username或phone字段，如果有则使用对应的注册方式
         $registerType = 'email';
