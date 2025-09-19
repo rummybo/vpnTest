@@ -8,6 +8,7 @@ use App\Http\Requests\Passport\AuthForget;
 use App\Http\Requests\Passport\AuthLogin;
 use App\Jobs\SendEmailJob;
 use App\Services\AuthService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Plan;
@@ -26,9 +27,9 @@ class AuthController extends Controller
             abort(404);
         }
         $params = $request->validate([
-            'email' => 'required|email:strict',
-            'redirect' => 'nullable'
-        ]);
+                                         'email' => 'required|email:strict',
+                                         'redirect' => 'nullable'
+                                     ]);
 
         if (Cache::get(CacheKey::get('LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP', $params['email']))) {
             abort(500, __('Sending frequently, please try again later'));
@@ -37,8 +38,8 @@ class AuthController extends Controller
         $user = User::where('email', $params['email'])->first();
         if (!$user) {
             return response([
-                'data' => true
-            ]);
+                                'data' => true
+                            ]);
         }
 
         $code = Helper::guid();
@@ -55,21 +56,21 @@ class AuthController extends Controller
         }
 
         SendEmailJob::dispatch([
-            'email' => $user->email,
-            'subject' => __('Login to :name', [
-                'name' => config('v2board.app_name', 'V2Board')
-            ]),
-            'template_name' => 'login',
-            'template_value' => [
-                'name' => config('v2board.app_name', 'V2Board'),
-                'link' => $link,
-                'url' => config('v2board.app_url')
-            ]
-        ]);
+                                   'email' => $user->email,
+                                   'subject' => __('Login to :name', [
+                                       'name' => config('v2board.app_name', 'V2Board')
+                                   ]),
+                                   'template_name' => 'login',
+                                   'template_value' => [
+                                       'name' => config('v2board.app_name', 'V2Board'),
+                                       'link' => $link,
+                                       'url' => config('v2board.app_url')
+                                   ]
+                               ]);
 
         return response([
-            'data' => $link
-        ]);
+                            'data' => $link
+                        ]);
 
     }
 
@@ -167,8 +168,8 @@ class AuthController extends Controller
             $user->token = Helper::guid();
             if ($request->input('invite_code')) {
                 $inviteCode = InviteCode::where('code', $request->input('invite_code'))
-                    ->where('status', 0)
-                    ->first();
+                                        ->where('status', 0)
+                                        ->first();
                 if (!$inviteCode) {
                     if ((int)config('v2board.invite_force', 0)) {
                         abort(500, __('Invalid invitation code'));
@@ -217,8 +218,8 @@ class AuthController extends Controller
         $authService = new AuthService($user);
 
         return response()->json([
-            'data' => $authService->generateAuthData($request)
-        ]);
+                                    'data' => $authService->generateAuthData($request)
+                                ]);
     }
 
     public function login(Request $request)
@@ -229,7 +230,7 @@ class AuthController extends Controller
         // 使用getLoginType方法确定登录类型
         $loginType = $this->getLoginType($request);
         $identifier = $request->input($loginType);
-        
+
         // 确保email字段有值（用于验证规则）
         if ($loginType === 'email') {
             $request->merge(['email' => $identifier]);
@@ -295,8 +296,8 @@ class AuthController extends Controller
 
         $authService = new AuthService($user);
         return response([
-            'data' => $authService->generateAuthData($request)
-        ]);
+                            'data' => $authService->generateAuthData($request)
+                        ]);
     }
 
     public function token2Login(Request $request)
@@ -327,8 +328,8 @@ class AuthController extends Controller
             Cache::forget($key);
             $authService = new AuthService($user);
             return response([
-                'data' => $authService->generateAuthData($request)
-            ]);
+                                'data' => $authService->generateAuthData($request)
+                            ]);
         }
     }
 
@@ -350,8 +351,8 @@ class AuthController extends Controller
             $url = url($redirect);
         }
         return response([
-            'data' => $url
-        ]);
+                            'data' => $url
+                        ]);
     }
 
     public function forget(AuthForget $request)
@@ -371,17 +372,17 @@ class AuthController extends Controller
         }
         Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
         return response([
-            'data' => true
-        ]);
+                            'data' => true
+                        ]);
     }
 
     public function resetPasswordByPhone(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string|regex:/^1[3-9]\d{9}$/',
-            'code' => 'required|string|size:6',
-            'password' => 'required|string|min:6|max:32'
-        ]);
+                               'phone' => 'required|string|regex:/^1[3-9]\d{9}$/',
+                               'code' => 'required|string|size:6',
+                               'password' => 'required|string|min:6|max:32'
+                           ]);
 
         $phone = $request->input('phone');
         $code = $request->input('code');
@@ -426,9 +427,9 @@ class AuthController extends Controller
         ]);
 
         return response([
-            'data' => true,
-            'message' => '密码重置成功'
-        ]);
+                            'data' => true,
+                            'message' => '密码重置成功'
+                        ]);
     }
 
     /**
@@ -499,11 +500,11 @@ class AuthController extends Controller
     {
         // 1. 参数验证
         $request->validate([
-            'identifier' => 'required|string', // 邮箱/用户名/手机号
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|min:6|max:32',
-            'confirm_password' => 'required|string|same:new_password'
-        ]);
+                               'identifier' => 'required|string', // 邮箱/用户名/手机号
+                               'old_password' => 'required|string',
+                               'new_password' => 'required|string|min:6|max:32',
+                               'confirm_password' => 'required|string|same:new_password'
+                           ]);
 
         $identifier = $request->input('identifier');
         $oldPassword = $request->input('old_password');
@@ -542,9 +543,9 @@ class AuthController extends Controller
         ]);
 
         return response([
-            'data' => true,
-            'message' => '密码修改成功'
-        ]);
+                            'data' => true,
+                            'message' => '密码修改成功'
+                        ]);
     }
 
     /**
@@ -573,31 +574,33 @@ class AuthController extends Controller
     {
         //获取系统用户
         $user = User::where('is_system', 1)
-            ->select([
-                'plan_id',
-                'token',
-                'expired_at',
-                'u',
-                'd',
-                'transfer_enable',
-                'email',
-                'uuid'
-            ])
-            ->first();
+                    ->select([
+                                 'plan_id',
+                                 'token',
+                                 'expired_at',
+                                 'u',
+                                 'd',
+                                 'transfer_enable',
+                                 'email',
+                                 'uuid'
+                             ])
+                    ->first();
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
-        // if ($user->plan_id) {
-        //     $user['plan'] = Plan::find($user->plan_id);
-        //     if (!$user['plan']) {
-        //         abort(500, __('Subscription plan does not exist'));
-        //     }
-        // }
+        if ($user->plan_id) {
+            $user['plan'] = Plan::find($user->plan_id);
+            if (!$user['plan']) {
+                abort(500, __('Subscription plan does not exist'));
+            }
+        }
         $user['subscribe_url'] = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
 
+        $userService = new UserService();
+        $user['reset_day'] = $userService->getResetDay($user);
         return response([
-            'data' => $user
-        ]);
+                            'data' => $user
+                        ]);
     }
 
 }
