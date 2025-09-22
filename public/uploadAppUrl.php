@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_SERVER['HTTP_X_REQUESTED_WI
                 $apk_name = "app_" . $version . "_" . time() . ".apk";
                 $apk_path = $apk_dir . $apk_name;
                 move_uploaded_file($_FILES['apk_file']['tmp_name'], $apk_path);
-                $download_url = "http://" . $_SERVER['HTTP_HOST'] . "/AppManager/apk/" . $apk_name;
+                $download_url = "http://" . $_SERVER['HTTP_HOST'] . "/apk/" . $apk_name;
             }
         }
         if (empty($download_url) && !empty($_POST['download_url'])) {
