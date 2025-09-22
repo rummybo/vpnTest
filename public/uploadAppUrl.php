@@ -13,47 +13,41 @@ if (!file_exists($apk_dir)) {
 }
 
 // =====================
-// 处理提交
+// 处理提交 (只处理表单直传，不走 AJAX)
 // =====================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     $platform = $_POST['platform'];
     $version = trim($_POST['version']);
     $download_url = "";
 
     if ($platform === 'android') {
-        // -------- APK 上传 --------
         if (!empty($_FILES['apk_file']['name'])) {
             $ext = pathinfo($_FILES['apk_file']['name'], PATHINFO_EXTENSION);
             if (strtolower($ext) === "apk") {
                 $apk_name = "app_" . $version . "_" . time() . ".apk";
                 $apk_path = $apk_dir . $apk_name;
                 move_uploaded_file($_FILES['apk_file']['tmp_name'], $apk_path);
-
-                // 生成下载链接（注意路径）
                 $download_url = "http://" . $_SERVER['HTTP_HOST'] . "/AppManager/apk/" . $apk_name;
             }
         }
-
-        // -------- 如果没上传文件，检查输入框 --------
         if (empty($download_url) && !empty($_POST['download_url'])) {
             $download_url = trim($_POST['download_url']);
         }
-
-        // -------- 兜底 --------
         if (empty($download_url)) {
             $download_url = "无下载地址，请重新上传";
         }
-
-        // 写入文件
         $content = "版本号: {$version}\n下载地址: {$download_url}\n更新时间: " . date("Y-m-d H:i:s");
         file_put_contents($android_file, $content);
 
     } elseif ($platform === 'ios') {
-        // -------- iOS 链接 --------
         $download_url = trim($_POST['download_url']);
         $content = "版本号: {$version}\n下载地址: {$download_url}\n更新时间: " . date("Y-m-d H:i:s");
         file_put_contents($ios_file, $content);
     }
+
+    // 如果是表单直传，刷新页面
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
 
 // =====================
@@ -75,11 +69,14 @@ $ios_content = file_exists($ios_file) ? nl2br(file_get_contents($ios_file)) : "�
         button { padding: 10px 20px; margin-top: 10px; }
         .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         pre { background: #eee; padding: 10px; border-radius: 5px; }
+        #progress-container { display: none; margin-top: 10px; }
+        #progress-bar { height: 20px; background: green; width: 0%; color: white; text-align: center; }
     </style>
 </head>
 <body>
-<h1>APP 版本管理 (TXT 记录 + APK 上传)</h1>
-<form method="post" enctype="multipart/form-data">
+<h1>APP 版本管理 (含 APK 上传进度)</h1>
+
+<form id="uploadForm" method="post" enctype="multipart/form-data">
     <label>平台：</label>
     <select name="platform" id="platform" required onchange="toggleUpload()">
         <option value="android">Android</option>
@@ -91,7 +88,7 @@ $ios_content = file_exists($ios_file) ? nl2br(file_get_contents($ios_file)) : "�
 
     <div id="android-upload">
         <label>上传 APK 文件：</label>
-        <input type="file" name="apk_file" accept=".apk">
+        <input type="file" name="apk_file" id="apk_file" accept=".apk">
         <p style="color: gray; font-size: 14px;">（可选：如果不上传 APK，可以填写下载链接）</p>
         <label>下载地址：</label>
         <input type="text" name="download_url" placeholder="http://yourdomain.com/AppManager/apk/app.apk">
@@ -103,6 +100,10 @@ $ios_content = file_exists($ios_file) ? nl2br(file_get_contents($ios_file)) : "�
     </div>
 
     <button type="submit">更新</button>
+
+    <div id="progress-container">
+        <div id="progress-bar">0%</div>
+    </div>
 </form>
 
 <div class="card">
@@ -122,6 +123,38 @@ $ios_content = file_exists($ios_file) ? nl2br(file_get_contents($ios_file)) : "�
         document.getElementById("ios-upload").style.display = (platform === "ios") ? "block" : "none";
     }
     toggleUpload();
+
+    // 上传进度
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formData = new FormData(form);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", form.action || window.location.href, true);
+
+        // 监听进度
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                let percent = Math.round((event.loaded / event.total) * 100);
+                let bar = document.getElementById('progress-bar');
+                document.getElementById('progress-container').style.display = 'block';
+                bar.style.width = percent + '%';
+                bar.textContent = percent + '%';
+            }
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert("上传完成！");
+                window.location.reload();
+            } else {
+                alert("上传失败，请重试。");
+            }
+        };
+
+        xhr.send(formData);
+    });
 </script>
 </body>
 </html>
