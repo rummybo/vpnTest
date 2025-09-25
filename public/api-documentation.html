@@ -283,6 +283,11 @@
                     <i class="fas fa-bookmark"></i> 常用导航
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="#app-version" class="nav-link">
+                    <i class="fas fa-mobile-alt"></i> APP版本管理
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -2544,6 +2549,306 @@ GET http://192.197.113.52:2053/api/v1/common-links/grouped
     ]
   }
 }
+                </div>
+            </div>
+        </div>
+
+        <!-- APP版本管理 -->
+        <div id="app-version" class="content-section">
+            <h1 class="section-title">APP版本管理 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> APP版本管理接口提供Android和iOS应用的版本信息查询功能，支持版本检查和更新提醒。无需认证即可访问。
+            </div>
+
+            <!-- 获取所有平台版本信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/app-version</span>
+                </div>
+                <p><strong>描述：</strong> 获取Android和iOS两个平台的最新版本信息</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/app-version
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "android": {
+      "platform": "android",
+      "version": "1.0.1",
+      "download_url": "http://192.197.113.52:2053/apk/app_1.0.1_1640995200.apk",
+      "update_time": "2025-01-25 10:00:00",
+      "file_size": "25.6 MB",
+      "status": "available"
+    },
+    "ios": {
+      "platform": "ios",
+      "version": "1.0.0",
+      "download_url": "https://testflight.apple.com/join/abc123",
+      "update_time": "2025-01-20 15:30:00",
+      "status": "available"
+    }
+  }
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>platform</td>
+                            <td>string</td>
+                            <td>平台类型（android/ios）</td>
+                        </tr>
+                        <tr>
+                            <td>version</td>
+                            <td>string</td>
+                            <td>版本号</td>
+                        </tr>
+                        <tr>
+                            <td>download_url</td>
+                            <td>string</td>
+                            <td>下载链接</td>
+                        </tr>
+                        <tr>
+                            <td>update_time</td>
+                            <td>string</td>
+                            <td>更新时间</td>
+                        </tr>
+                        <tr>
+                            <td>file_size</td>
+                            <td>string</td>
+                            <td>文件大小（仅Android APK文件）</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>状态：available（可用）、no_version_available（无版本）、empty_file（空文件）、no_download_url（无下载地址）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 获取指定平台版本信息 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/app-version/{platform}</span>
+                </div>
+                <p><strong>描述：</strong> 获取指定平台的版本信息</p>
+                
+                <h4>路径参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>platform</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>平台类型，支持：android、ios</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('version-android')">Android版本</div>
+                    <div class="tab-button" onclick="showTab('version-ios')">iOS版本</div>
+                </div>
+                
+                <div id="version-android" class="tab-content active">
+                    <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/app-version/android
+                    </div>
+                </div>
+                
+                <div id="version-ios" class="tab-content">
+                    <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/app-version/ios
+                    </div>
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "platform": "android",
+    "version": "1.0.1",
+    "download_url": "http://192.197.113.52:2053/apk/app_1.0.1_1640995200.apk",
+    "update_time": "2025-01-25 10:00:00",
+    "file_size": "25.6 MB",
+    "status": "available"
+  }
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "code": 400,
+  "message": "不支持的平台类型，仅支持 android 或 ios",
+  "data": []
+}
+                </div>
+            </div>
+
+            <!-- 检查更新接口 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/app-version/check-update</span>
+                </div>
+                <p><strong>描述：</strong> 检查指定平台是否有新版本可用</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>platform</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>平台类型：android、ios</td>
+                        </tr>
+                        <tr>
+                            <td>current_version</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>当前应用版本号</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('check-android')">检查Android更新</div>
+                    <div class="tab-button" onclick="showTab('check-ios')">检查iOS更新</div>
+                </div>
+                
+                <div id="check-android" class="tab-content active">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/app-version/check-update
+Content-Type: application/json
+
+{
+  "platform": "android",
+  "current_version": "1.0.0"
+}
+                    </div>
+                </div>
+                
+                <div id="check-ios" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/app-version/check-update
+Content-Type: application/json
+
+{
+  "platform": "ios",
+  "current_version": "0.9.5"
+}
+                    </div>
+                </div>
+
+                <h4>响应示例（有更新）</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "has_update": true,
+    "current_version": "1.0.0",
+    "latest_version": "1.0.1",
+    "download_url": "http://192.197.113.52:2053/apk/app_1.0.1_1640995200.apk",
+    "update_time": "2025-01-25 10:00:00",
+    "file_size": "25.6 MB",
+    "message": "发现新版本"
+  }
+}
+                </div>
+
+                <h4>响应示例（无更新）</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "has_update": false,
+    "current_version": "1.0.1",
+    "latest_version": "1.0.1",
+    "message": "已是最新版本"
+  }
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "code": 400,
+  "message": "请提供有效的平台参数（android 或 ios）",
+  "data": []
+}
+
+{
+  "code": 400,
+  "message": "请提供当前版本号",
+  "data": []
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>版本比较规则：</strong><br>
+                    • 使用PHP的 version_compare() 函数进行版本号比较<br>
+                    • 支持标准的语义化版本号格式（如：1.0.0、1.2.3、2.0.0-beta）<br>
+                    • 版本号比较遵循语义化版本规范<br>
+                    • 当服务器版本号大于客户端版本号时，返回 has_update: true
+                </div>
+
+                <div class="alert info">
+                    <strong>使用场景：</strong><br>
+                    • 应用启动时检查更新<br>
+                    • 定期检查新版本<br>
+                    • 强制更新提醒<br>
+                    • 版本兼容性检查<br>
+                    • 自动下载更新包
+                </div>
+
+                <div class="alert info">
+                    <strong>数据来源：</strong><br>
+                    • Android版本信息来源：<code>public/android_version.txt</code><br>
+                    • iOS版本信息来源：<code>public/ios_version.txt</code><br>
+                    • 版本信息通过管理后台 <code>uploadAppUrl.php</code> 进行更新<br>
+                    • APK文件存储在 <code>public/apk/</code> 目录下<br>
+                    • 系统会自动计算APK文件大小
                 </div>
             </div>
         </div>
