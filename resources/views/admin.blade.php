@@ -23,7 +23,8 @@
             logo: '{{$logo}}',
             secure_path: '{{$secure_path}}',
             nav_links_enable: {{config('v2board.nav_links_enable', 1)}},
-            common_links_enable: {{config('v2board.common_links_enable', 1)}}
+            common_links_enable: {{config('v2board.common_links_enable', 1)}},
+            frontend_nav_pages_enable: {{config('v2board.frontend_nav_pages_enable', 1)}}
         }
     </script>
 </head>
@@ -37,6 +38,8 @@
 <script src="/assets/admin/nav-links-extension.js?v={{$version}}"></script>
 <!-- 常用导航扩展 -->
 <script src="/assets/admin/common-links-extension.js?v={{$version}}"></script>
+<!-- 前端导航页扩展 -->
+<script src="/assets/admin/frontend-nav-pages-extension.js?v={{$version}}"></script>
 </body>
 
 </html>
