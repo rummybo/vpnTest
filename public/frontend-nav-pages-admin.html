@@ -72,8 +72,18 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">图标</label>
-                    <input type="text" id="nav-icon" class="form-control" placeholder="fa fa-home 或 https://example.com/icon.png">
-                    <div class="form-help">支持Font Awesome图标类名或图标URL地址</div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="nav-icon" class="form-control" placeholder="fa fa-home 或上传图片">
+                        <button type="button" class="btn" onclick="uploadIcon()" style="white-space: nowrap;">上传图标</button>
+                    </div>
+                    <input type="file" id="iconFile" accept="image/*" style="display: none;" onchange="handleIconUpload(this)">
+                    <div class="form-help">支持Font Awesome图标类名或图标图片上传，格式：JPG, PNG, GIF, SVG，最大2MB</div>
+                    <div id="icon-preview" style="margin-top: 8px; display: none;">
+                        <div style="padding: 8px; background: #f9f9f9; border-radius: 4px; font-size: 12px; color: #666;">
+                            <strong>图标预览：</strong>
+                            <span id="icon-preview-content"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">跳转URL *</label>
@@ -123,12 +133,14 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-function getHeaders() {
+function getHeaders(includeContentType = true) {
     const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
     };
+    if (includeContentType) {
+        headers['Content-Type'] = 'application/json';
+    }
     const token = getAuthToken();
     if (token) headers['Authorization'] = `Bearer ${token}`;
     return headers;
@@ -204,9 +216,9 @@ function renderTable() {
 function renderIcon(icon) {
     if (!icon) return '-';
     if (icon.startsWith('http://') || icon.startsWith('https://')) {
-        return `<img src="${escapeHtml(icon)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`;
+        return `<img src="${escapeHtml(icon)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"> <span style="font-size:12px;color:#666;">${escapeHtml(icon.length > 30 ? icon.substring(0, 30) + '...' : icon)}</span>`;
     } else {
-        return `<i class="${escapeHtml(icon)}" style="font-size:18px;"></i>`;
+        return `<i class="${escapeHtml(icon)}" style="font-size:18px;margin-right:8px;"></i><span style="font-size:12px;color:#666;">${escapeHtml(icon)}</span>`;
     }
 }
 
@@ -229,6 +241,10 @@ function showAddModal() {
     document.getElementById('edit-form').reset();
     document.getElementById('nav-sort').value = '0';
     document.getElementById('nav-status').value = 'active';
+    
+    // 清空图标预览
+    document.getElementById('icon-preview').style.display = 'none';
+    
     document.getElementById('edit-modal').style.display = 'block';
 }
 
@@ -243,6 +259,10 @@ function editNavPage(id) {
     document.getElementById('nav-url').value = item.url;
     document.getElementById('nav-sort').value = item.sort;
     document.getElementById('nav-status').value = item.status;
+    
+    // 显示图标预览
+    updateIconPreview(item.icon || '');
+    
     document.getElementById('edit-modal').style.display = 'block';
 }
 
@@ -363,6 +383,97 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('edit-modal').addEventListener('click', function(e) {
     if (e.target === this) hideModal();
+});
+
+// 图标上传功能
+function uploadIcon() {
+    document.getElementById('iconFile').click();
+}
+
+async function handleIconUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // 检查文件大小 (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        showMessage('图片大小不能超过2MB', 'error');
+        return;
+    }
+    
+    // 检查文件类型
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+        showMessage('只支持 JPG, PNG, GIF, SVG 格式的图片', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        showMessage('正在上传图标...', 'info');
+        
+        const response = await fetch(`${API_BASE}/upload/image`, {
+            method: 'POST',
+            headers: getHeaders(false), // 不包含Content-Type，让FormData自动设置
+            credentials: 'include',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.url) {
+            document.getElementById('nav-icon').value = result.url;
+            updateIconPreview(result.url);
+            showMessage('图标上传成功');
+        } else {
+            throw new Error(result.message || '上传失败');
+        }
+    } catch (error) {
+        console.error('图标上传失败:', error);
+        showMessage('图标上传失败: ' + error.message, 'error');
+    }
+    
+    // 清空文件输入
+    input.value = '';
+}
+
+// 更新图标预览
+function updateIconPreview(iconValue) {
+    const preview = document.getElementById('icon-preview');
+    const previewContent = document.getElementById('icon-preview-content');
+    
+    if (!iconValue) {
+        preview.style.display = 'none';
+        return;
+    }
+    
+    preview.style.display = 'block';
+    
+    if (iconValue.startsWith('http://') || iconValue.startsWith('https://')) {
+        // 图片URL预览
+        previewContent.innerHTML = `<img src="${escapeHtml(iconValue)}" style="width:20px;height:20px;object-fit:cover;border-radius:3px;margin-right:8px;vertical-align:middle;" onerror="this.style.display='none'"><span>${escapeHtml(iconValue.length > 50 ? iconValue.substring(0, 50) + '...' : iconValue)}</span>`;
+    } else {
+        // Font Awesome图标预览
+        previewContent.innerHTML = `<i class="${escapeHtml(iconValue)}" style="font-size:16px;margin-right:8px;"></i><span>${escapeHtml(iconValue)}</span>`;
+    }
+}
+
+// 监听图标输入框变化，实时预览
+document.addEventListener('DOMContentLoaded', function() {
+    loadNavPages();
+    
+    // 监听图标输入框变化
+    const iconInput = document.getElementById('nav-icon');
+    if (iconInput) {
+        iconInput.addEventListener('input', function(e) {
+            updateIconPreview(e.target.value);
+        });
+    }
 });
 </script>
 </body>
