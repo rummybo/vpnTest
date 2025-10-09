@@ -346,8 +346,18 @@
         let currentEditId = null;
         let navPages = [];
         
-        // API路径
-        const API_BASE = '/admin/frontend_nav_pages';
+        // API基础路径
+        const API_BASE = '/api/v1/' + getSecurePath();
+        
+        // 获取安全路径
+        function getSecurePath() {
+            const currentPath = window.location.pathname;
+            const pathMatch = currentPath.match(/\/([a-f0-9]{8})/);
+            if (pathMatch) {
+                return pathMatch[1];
+            }
+            return '149544e4'; // 备用
+        }
         
         // 获取认证token
         function getAuthToken() {
@@ -404,16 +414,10 @@
         // 加载导航页列表
         async function loadNavPages() {
             try {
-                const response = await fetch(`${API_BASE}/fetch`, {
-                    method: 'POST',
+                const response = await fetch(`${API_BASE}/frontend_nav_pages/fetch`, {
+                    method: 'GET',
                     headers: getHeaders(),
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        current: 1,
-                        pageSize: 100,
-                        sort: 'sort',
-                        sort_type: 'asc'
-                    })
+                    credentials: 'include'
                 });
                 
                 if (!response.ok) {

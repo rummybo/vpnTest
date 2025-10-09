@@ -72,3 +72,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
+
+// v2board风格API路由 (前端导航页)
+Route::prefix('api/v1/{secure_path}')->group(function () {
+    Route::get('frontend_nav_pages/fetch', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'fetch']);
+    Route::post('frontend_nav_pages/save', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'save']);
+    Route::post('frontend_nav_pages/drop', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'drop']);
+    Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
+    Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
+});
