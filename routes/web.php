@@ -73,11 +73,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
 
-// v2board风格API路由 (前端导航页)
+// v2board风格API路由 (前端导航页管理后台)
 Route::prefix('api/v1/{secure_path}')->group(function () {
     Route::get('frontend_nav_pages/fetch', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'fetch']);
     Route::post('frontend_nav_pages/save', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'save']);
     Route::post('frontend_nav_pages/drop', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'drop']);
     Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
+});
+
+// 公开API路由 (前端访问)
+Route::prefix('api/v1')->group(function () {
+    // 福利导航API
+    Route::get('nav-links', [\App\Http\Controllers\Api\NavLinkController::class, 'index']);
+    Route::get('nav-links/grouped', [\App\Http\Controllers\Api\NavLinkController::class, 'grouped']);
+    
+    // 常用导航API
+    Route::get('common-links', [\App\Http\Controllers\Api\CommonLinkController::class, 'index']);
+    Route::get('common-links/grouped', [\App\Http\Controllers\Api\CommonLinkController::class, 'grouped']);
+    
+    // 前端导航页API
+    Route::get('frontend-nav-pages', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'index']);
+    Route::get('frontend-nav-pages/grouped', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'grouped']);
+    Route::get('frontend-nav-pages/popular', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'popular']);
 });

@@ -284,6 +284,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="#frontend-nav-pages" class="nav-link">
+                    <i class="fas fa-th-large"></i> 前端导航页
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#app-version" class="nav-link">
                     <i class="fas fa-mobile-alt"></i> APP版本管理
                 </a>
@@ -2549,6 +2554,148 @@ GET http://192.197.113.52:2053/api/v1/common-links/grouped
     ]
   }
 }
+                </div>
+            </div>
+        </div>
+
+        <!-- 前端导航页 -->
+        <div id="frontend-nav-pages" class="content-section">
+            <h1 class="section-title">前端导航页 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 前端导航页接口提供前端展示用的导航页面数据，无需认证即可访问。按排序值升序排列。
+            </div>
+
+            <!-- 获取前端导航页列表 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/frontend-nav-pages</span>
+                </div>
+                <p><strong>描述：</strong> 获取所有状态为启用的前端导航页列表</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/frontend-nav-pages
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "name": "官方网站",
+      "icon": "fa fa-home",
+      "url": "https://example.com",
+      "sort": 1
+    },
+    {
+      "id": 2,
+      "name": "用户中心", 
+      "icon": "https://example.com/icon.png",
+      "url": "https://user.example.com",
+      "sort": 2
+    }
+  ]
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>integer</td>
+                            <td>导航页ID</td>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td>string</td>
+                            <td>导航页名称</td>
+                        </tr>
+                        <tr>
+                            <td>icon</td>
+                            <td>string</td>
+                            <td>图标（Font Awesome类名或图片URL）</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>string</td>
+                            <td>跳转URL地址</td>
+                        </tr>
+                        <tr>
+                            <td>sort</td>
+                            <td>integer</td>
+                            <td>排序值（升序排列）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>使用说明</h4>
+                <div class="alert info">
+                    • 只返回状态为"启用"的导航页<br>
+                    • 按排序值升序排列，数字越小越靠前<br>
+                    • 图标支持Font Awesome类名（如：fa fa-home）或完整的图片URL地址<br>
+                    • 前端可根据图标内容判断显示方式：以http开头的为图片，否则为Font Awesome图标
+                </div>
+            </div>
+
+            <!-- 获取分组前端导航页 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/frontend-nav-pages/grouped</span>
+                </div>
+                <p><strong>描述：</strong> 按排序值分组获取前端导航页</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/frontend-nav-pages/grouped
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "1": [
+      {
+        "id": 1,
+        "name": "官方网站",
+        "icon": "fa fa-home",
+        "url": "https://example.com",
+        "sort": 1
+      }
+    ],
+    "2": [
+      {
+        "id": 2,
+        "name": "用户中心",
+        "icon": "https://example.com/icon.png", 
+        "url": "https://user.example.com",
+        "sort": 2
+      }
+    ]
+  }
+}
+                </div>
+
+                <h4>使用说明</h4>
+                <div class="alert info">
+                    • 数据按排序值进行分组，便于前端按组显示<br>
+                    • 每个分组的key为排序值，value为该排序值的导航页数组<br>
+                    • 适用于需要分组展示导航页的场景
                 </div>
             </div>
         </div>
