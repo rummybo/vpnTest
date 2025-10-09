@@ -80,6 +80,9 @@ Route::prefix('api/v1/{secure_path}')->group(function () {
     Route::post('frontend_nav_pages/drop', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'drop']);
     Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
+    
+    // 图片上传路由
+    Route::post('upload/image', [\App\Http\Controllers\Admin\UploadController::class, 'uploadImage']);
 });
 
 // 公开API路由 (前端访问)
