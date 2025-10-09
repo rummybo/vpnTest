@@ -60,3 +60,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('common_links', 'App\Http\Controllers\Admin\CommonLinkController');
 });
+
+// 前端导航页管理路由
+Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+    Route::resource('frontend_nav_pages', 'App\Http\Controllers\Admin\FrontendNavPageController');
+    
+    // API格式路由 (v2board后台使用)
+    Route::post('frontend_nav_pages/fetch', 'App\Http\Controllers\Admin\FrontendNavPageController@fetch');
+    Route::post('frontend_nav_pages/save', 'App\Http\Controllers\Admin\FrontendNavPageController@save');
+    Route::post('frontend_nav_pages/drop', 'App\Http\Controllers\Admin\FrontendNavPageController@drop');
+    Route::post('frontend_nav_pages/show', 'App\Http\Controllers\Admin\FrontendNavPageController@show');
+    Route::post('frontend_nav_pages/sort', 'App\Http\Controllers\Admin\FrontendNavPageController@sort');
+});
+
+// 前端API路由
+Route::prefix('api')->group(function () {
+    Route::get('frontend-nav-pages', 'App\Http\Controllers\Api\FrontendNavPageController@index');
+    Route::get('frontend-nav-pages/grouped', 'App\Http\Controllers\Api\FrontendNavPageController@grouped');
+    Route::get('frontend-nav-pages/popular', 'App\Http\Controllers\Api\FrontendNavPageController@popular');
+});
