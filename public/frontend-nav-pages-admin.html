@@ -52,6 +52,21 @@
 let editId=null,data=[];
 const api='/api/v1/149544e4';
 
+function getAuthToken(){
+return localStorage.getItem('authorization');
+}
+
+function getHeaders(includeContentType=true){
+const headers={
+'Accept':'application/json',
+'Authorization':getAuthToken()
+};
+if(includeContentType){
+headers['Content-Type']='application/json';
+}
+return headers;
+}
+
 function msg(text,type='success'){
 document.getElementById('msg').innerHTML=`<div class="alert alert-${type}">${text}</div>`;
 setTimeout(()=>document.getElementById('msg').innerHTML='',3000);
@@ -61,7 +76,7 @@ async function load(){
 try{
 const res=await fetch(`${api}/frontend_nav_pages/fetch`,{
 method:'GET',
-headers:{'Accept':'application/json','Content-Type':'application/json'},
+headers:getHeaders(),
 credentials:'include'
 });
 if(!res.ok)throw new Error('HTTP '+res.status);
@@ -140,7 +155,7 @@ const body={name,icon,url,sort,status};
 if(editId)body.id=editId;
 const res=await fetch(`${api}/frontend_nav_pages/save`,{
 method:'POST',
-headers:{'Accept':'application/json','Content-Type':'application/json'},
+headers:getHeaders(),
 credentials:'include',
 body:JSON.stringify(body)
 });
@@ -163,7 +178,7 @@ if(!confirm('确定删除？'))return;
 try{
 const res=await fetch(`${api}/frontend_nav_pages/drop`,{
 method:'POST',
-headers:{'Accept':'application/json','Content-Type':'application/json'},
+headers:getHeaders(),
 credentials:'include',
 body:JSON.stringify({id})
 });
@@ -206,7 +221,7 @@ try{
 msg('正在上传图标...');
 const res=await fetch(`${api}/upload/image`,{
 method:'POST',
-headers:{'Accept':'application/json'},
+headers:getHeaders(false),
 credentials:'include',
 body:formData
 });
