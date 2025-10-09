@@ -54,11 +54,25 @@ Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_pa
 // 福利导航管理路由
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('nav_links', \App\Http\Controllers\Admin\NavLinkController::class);
+    
+    // API格式路由 (v2board后台使用)
+    Route::get('nav_links/fetch', [\App\Http\Controllers\Admin\NavLinkController::class, 'fetch']);
+    Route::post('nav_links/save', [\App\Http\Controllers\Admin\NavLinkController::class, 'save']);
+    Route::post('nav_links/drop', [\App\Http\Controllers\Admin\NavLinkController::class, 'drop']);
+    Route::post('nav_links/show', [\App\Http\Controllers\Admin\NavLinkController::class, 'show']);
+    Route::post('nav_links/sort', [\App\Http\Controllers\Admin\NavLinkController::class, 'sort']);
 });
 
 // 常用导航管理路由
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('common_links', \App\Http\Controllers\Admin\CommonLinkController::class);
+    
+    // API格式路由 (v2board后台使用)
+    Route::get('common_links/fetch', [\App\Http\Controllers\Admin\CommonLinkController::class, 'fetch']);
+    Route::post('common_links/save', [\App\Http\Controllers\Admin\CommonLinkController::class, 'save']);
+    Route::post('common_links/drop', [\App\Http\Controllers\Admin\CommonLinkController::class, 'drop']);
+    Route::post('common_links/show', [\App\Http\Controllers\Admin\CommonLinkController::class, 'show']);
+    Route::post('common_links/sort', [\App\Http\Controllers\Admin\CommonLinkController::class, 'sort']);
 });
 
 // 前端导航页管理路由
@@ -73,8 +87,23 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
 
-// v2board风格API路由 (前端导航页管理后台)
+// v2board风格API路由 (管理后台)
 Route::prefix('api/v1/{secure_path}')->group(function () {
+    // 福利导航管理API
+    Route::get('nav_links/fetch', [\App\Http\Controllers\Admin\NavLinkController::class, 'fetch']);
+    Route::post('nav_links/save', [\App\Http\Controllers\Admin\NavLinkController::class, 'save']);
+    Route::post('nav_links/drop', [\App\Http\Controllers\Admin\NavLinkController::class, 'drop']);
+    Route::post('nav_links/show', [\App\Http\Controllers\Admin\NavLinkController::class, 'show']);
+    Route::post('nav_links/sort', [\App\Http\Controllers\Admin\NavLinkController::class, 'sort']);
+    
+    // 常用导航管理API
+    Route::get('common_links/fetch', [\App\Http\Controllers\Admin\CommonLinkController::class, 'fetch']);
+    Route::post('common_links/save', [\App\Http\Controllers\Admin\CommonLinkController::class, 'save']);
+    Route::post('common_links/drop', [\App\Http\Controllers\Admin\CommonLinkController::class, 'drop']);
+    Route::post('common_links/show', [\App\Http\Controllers\Admin\CommonLinkController::class, 'show']);
+    Route::post('common_links/sort', [\App\Http\Controllers\Admin\CommonLinkController::class, 'sort']);
+    
+    // 前端导航页管理API
     Route::get('frontend_nav_pages/fetch', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'fetch']);
     Route::post('frontend_nav_pages/save', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'save']);
     Route::post('frontend_nav_pages/drop', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'drop']);
