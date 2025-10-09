@@ -72,10 +72,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
-
-// 前端API路由
-Route::prefix('api')->group(function () {
-    Route::get('frontend-nav-pages', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'index']);
-    Route::get('frontend-nav-pages/grouped', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'grouped']);
-    Route::get('frontend-nav-pages/popular', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'popular']);
-});
