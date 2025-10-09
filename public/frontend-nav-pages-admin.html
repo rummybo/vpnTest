@@ -1,476 +1,367 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>前端导航页管理 - V2Board</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; }
-        .page-header { border-bottom: 1px solid #f0f0f0; padding-bottom: 16px; margin-bottom: 24px; }
-        .page-title { font-size: 20px; font-weight: 500; color: #262626; margin: 0; }
-        .page-description { color: #8c8c8c; margin: 8px 0 0 0; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .btn { padding: 8px 16px; border: 1px solid #d9d9d9; border-radius: 6px; background: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
-        .btn-primary { background: #1890ff; border-color: #1890ff; color: white; }
-        .btn-primary:hover { background: #40a9ff; border-color: #40a9ff; }
-        .btn:hover { border-color: #40a9ff; color: #40a9ff; }
-        .table { width: 100%; border-collapse: collapse; border: 1px solid #f0f0f0; }
-        .table th, .table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; }
-        .table th { background: #fafafa; font-weight: 500; color: #262626; }
-        .table tbody tr:hover { background: #f5f5f5; }
-        .status-badge { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
-        .status-active { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
-        .status-inactive { background: #fff2e8; color: #fa8c16; border: 1px solid #ffd591; }
-        .actions { display: flex; gap: 8px; }
-        .btn-sm { padding: 4px 8px; font-size: 12px; }
-        .btn-danger { background: #ff4d4f; border-color: #ff4d4f; color: white; }
-        .btn-danger:hover { background: #ff7875; border-color: #ff7875; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
-        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 24px; width: 500px; max-width: 90vw; }
-        .modal-header { font-size: 16px; font-weight: 500; margin-bottom: 16px; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; margin-bottom: 4px; font-weight: 500; color: #262626; }
-        .form-control { width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .form-control:focus { border-color: #40a9ff; outline: none; box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2); }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
-        .loading { text-align: center; padding: 40px; color: #8c8c8c; }
-        .empty { text-align: center; padding: 40px; color: #8c8c8c; }
-        .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; }
-        .alert-success { background: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a; }
-        .alert-error { background: #fff2f0; border: 1px solid #ffccc7; color: #ff4d4f; }
-        .form-help { font-size: 12px; color: #666; margin-top: 4px; }
-        #icon-preview { margin-top: 8px; display: none; }
-        #icon-preview > div { padding: 8px; background: #f9f9f9; border-radius: 4px; font-size: 12px; color: #666; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>前端导航页管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;padding:20px}
+.container{max-width:1200px;margin:0 auto;background:white;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);padding:24px}
+.page-header{border-bottom:1px solid #f0f0f0;padding-bottom:16px;margin-bottom:24px}
+.page-title{font-size:20px;font-weight:500;color:#262626;margin:0}
+.page-description{color:#8c8c8c;margin:8px 0 0 0}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.btn{padding:8px 16px;border:1px solid #d9d9d9;border-radius:6px;background:white;cursor:pointer;font-size:14px;transition:all 0.3s}
+.btn-primary{background:#1890ff;border-color:#1890ff;color:white}
+.btn-primary:hover{background:#40a9ff;border-color:#40a9ff}
+.btn:hover{border-color:#40a9ff;color:#40a9ff}
+.table{width:100%;border-collapse:collapse;border:1px solid #f0f0f0}
+.table th,.table td{padding:12px 16px;text-align:left;border-bottom:1px solid #f0f0f0}
+.table th{background:#fafafa;font-weight:500;color:#262626}
+.table tbody tr:hover{background:#f5f5f5}
+.status-badge{padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500}
+.status-active{background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f}
+.status-inactive{background:#fff2e8;color:#fa8c16;border:1px solid #ffd591}
+.actions{display:flex;gap:8px}
+.btn-sm{padding:4px 8px;font-size:12px}
+.btn-danger{background:#ff4d4f;border-color:#ff4d4f;color:white}
+.btn-danger:hover{background:#ff7875;border-color:#ff7875}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000}
+.modal-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:8px;padding:24px;width:500px;max-width:90vw}
+.modal-header{font-size:16px;font-weight:500;margin-bottom:16px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;margin-bottom:4px;font-weight:500;color:#262626}
+.form-control{width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;box-sizing:border-box}
+.form-control:focus{border-color:#40a9ff;outline:none;box-shadow:0 0 0 2px rgba(24,144,255,0.2)}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:24px}
+.loading{text-align:center;padding:40px;color:#8c8c8c}
+.empty{text-align:center;padding:40px;color:#8c8c8c}
+.alert{padding:12px 16px;border-radius:6px;margin-bottom:16px}
+.alert-success{background:#f6ffed;border:1px solid #b7eb8f;color:#52c41a}
+.alert-error{background:#fff2f0;border:1px solid #ffccc7;color:#ff4d4f}
+.form-help{font-size:12px;color:#666;margin-top:4px}
+#icon-preview{margin-top:8px;display:none;padding:8px;background:#f9f9f9;border-radius:4px;font-size:12px;color:#666}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">前端导航页管理</h1>
-            <p class="page-description">管理前端显示的导航页面，支持配置导航页名称、图标和跳转URL</p>
-        </div>
-        
-        <div class="toolbar">
-            <div>
-                <button class="btn btn-primary" onclick="showAddModal()">添加导航页</button>
-                <button class="btn" onclick="refreshList()">刷新</button>
-            </div>
-            <div><span id="total-count">总计: 0 条</span></div>
-        </div>
-        
-        <div id="message-container"></div>
-        <div id="table-container"><div class="loading">加载中...</div></div>
-    </div>
-    
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><span id="modal-title">添加前端导航页</span></div>
-            <form id="edit-form">
-                <div class="form-group">
-                    <label class="form-label">导航页名称 *</label>
-                    <input type="text" id="nav-name" class="form-control" placeholder="请输入导航页名称" required>
-                    <div class="form-help">显示在前端的导航页名称</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">图标</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="nav-icon" class="form-control" placeholder="fa fa-home 或上传图片">
-                        <button type="button" class="btn" onclick="uploadIcon()" style="white-space: nowrap;">上传图标</button>
-                    </div>
-                    <input type="file" id="iconFile" accept="image/*" style="display: none;" onchange="handleIconUpload(this)">
-                    <div class="form-help">支持Font Awesome图标类名或图标图片上传，格式：JPG, PNG, GIF, SVG，最大2MB</div>
-                    <div id="icon-preview">
-                        <div>
-                            <strong>图标预览：</strong>
-                            <span id="icon-preview-content"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">跳转URL *</label>
-                    <input type="url" id="nav-url" class="form-control" placeholder="https://example.com" required>
-                    <div class="form-help">点击导航页时跳转的URL地址</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">排序</label>
-                    <input type="number" id="nav-sort" class="form-control" placeholder="数字越小越靠前" value="0">
-                    <div class="form-help">数字越小排序越靠前，默认为0</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">状态</label>
-                    <select id="nav-status" class="form-control">
-                        <option value="active">启用</option>
-                        <option value="inactive">禁用</option>
-                    </select>
-                    <div class="form-help">禁用后前端将不会显示此导航页</div>
-                </div>
-            </form>
-            <div class="modal-footer">
-                <button class="btn" onclick="hideModal()">取消</button>
-                <button class="btn btn-primary" onclick="saveNavPage()">保存</button>
-            </div>
-        </div>
-    </div>
+<div class="container">
+<div class="page-header">
+<h1 class="page-title">前端导航页管理</h1>
+<p class="page-description">管理前端显示的导航页面，支持配置导航页名称、图标和跳转URL</p>
+</div>
+<div class="toolbar">
+<div>
+<button class="btn btn-primary" onclick="showAddModal()">添加导航页</button>
+<button class="btn" onclick="refreshList()">刷新</button>
+</div>
+<div><span id="total-count">总计: 0 条</span></div>
+</div>
+<div id="message-container"></div>
+<div id="table-container"><div class="loading">加载中...</div></div>
+</div>
+
+<div id="edit-modal" class="modal">
+<div class="modal-content">
+<div class="modal-header"><span id="modal-title">添加前端导航页</span></div>
+<form id="edit-form">
+<div class="form-group">
+<label class="form-label">导航页名称 *</label>
+<input type="text" id="nav-name" class="form-control" placeholder="请输入导航页名称" required>
+</div>
+<div class="form-group">
+<label class="form-label">图标</label>
+<div style="display:flex;gap:8px">
+<input type="text" id="nav-icon" class="form-control" placeholder="fa fa-home 或上传图片">
+<button type="button" class="btn" onclick="uploadIcon()">上传图标</button>
+</div>
+<input type="file" id="iconFile" accept="image/*" style="display:none" onchange="handleIconUpload(this)">
+<div class="form-help">支持Font Awesome图标类名或图标图片上传</div>
+<div id="icon-preview"><strong>图标预览：</strong><span id="icon-preview-content"></span></div>
+</div>
+<div class="form-group">
+<label class="form-label">跳转URL *</label>
+<input type="url" id="nav-url" class="form-control" placeholder="https://example.com" required>
+</div>
+<div class="form-group">
+<label class="form-label">排序</label>
+<input type="number" id="nav-sort" class="form-control" placeholder="数字越小越靠前" value="0">
+</div>
+<div class="form-group">
+<label class="form-label">状态</label>
+<select id="nav-status" class="form-control">
+<option value="active">启用</option>
+<option value="inactive">禁用</option>
+</select>
+</div>
+</form>
+<div class="modal-footer">
+<button class="btn" onclick="hideModal()">取消</button>
+<button class="btn btn-primary" onclick="saveNavPage()">保存</button>
+</div>
+</div>
+</div>
 
 <script>
-let currentEditId = null;
-let navPages = [];
-const API_BASE = '/api/v1/' + getSecurePath();
+let currentEditId=null,navPages=[];
+const API_BASE='/api/v1/'+getSecurePath();
 
-function getSecurePath() {
-    const currentPath = window.location.pathname;
-    const pathMatch = currentPath.match(/\/([a-f0-9]{8})/);
-    if (pathMatch) return pathMatch[1];
-    return '149544e4';
+function getSecurePath(){
+const p=window.location.pathname.match(/\/([a-f0-9]{8})/);
+return p?p[1]:'149544e4';
 }
 
-function getAuthToken() {
-    return localStorage.getItem('authorization') || getCookie('laravel_session');
+function getAuthToken(){
+return localStorage.getItem('authorization')||getCookie('laravel_session');
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+function getCookie(name){
+const value=`; ${document.cookie}`;
+const parts=value.split(`; ${name}=`);
+if(parts.length===2)return parts.pop().split(';').shift();
 }
 
-function getHeaders(includeContentType = true) {
-    const headers = {
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-    };
-    if (includeContentType) {
-        headers['Content-Type'] = 'application/json';
-    }
-    const token = getAuthToken();
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    return headers;
+function getHeaders(includeContentType=true){
+const headers={'Accept':'application/json','X-Requested-With':'XMLHttpRequest'};
+if(includeContentType)headers['Content-Type']='application/json';
+const token=getAuthToken();
+if(token)headers['Authorization']=`Bearer ${token}`;
+return headers;
 }
 
-function showMessage(message, type = 'success') {
-    const container = document.getElementById('message-container');
-    const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
-    container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
-    setTimeout(() => container.innerHTML = '', 3000);
+function showMessage(message,type='success'){
+const container=document.getElementById('message-container');
+const alertClass=type==='success'?'alert-success':'alert-error';
+container.innerHTML=`<div class="alert ${alertClass}">${message}</div>`;
+setTimeout(()=>container.innerHTML='',3000);
 }
 
-async function loadNavPages() {
-    try {
-        const response = await fetch(`${API_BASE}/frontend_nav_pages/fetch`, {
-            method: 'GET',
-            headers: getHeaders(),
-            credentials: 'include'
-        });
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const data = await response.json();
-        navPages = data.data || [];
-        renderTable();
-        updateTotalCount();
-    } catch (error) {
-        console.error('加载失败:', error);
-        showMessage('加载失败: ' + error.message, 'error');
-        renderEmptyTable();
-    }
+async function loadNavPages(){
+try{
+const response=await fetch(`${API_BASE}/frontend_nav_pages/fetch`,{
+method:'GET',headers:getHeaders(),credentials:'include'
+});
+if(!response.ok)throw new Error(`HTTP ${response.status}`);
+const data=await response.json();
+navPages=data.data||[];
+renderTable();
+updateTotalCount();
+}catch(error){
+console.error('加载失败:',error);
+showMessage('加载失败: '+error.message,'error');
+renderEmptyTable();
+}
 }
 
-function renderTable() {
-    const container = document.getElementById('table-container');
-    if (navPages.length === 0) {
-        renderEmptyTable();
-        return;
-    }
-    
-    const tableHtml = `
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th><th>导航页名称</th><th>图标</th><th>跳转URL</th><th>排序</th><th>状态</th><th>创建时间</th><th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${navPages.map(item => `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${escapeHtml(item.name)}</td>
-                        <td>${item.icon ? renderIcon(item.icon) : '-'}</td>
-                        <td><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.url.length > 40 ? item.url.substring(0, 40) + '...' : item.url)}</a></td>
-                        <td>${item.sort}</td>
-                        <td><span class="status-badge ${item.status == 'active' ? 'status-active' : 'status-inactive'}">${item.status == 'active' ? '启用' : '禁用'}</span></td>
-                        <td>${formatDate(item.created_at)}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-sm" onclick="editNavPage(${item.id})">编辑</button>
-                                <button class="btn btn-sm" onclick="toggleStatus(${item.id}, '${item.status}')">${item.status == 'active' ? '禁用' : '启用'}</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteNavPage(${item.id})">删除</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-    container.innerHTML = tableHtml;
+function renderTable(){
+const container=document.getElementById('table-container');
+if(navPages.length===0){
+renderEmptyTable();
+return;
+}
+const tableHtml=`<table class="table"><thead><tr><th>ID</th><th>导航页名称</th><th>图标</th><th>跳转URL</th><th>排序</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody>${navPages.map(item=>`<tr><td>${item.id}</td><td>${escapeHtml(item.name)}</td><td>${item.icon?renderIcon(item.icon):'-'}</td><td><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.url.length>40?item.url.substring(0,40)+'...':item.url)}</a></td><td>${item.sort}</td><td><span class="status-badge ${item.status=='active'?'status-active':'status-inactive'}">${item.status=='active'?'启用':'禁用'}</span></td><td>${formatDate(item.created_at)}</td><td><div class="actions"><button class="btn btn-sm" onclick="editNavPage(${item.id})">编辑</button><button class="btn btn-sm" onclick="toggleStatus(${item.id},'${item.status}')">${item.status=='active'?'禁用':'启用'}</button><button class="btn btn-sm btn-danger" onclick="deleteNavPage(${item.id})">删除</button></div></td></tr>`).join('')}</tbody></table>`;
+container.innerHTML=tableHtml;
 }
 
-function renderIcon(icon) {
-    if (!icon) return '-';
-    if (icon.startsWith('http://') || icon.startsWith('https://')) {
-        return `<img src="${escapeHtml(icon)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"> <span style="font-size:12px;color:#666;">${escapeHtml(icon.length > 30 ? icon.substring(0, 30) + '...' : icon)}</span>`;
-    } else {
-        return `<i class="${escapeHtml(icon)}" style="font-size:18px;margin-right:8px;"></i><span style="font-size:12px;color:#666;">${escapeHtml(icon)}</span>`;
-    }
+function renderIcon(icon){
+if(!icon)return'-';
+if(icon.startsWith('http')){
+return `<img src="${escapeHtml(icon)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px" onerror="this.style.display='none'"> <span style="font-size:12px;color:#666">${escapeHtml(icon.length>30?icon.substring(0,30)+'...':icon)}</span>`;
+}else{
+return `<i class="${escapeHtml(icon)}" style="font-size:18px;margin-right:8px"></i><span style="font-size:12px;color:#666">${escapeHtml(icon)}</span>`;
+}
 }
 
-function renderEmptyTable() {
-    document.getElementById('table-container').innerHTML = `
-        <div class="empty">
-            暂无前端导航页数据<br>
-            <button class="btn btn-primary" onclick="showAddModal()" style="margin-top: 16px;">添加第一个导航页</button>
-        </div>
-    `;
+function renderEmptyTable(){
+document.getElementById('table-container').innerHTML=`<div class="empty">暂无前端导航页数据<br><button class="btn btn-primary" onclick="showAddModal()" style="margin-top:16px">添加第一个导航页</button></div>`;
 }
 
-function updateTotalCount() {
-    document.getElementById('total-count').textContent = `总计: ${navPages.length} 条`;
+function updateTotalCount(){
+document.getElementById('total-count').textContent=`总计: ${navPages.length} 条`;
 }
 
-function showAddModal() {
-    currentEditId = null;
-    document.getElementById('modal-title').textContent = '添加前端导航页';
-    document.getElementById('edit-form').reset();
-    document.getElementById('nav-sort').value = '0';
-    document.getElementById('nav-status').value = 'active';
-    
-    // 清空图标预览
-    document.getElementById('icon-preview').style.display = 'none';
-    
-    document.getElementById('edit-modal').style.display = 'block';
+function showAddModal(){
+currentEditId=null;
+document.getElementById('modal-title').textContent='添加前端导航页';
+document.getElementById('edit-form').reset();
+document.getElementById('nav-sort').value='0';
+document.getElementById('nav-status').value='active';
+document.getElementById('icon-preview').style.display='none';
+document.getElementById('edit-modal').style.display='block';
 }
 
-function editNavPage(id) {
-    const item = navPages.find(nav => nav.id === id);
-    if (!item) return;
-    
-    currentEditId = id;
-    document.getElementById('modal-title').textContent = '编辑前端导航页';
-    document.getElementById('nav-name').value = item.name;
-    document.getElementById('nav-icon').value = item.icon || '';
-    document.getElementById('nav-url').value = item.url;
-    document.getElementById('nav-sort').value = item.sort;
-    document.getElementById('nav-status').value = item.status;
-    
-    // 显示图标预览
-    updateIconPreview(item.icon || '');
-    
-    document.getElementById('edit-modal').style.display = 'block';
+function editNavPage(id){
+const item=navPages.find(nav=>nav.id===id);
+if(!item)return;
+currentEditId=id;
+document.getElementById('modal-title').textContent='编辑前端导航页';
+document.getElementById('nav-name').value=item.name;
+document.getElementById('nav-icon').value=item.icon||'';
+document.getElementById('nav-url').value=item.url;
+document.getElementById('nav-sort').value=item.sort;
+document.getElementById('nav-status').value=item.status;
+updateIconPreview(item.icon||'');
+document.getElementById('edit-modal').style.display='block';
 }
 
-async function saveNavPage() {
-    const name = document.getElementById('nav-name').value.trim();
-    const icon = document.getElementById('nav-icon').value.trim();
-    const url = document.getElementById('nav-url').value.trim();
-    const sort = parseInt(document.getElementById('nav-sort').value) || 0;
-    const status = document.getElementById('nav-status').value;
-    
-    if (!name || !url) {
-        showMessage('请填写必填字段', 'error');
-        return;
-    }
-    
-    try {
-        const data = { name, icon: icon || '', url, sort, status };
-        if (currentEditId) data.id = currentEditId;
-        
-        const response = await fetch(`${API_BASE}/frontend_nav_pages/save`, {
-            method: 'POST',
-            headers: getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify(data)
-        });
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const result = await response.json();
-        if (result.message && !result.message.includes('失败')) {
-            showMessage(currentEditId ? '更新成功' : '添加成功');
-            hideModal();
-            loadNavPages();
-        } else {
-            throw new Error(result.message || '保存失败');
-        }
-    } catch (error) {
-        console.error('保存失败:', error);
-        showMessage('保存失败: ' + error.message, 'error');
-    }
+async function saveNavPage(){
+const name=document.getElementById('nav-name').value.trim();
+const icon=document.getElementById('nav-icon').value.trim();
+const url=document.getElementById('nav-url').value.trim();
+const sort=parseInt(document.getElementById('nav-sort').value)||0;
+const status=document.getElementById('nav-status').value;
+if(!name||!url){
+showMessage('请填写必填字段','error');
+return;
+}
+try{
+const data={name,icon:icon||'',url,sort,status};
+if(currentEditId)data.id=currentEditId;
+const response=await fetch(`${API_BASE}/frontend_nav_pages/save`,{
+method:'POST',headers:getHeaders(),credentials:'include',body:JSON.stringify(data)
+});
+if(!response.ok)throw new Error(`HTTP ${response.status}`);
+const result=await response.json();
+if(result.message&&!result.message.includes('失败')){
+showMessage(currentEditId?'更新成功':'添加成功');
+hideModal();
+loadNavPages();
+}else{
+throw new Error(result.message||'保存失败');
+}
+}catch(error){
+console.error('保存失败:',error);
+showMessage('保存失败: '+error.message,'error');
+}
 }
 
-async function toggleStatus(id, currentStatus) {
-    try {
-        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-        const response = await fetch(`${API_BASE}/frontend_nav_pages/show`, {
-            method: 'POST',
-            headers: getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ id, status: newStatus })
-        });
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const result = await response.json();
-        if (result.message && !result.message.includes('失败')) {
-            showMessage('状态更新成功');
-            loadNavPages();
-        } else {
-            throw new Error(result.message || '状态更新失败');
-        }
-    } catch (error) {
-        console.error('状态更新失败:', error);
-        showMessage('状态更新失败: ' + error.message, 'error');
-    }
+async function toggleStatus(id,currentStatus){
+try{
+const newStatus=currentStatus==='active'?'inactive':'active';
+const response=await fetch(`${API_BASE}/frontend_nav_pages/show`,{
+method:'POST',headers:getHeaders(),credentials:'include',body:JSON.stringify({id,status:newStatus})
+});
+if(!response.ok)throw new Error(`HTTP ${response.status}`);
+const result=await response.json();
+if(result.message&&!result.message.includes('失败')){
+showMessage('状态更新成功');
+loadNavPages();
+}else{
+throw new Error(result.message||'状态更新失败');
+}
+}catch(error){
+console.error('状态更新失败:',error);
+showMessage('状态更新失败: '+error.message,'error');
+}
 }
 
-async function deleteNavPage(id) {
-    if (!confirm('确定要删除这个导航页吗？')) return;
-    
-    try {
-        const response = await fetch(`${API_BASE}/frontend_nav_pages/drop`, {
-            method: 'POST',
-            headers: getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ id })
-        });
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const result = await response.json();
-        if (result.message && !result.message.includes('失败')) {
-            showMessage('删除成功');
-            loadNavPages();
-        } else {
-            throw new Error(result.message || '删除失败');
-        }
-    } catch (error) {
-        console.error('删除失败:', error);
-        showMessage('删除失败: ' + error.message, 'error');
-    }
+async function deleteNavPage(id){
+if(!confirm('确定要删除这个导航页吗？'))return;
+try{
+const response=await fetch(`${API_BASE}/frontend_nav_pages/drop`,{
+method:'POST',headers:getHeaders(),credentials:'include',body:JSON.stringify({id})
+});
+if(!response.ok)throw new Error(`HTTP ${response.status}`);
+const result=await response.json();
+if(result.message&&!result.message.includes('失败')){
+showMessage('删除成功');
+loadNavPages();
+}else{
+throw new Error(result.message||'删除失败');
+}
+}catch(error){
+console.error('删除失败:',error);
+showMessage('删除失败: '+error.message,'error');
+}
 }
 
-function hideModal() {
-    document.getElementById('edit-modal').style.display = 'none';
+function hideModal(){
+document.getElementById('edit-modal').style.display='none';
 }
 
-function refreshList() {
-    loadNavPages();
+function refreshList(){
+loadNavPages();
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function escapeHtml(text){
+if(!text)return'';
+const div=document.createElement('div');
+div.textContent=text;
+return div.innerHTML;
 }
 
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleString('zh-CN');
+function formatDate(dateString){
+if(!dateString)return'-';
+const date=new Date(dateString);
+return date.toLocaleString('zh-CN');
 }
 
-// 图标上传功能
-function uploadIcon() {
-    document.getElementById('iconFile').click();
+function uploadIcon(){
+document.getElementById('iconFile').click();
 }
 
-async function handleIconUpload(input) {
-    const file = input.files[0];
-    if (!file) return;
-    
-    // 检查文件大小 (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-        showMessage('图片大小不能超过2MB', 'error');
-        return;
-    }
-    
-    // 检查文件类型
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'];
-    if (!allowedTypes.includes(file.type)) {
-        showMessage('只支持 JPG, PNG, GIF, SVG 格式的图片', 'error');
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    try {
-        showMessage('正在上传图标...', 'info');
-        
-        const response = await fetch(`${API_BASE}/upload/image`, {
-            method: 'POST',
-            headers: getHeaders(false), // 不包含Content-Type，让FormData自动设置
-            credentials: 'include',
-            body: formData
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.url) {
-            document.getElementById('nav-icon').value = result.url;
-            updateIconPreview(result.url);
-            showMessage('图标上传成功');
-        } else {
-            throw new Error(result.message || '上传失败');
-        }
-    } catch (error) {
-        console.error('图标上传失败:', error);
-        showMessage('图标上传失败: ' + error.message, 'error');
-    }
-    
-    // 清空文件输入
-    input.value = '';
+async function handleIconUpload(input){
+const file=input.files[0];
+if(!file)return;
+if(file.size>2*1024*1024){
+showMessage('图片大小不能超过2MB','error');
+return;
+}
+const allowedTypes=['image/jpeg','image/png','image/jpg','image/gif','image/svg+xml'];
+if(!allowedTypes.includes(file.type)){
+showMessage('只支持 JPG, PNG, GIF, SVG 格式的图片','error');
+return;
+}
+const formData=new FormData();
+formData.append('file',file);
+try{
+showMessage('正在上传图标...','info');
+const response=await fetch(`${API_BASE}/upload/image`,{
+method:'POST',headers:getHeaders(false),credentials:'include',body:formData
+});
+if(!response.ok)throw new Error(`HTTP ${response.status}`);
+const result=await response.json();
+if(result.url){
+document.getElementById('nav-icon').value=result.url;
+updateIconPreview(result.url);
+showMessage('图标上传成功');
+}else{
+throw new Error(result.message||'上传失败');
+}
+}catch(error){
+console.error('图标上传失败:',error);
+showMessage('图标上传失败: '+error.message,'error');
+}
+input.value='';
 }
 
-// 更新图标预览
-function updateIconPreview(iconValue) {
-    const preview = document.getElementById('icon-preview');
-    const previewContent = document.getElementById('icon-preview-content');
-    
-    if (!iconValue) {
-        preview.style.display = 'none';
-        return;
-    }
-    
-    preview.style.display = 'block';
-    
-    if (iconValue.startsWith('http://') || iconValue.startsWith('https://')) {
-        // 图片URL预览
-        previewContent.innerHTML = `<img src="${escapeHtml(iconValue)}" style="width:20px;height:20px;object-fit:cover;border-radius:3px;margin-right:8px;vertical-align:middle;" onerror="this.style.display='none'"><span>${escapeHtml(iconValue.length > 50 ? iconValue.substring(0, 50) + '...' : iconValue)}</span>`;
-    } else {
-        // Font Awesome图标预览
-        previewContent.innerHTML = `<i class="${escapeHtml(iconValue)}" style="font-size:16px;margin-right:8px;"></i><span>${escapeHtml(iconValue)}</span>`;
-    }
+function updateIconPreview(iconValue){
+const preview=document.getElementById('icon-preview');
+const previewContent=document.getElementById('icon-preview-content');
+if(!iconValue){
+preview.style.display='none';
+return;
+}
+preview.style.display='block';
+if(iconValue.startsWith('http')){
+previewContent.innerHTML=`<img src="${escapeHtml(iconValue)}" style="width:20px;height:20px;object-fit:cover;border-radius:3px;margin-right:8px;vertical-align:middle" onerror="this.style.display='none'"><span>${escapeHtml(iconValue.length>50?iconValue.substring(0,50)+'...':iconValue)}</span>`;
+}else{
+previewContent.innerHTML=`<i class="${escapeHtml(iconValue)}" style="font-size:16px;margin-right:8px"></i><span>${escapeHtml(iconValue)}</span>`;
+}
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadNavPages();
-    
-    // 监听图标输入框变化
-    const iconInput = document.getElementById('nav-icon');
-    if (iconInput) {
-        iconInput.addEventListener('input', function(e) {
-            updateIconPreview(e.target.value);
-        });
-    }
+document.addEventListener('DOMContentLoaded',function(){
+loadNavPages();
+const iconInput=document.getElementById('nav-icon');
+if(iconInput){
+iconInput.addEventListener('input',function(e){
+updateIconPreview(e.target.value);
+});
+}
 });
 
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-    if (e.target === this) hideModal();
+document.getElementById('edit-modal').addEventListener('click',function(e){
+if(e.target===this)hideModal();
 });
 </script>
 </body>
