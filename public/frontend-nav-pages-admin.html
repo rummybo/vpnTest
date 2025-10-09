@@ -40,6 +40,8 @@
         .alert-success { background: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a; }
         .alert-error { background: #fff2f0; border: 1px solid #ffccc7; color: #ff4d4f; }
         .form-help { font-size: 12px; color: #666; margin-top: 4px; }
+        #icon-preview { margin-top: 8px; display: none; }
+        #icon-preview > div { padding: 8px; background: #f9f9f9; border-radius: 4px; font-size: 12px; color: #666; }
     </style>
 </head>
 <body>
@@ -78,8 +80,8 @@
                     </div>
                     <input type="file" id="iconFile" accept="image/*" style="display: none;" onchange="handleIconUpload(this)">
                     <div class="form-help">支持Font Awesome图标类名或图标图片上传，格式：JPG, PNG, GIF, SVG，最大2MB</div>
-                    <div id="icon-preview" style="margin-top: 8px; display: none;">
-                        <div style="padding: 8px; background: #f9f9f9; border-radius: 4px; font-size: 12px; color: #666;">
+                    <div id="icon-preview">
+                        <div>
                             <strong>图标预览：</strong>
                             <span id="icon-preview-content"></span>
                         </div>
@@ -241,6 +243,10 @@ function showAddModal() {
     document.getElementById('edit-form').reset();
     document.getElementById('nav-sort').value = '0';
     document.getElementById('nav-status').value = 'active';
+    
+    // 清空图标预览
+    document.getElementById('icon-preview').style.display = 'none';
+    
     document.getElementById('edit-modal').style.display = 'block';
 }
 
@@ -373,14 +379,6 @@ function formatDate(dateString) {
     return date.toLocaleString('zh-CN');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadNavPages();
-});
-
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-    if (e.target === this) hideModal();
-});
-
 // 图标上传功能
 function uploadIcon() {
     document.getElementById('iconFile').click();
@@ -459,7 +457,6 @@ function updateIconPreview(iconValue) {
     }
 }
 
-// 监听图标输入框变化，实时预览
 document.addEventListener('DOMContentLoaded', function() {
     loadNavPages();
     
@@ -470,6 +467,10 @@ document.addEventListener('DOMContentLoaded', function() {
             updateIconPreview(e.target.value);
         });
     }
+});
+
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) hideModal();
 });
 </script>
 </body>
