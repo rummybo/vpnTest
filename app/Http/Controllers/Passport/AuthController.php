@@ -568,7 +568,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 获取系统用户订阅信息
+     * 获取系统用户订阅信息（暂停使用）
      */
     public function getSubscribe()
     {
@@ -588,6 +588,8 @@ class AuthController extends Controller
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
+        //新增加的   暂停没有登录的用户使用
+        abort(500, __('The user does not exist'));
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
             if (!$user['plan']) {
