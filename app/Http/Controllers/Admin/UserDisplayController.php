@@ -137,7 +137,7 @@ class UserDisplayController extends Controller
 
         $filename = 'user_display_' . date('Ymd_His') . '.csv';
 
-        return new StreamedResponse(function () use ($query) {
+        $response = new StreamedResponse(function () use ($query) {
             // 输出UTF-8 BOM，确保Excel正确显示中文
             echo "\xEF\xBB\xBF";
             
@@ -186,11 +186,14 @@ class UserDisplayController extends Controller
             });
 
             fclose($handle);
-        }, 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
-        ]);
+        });
+
+        // 设置响应头
+        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+        $response->headers->set('Content-Disposition', "attachment; filename=\"{$filename}\"");
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->headers->set('Pragma', 'no-cache');
+
+        return $response;
     }
 }
