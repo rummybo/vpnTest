@@ -137,58 +137,52 @@ class UserDisplayController extends Controller
 
         $filename = 'user_display_' . date('Ymd_His') . '.csv';
 
-        // 使用 response() 助手函数创建流式响应
-        return response()->stream(function () use ($query) {
-            // 输出UTF-8 BOM，确保Excel正确显示中文
-            echo "\xEF\xBB\xBF";
-            
-            $handle = fopen('php://output', 'w');
-            
-            // CSV表头
-            fputcsv($handle, [
-                'ID',
-                'Email',
-                'Phone', 
-                'Username',
-                'Last Login IP',
-                'Created At'
-            ]);
+        // 创建临时文件
+        $tempFile = tempnam(sys_get_temp_dir(), 'user_export_');
+        $handle = fopen($tempFile, 'w');
+        
+        // 写入UTF-8 BOM
+        fwrite($handle, "\xEF\xBB\xBF");
+        
+        // CSV表头
+        fputcsv($handle, [
+            'ID',
+            'Email',
+            'Phone', 
+            'Username',
+            'Last Login IP',
+            'Created At'
+        ]);
 
-            // 分批处理数据，避免内存溢出
-            $query->orderBy('id')->chunk(1000, function ($users) use ($handle) {
-                foreach ($users as $user) {
-                    // 格式化时间
-                    $createdAt = '';
-                    if ($user->created_at) {
-                        if (is_numeric($user->created_at)) {
-                            $createdAt = date('Y-m-d H:i:s', (int)$user->created_at);
-                        } else {
-                            $createdAt = $user->created_at;
-                        }
+        // 分批处理数据，避免内存溢出
+        $query->orderBy('id')->chunk(1000, function ($users) use ($handle) {
+            foreach ($users as $user) {
+                // 格式化时间
+                $createdAt = '';
+                if ($user->created_at) {
+                    if (is_numeric($user->created_at)) {
+                        $createdAt = date('Y-m-d H:i:s', (int)$user->created_at);
+                    } else {
+                        $createdAt = $user->created_at;
                     }
-                    
-                    fputcsv($handle, [
-                        $user->id,
-                        $user->email ?: '',
-                        $user->phone ?: '',
-                        $user->username ?: '',
-                        $user->last_login_ip ?: '',
-                        $createdAt
-                    ]);
                 }
                 
-                // 强制输出缓冲区
-                if (function_exists('flush')) {
-                    @flush();
-                }
-            });
+                fputcsv($handle, [
+                    $user->id,
+                    $user->email ?: '',
+                    $user->phone ?: '',
+                    $user->username ?: '',
+                    $user->last_login_ip ?: '',
+                    $createdAt
+                ]);
+            }
+        });
 
-            fclose($handle);
-        }, 200, [
+        fclose($handle);
+
+        // 返回文件下载响应
+        return response()->download($tempFile, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
-        ]);
+        ])->deleteFileAfterSend(true);
     }
 }

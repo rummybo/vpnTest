@@ -90,11 +90,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
 // 用户显示管理路由 (无认证中间件，在控制器内部处理)
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('user_display', [\App\Http\Controllers\Admin\UserDisplayController::class, 'index'])->name('user_display.index');
-    Route::get('user_display/export', [\App\Http\Controllers\Admin\UserDisplayController::class, 'export'])->name('user_display.export');
     
     // API格式路由 (v2board后台使用)
     Route::get('user_display/fetch', [\App\Http\Controllers\Admin\UserDisplayController::class, 'fetch']);
 });
+
+// 用户显示导出路由 (单独配置，跳过CORS中间件)
+Route::get('admin/user_display/export', [\App\Http\Controllers\Admin\UserDisplayController::class, 'export'])
+    ->name('admin.user_display.export')
+    ->withoutMiddleware([\App\Http\Middleware\CORS::class]);
 
 // v2board风格API路由 (管理后台)
 Route::prefix('api/v1/{secure_path}')->group(function () {
