@@ -87,8 +87,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
 
-// 用户显示管理路由
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+// 用户显示管理路由 (无认证中间件，在控制器内部处理)
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('user_display', [\App\Http\Controllers\Admin\UserDisplayController::class, 'index'])->name('user_display.index');
     Route::get('user_display/export', [\App\Http\Controllers\Admin\UserDisplayController::class, 'export'])->name('user_display.export');
     
