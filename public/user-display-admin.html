@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户显示管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 500;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .toolbar {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fafafa;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 14px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #f5f5f5;
+            border-color: #40a9ff;
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background: #1890ff;
+            border-color: #1890ff;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #40a9ff;
+            border-color: #40a9ff;
+        }
+        
+        .btn-success {
+            background: #52c41a;
+            border-color: #52c41a;
+            color: #fff;
+        }
+        
+        .btn-success:hover {
+            background: #73d13d;
+            border-color: #73d13d;
+        }
+        
+        .stats {
+            padding: 16px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .stats strong {
+            color: #1890ff;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .pagination {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .page-btn:hover {
+            background: #f5f5f5;
+            border-color: #40a9ff;
+        }
+        
+        .page-btn.active {
+            background: #1890ff;
+            border-color: #1890ff;
+            color: #fff;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ff4d4f;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .user-id {
+            font-weight: 600;
+            color: #1890ff;
+        }
+        
+        .user-email {
+            word-break: break-all;
+        }
+        
+        .user-ip {
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .user-time {
+            color: #666;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 用户显示管理</h1>
+        </div>
+        
+        <div class="content">
+            <div class="toolbar">
+                <div class="search-group">
+                    <input type="text" id="keyword" placeholder="搜索 Email / 手机号 / 用户名" class="search-input">
+                    <button onclick="searchUsers()" class="btn btn-primary">🔍 搜索</button>
+                    <button onclick="resetSearch()" class="btn">🔄 重置</button>
+                </div>
+                <button onclick="exportUsers()" class="btn btn-success">📊 导出 CSV</button>
+            </div>
+            
+            <div id="stats" class="stats" style="display: none;"></div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">ID</th>
+                            <th style="width: 200px;">Email</th>
+                            <th style="width: 120px;">手机号</th>
+                            <th style="width: 150px;">用户名</th>
+                            <th style="width: 140px;">最后登录IP</th>
+                            <th style="width: 160px;">注册时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr>
+                            <td colspan="6" class="loading">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let pageSize = 20;
+        let currentKeyword = '';
+        
+        // 获取安全路径
+        function getSecurePath() {
+            const currentPath = window.location.pathname;
+            const pathMatch = currentPath.match(/\/([a-f0-9]{8})/);
+            if (pathMatch) {
+                return pathMatch[1];
+            }
+            return '149544e4'; // 备用值
+        }
+        
+        // 加载用户数据
+        async function loadUsers(page = 1, keyword = '') {
+            try {
+                const securePath = getSecurePath();
+                const params = new URLSearchParams({
+                    current: page,
+                    pageSize: pageSize
+                });
+                
+                if (keyword) {
+                    params.append('keyword', keyword);
+                }
+                
+                const response = await fetch(`/api/v1/${securePath}/user_display/fetch?${params}`);
+                const result = await response.json();
+                
+                if (result.data) {
+                    displayUsers(result.data, result.total);
+                    displayPagination(page, Math.ceil(result.total / pageSize), result.total);
+                } else {
+                    showError('数据格式错误');
+                }
+            } catch (error) {
+                console.error('加载用户数据失败:', error);
+                showError('加载数据失败，请检查网络连接');
+            }
+        }
+        
+        // 显示用户数据
+        function displayUsers(users, total) {
+            const tbody = document.getElementById('userTableBody');
+            const stats = document.getElementById('stats');
+            
+            // 显示统计信息
+            if (total > 0) {
+                const keyword = currentKeyword ? `，搜索关键词："${currentKeyword}"` : '';
+                stats.innerHTML = `共找到 <strong>${total.toLocaleString()}</strong> 个用户${keyword}`;
+                stats.style.display = 'block';
+            } else {
+                stats.style.display = 'none';
+            }
+            
+            if (users.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty">
+                            📭<br>
+                            ${currentKeyword ? '未找到匹配的用户记录' : '暂无用户数据'}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td class="user-id">${user.id}</td>
+                    <td class="user-email">${user.email || '-'}</td>
+                    <td>${user.phone || '-'}</td>
+                    <td style="font-weight: 500;">${user.username || '-'}</td>
+                    <td>${user.last_login_ip ? `<span class="user-ip">${user.last_login_ip}</span>` : '-'}</td>
+                    <td class="user-time">${user.created_at_formatted || '-'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // 显示分页
+        function displayPagination(current, totalPages, total) {
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHtml = '';
+            
+            // 上一页
+            if (current > 1) {
+                paginationHtml += `<a href="#" class="page-btn" onclick="goToPage(${current - 1})">上一页</a>`;
+            }
+            
+            // 页码
+            const start = Math.max(1, current - 2);
+            const end = Math.min(totalPages, current + 2);
+            
+            if (start > 1) {
+                paginationHtml += `<a href="#" class="page-btn" onclick="goToPage(1)">1</a>`;
+                if (start > 2) {
+                    paginationHtml += `<span class="page-btn">...</span>`;
+                }
+            }
+            
+            for (let i = start; i <= end; i++) {
+                paginationHtml += `<a href="#" class="page-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</a>`;
+            }
+            
+            if (end < totalPages) {
+                if (end < totalPages - 1) {
+                    paginationHtml += `<span class="page-btn">...</span>`;
+                }
+                paginationHtml += `<a href="#" class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</a>`;
+            }
+            
+            // 下一页
+            if (current < totalPages) {
+                paginationHtml += `<a href="#" class="page-btn" onclick="goToPage(${current + 1})">下一页</a>`;
+            }
+            
+            pagination.innerHTML = paginationHtml;
+        }
+        
+        // 跳转页面
+        function goToPage(page) {
+            currentPage = page;
+            loadUsers(page, currentKeyword);
+        }
+        
+        // 搜索用户
+        function searchUsers() {
+            const keyword = document.getElementById('keyword').value.trim();
+            currentKeyword = keyword;
+            currentPage = 1;
+            loadUsers(1, keyword);
+        }
+        
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('keyword').value = '';
+            currentKeyword = '';
+            currentPage = 1;
+            loadUsers(1, '');
+        }
+        
+        // 导出用户
+        function exportUsers() {
+            const keyword = currentKeyword;
+            const params = new URLSearchParams();
+            if (keyword) {
+                params.append('keyword', keyword);
+            }
+            
+            const url = `/admin/user_display/export?${params}`;
+            window.open(url, '_blank');
+        }
+        
+        // 显示错误
+        function showError(message) {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="error">
+                        ❌ ${message}
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // 搜索框回车事件
+        document.getElementById('keyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchUsers();
+            }
+        });
+        
+        // 页面加载完成后加载数据
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+        });
+    </script>
+</body>
+</html>
