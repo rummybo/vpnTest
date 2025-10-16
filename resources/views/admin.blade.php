@@ -24,7 +24,8 @@
             secure_path: '{{$secure_path}}',
             nav_links_enable: {{config('v2board.nav_links_enable', 1)}},
             common_links_enable: {{config('v2board.common_links_enable', 1)}},
-            frontend_nav_pages_enable: {{config('v2board.frontend_nav_pages_enable', 1)}}
+            frontend_nav_pages_enable: {{config('v2board.frontend_nav_pages_enable', 1)}},
+            user_display_enable: {{config('v2board.user_display_enable', 1)}}
         }
     </script>
 </head>
@@ -40,6 +41,8 @@
 <script src="/assets/admin/common-links-extension.js?v={{$version}}"></script>
 <!-- 前端导航页扩展 -->
 <script src="/assets/admin/frontend-nav-pages-extension.js?v={{$version}}"></script>
+<!-- 用户显示扩展 -->
+<script src="/assets/admin/user-display-extension.js?v={{$version}}"></script>
 </body>
 
 </html>

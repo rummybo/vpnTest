@@ -87,8 +87,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
 });
 
+// 用户显示管理路由
+Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('user_display', [\App\Http\Controllers\Admin\UserDisplayController::class, 'index'])->name('user_display.index');
+    Route::get('user_display/export', [\App\Http\Controllers\Admin\UserDisplayController::class, 'export'])->name('user_display.export');
+    
+    // API格式路由 (v2board后台使用)
+    Route::get('user_display/fetch', [\App\Http\Controllers\Admin\UserDisplayController::class, 'fetch']);
+});
+
 // v2board风格API路由 (管理后台)
 Route::prefix('api/v1/{secure_path}')->group(function () {
+    // 用户显示管理API
+    Route::get('user_display/fetch', [\App\Http\Controllers\Admin\UserDisplayController::class, 'fetch']);
+    
     // 福利导航管理API
     Route::get('nav_links/fetch', [\App\Http\Controllers\Admin\NavLinkController::class, 'fetch']);
     Route::post('nav_links/save', [\App\Http\Controllers\Admin\NavLinkController::class, 'save']);
