@@ -100,6 +100,20 @@ Route::get('admin/user_display/export', [\App\Http\Controllers\Admin\UserDisplay
     ->name('admin.user_display.export')
     ->withoutMiddleware([\App\Http\Middleware\CORS::class]);
 
+// 系统配置管理路由 (移除认证中间件，在控制器内部处理)
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('system_configs', \App\Http\Controllers\Admin\SystemConfigController::class);
+    
+    // API格式路由 (v2board后台使用)
+    Route::get('system_configs/fetch', [\App\Http\Controllers\Admin\SystemConfigController::class, 'fetch']);
+    Route::post('system_configs/save', [\App\Http\Controllers\Admin\SystemConfigController::class, 'save']);
+    Route::post('system_configs/drop', [\App\Http\Controllers\Admin\SystemConfigController::class, 'drop']);
+    Route::post('system_configs/toggle', [\App\Http\Controllers\Admin\SystemConfigController::class, 'toggle']);
+    Route::post('system_configs/batch-update', [\App\Http\Controllers\Admin\SystemConfigController::class, 'batchUpdate']);
+    Route::get('system_configs/groups', [\App\Http\Controllers\Admin\SystemConfigController::class, 'groups']);
+    Route::post('system_configs/refresh-cache', [\App\Http\Controllers\Admin\SystemConfigController::class, 'refreshCache']);
+});
+
 // v2board风格API路由 (管理后台)
 Route::prefix('api/v1/{secure_path}')->group(function () {
     // 用户显示管理API
@@ -126,6 +140,15 @@ Route::prefix('api/v1/{secure_path}')->group(function () {
     Route::post('frontend_nav_pages/show', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'show']);
     Route::post('frontend_nav_pages/sort', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'sort']);
     
+    // 系统配置管理API
+    Route::get('system_configs/fetch', [\App\Http\Controllers\Admin\SystemConfigController::class, 'fetch']);
+    Route::post('system_configs/save', [\App\Http\Controllers\Admin\SystemConfigController::class, 'save']);
+    Route::post('system_configs/drop', [\App\Http\Controllers\Admin\SystemConfigController::class, 'drop']);
+    Route::post('system_configs/toggle', [\App\Http\Controllers\Admin\SystemConfigController::class, 'toggle']);
+    Route::post('system_configs/batch-update', [\App\Http\Controllers\Admin\SystemConfigController::class, 'batchUpdate']);
+    Route::get('system_configs/groups', [\App\Http\Controllers\Admin\SystemConfigController::class, 'groups']);
+    Route::post('system_configs/refresh-cache', [\App\Http\Controllers\Admin\SystemConfigController::class, 'refreshCache']);
+    
     // 图片上传路由
     Route::post('upload/image', [\App\Http\Controllers\Admin\UploadController::class, 'uploadImage']);
 });
@@ -144,4 +167,11 @@ Route::prefix('api/v1')->group(function () {
     Route::get('frontend-nav-pages', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'index']);
     Route::get('frontend-nav-pages/grouped', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'grouped']);
     Route::get('frontend-nav-pages/popular', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'popular']);
+    
+    // APP配置API
+    Route::get('app-config', [\App\Http\Controllers\Api\AppConfigController::class, 'index']);
+    Route::get('app-config/detailed', [\App\Http\Controllers\Api\AppConfigController::class, 'detailed']);
+    Route::get('app-config/check', [\App\Http\Controllers\Api\AppConfigController::class, 'check']);
+    Route::post('app-config/batch-check', [\App\Http\Controllers\Api\AppConfigController::class, 'batchCheck']);
+    Route::get('app-config/info', [\App\Http\Controllers\Api\AppConfigController::class, 'info']);
 });
