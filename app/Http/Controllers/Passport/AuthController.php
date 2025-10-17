@@ -151,7 +151,7 @@ class AuthController extends Controller
         $exist = $this->checkUserExists($registerType, $identifier);
         if ($exist) {
             //$user = $exist;
-            abort(500, __(ucfirst($registerType) . ' already exists'));
+            abort(500, __(ucfirst($registerType) . ' 已经存在'));
         }else{
             $user = new User();
             // 根据注册类型设置相应字段
