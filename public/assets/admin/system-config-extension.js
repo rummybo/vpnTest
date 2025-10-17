@@ -9,8 +9,15 @@
     console.log('系统配置管理扩展开始加载...');
 
     // 检查配置是否启用
-    if (!window.settings || window.settings.system_config_enable != 1) {
-        console.log('系统配置管理功能未启用或配置不存在');
+    if (!window.settings) {
+        console.log('window.settings对象不存在');
+        return;
+    }
+    
+    console.log('window.settings.system_config_enable:', window.settings.system_config_enable);
+    
+    if (window.settings.system_config_enable != 1) {
+        console.log('系统配置管理功能未启用');
         return;
     }
 
