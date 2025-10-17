@@ -157,9 +157,6 @@ class SmsController extends Controller
             return response()->json(['code' => 0, 'msg' => '验证码错误']);
         }
 
-        // 验证成功后删除缓存
-        Cache::forget($cacheKey);
-
         return response()->json([
             'code' => 1, 
             'msg' => '验证码验证成功',
