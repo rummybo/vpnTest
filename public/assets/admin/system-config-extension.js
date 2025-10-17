@@ -22,10 +22,12 @@
         }
 
         // 检查系统配置管理功能是否启用
-        if (!window.settings.system_config_enable) {
-            console.log('[SystemConfig] System config management is disabled');
+        const configEnabled = window.settings.system_config_enable;
+        if (!configEnabled && configEnabled !== 1 && configEnabled !== '1') {
+            console.log('[SystemConfig] System config management is disabled, value:', configEnabled);
             return;
         }
+        console.log('[SystemConfig] System config management is enabled, value:', configEnabled);
 
         // 等待React应用加载完成
         waitForReactApp();
@@ -666,4 +668,14 @@
     document.head.appendChild(animationStyle);
 
     console.log('[SystemConfig] Extension loaded');
+    
+    // 直接初始化（如果DOM已经加载完成）
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initSystemConfigExtension, 1000);
+        });
+    } else {
+        // DOM已经加载完成，直接初始化
+        setTimeout(initSystemConfigExtension, 1000);
+    }
 })();
