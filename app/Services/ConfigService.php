@@ -89,6 +89,14 @@ class ConfigService
     }
 
     /**
+     * 获取所有启用的配置（别名，与getAll相同）
+     */
+    public static function getAllEnabled()
+    {
+        return self::getAll();
+    }
+
+    /**
      * 获取前端配置（APP使用）
      */
     public static function getFrontendConfig()

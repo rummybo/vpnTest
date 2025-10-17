@@ -289,6 +289,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="#system-configs" class="nav-link">
+                    <i class="fas fa-cog"></i> 系统配置管理
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#app-version" class="nav-link">
                     <i class="fas fa-mobile-alt"></i> APP版本管理
                 </a>
@@ -2696,6 +2701,168 @@ GET http://192.197.113.52:2053/api/v1/frontend-nav-pages/grouped
                     • 数据按排序值进行分组，便于前端按组显示<br>
                     • 每个分组的key为排序值，value为该排序值的导航页数组<br>
                     • 适用于需要分组展示导航页的场景
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统配置管理 -->
+        <div id="system-configs" class="content-section">
+            <h1 class="section-title">系统配置管理 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 系统配置管理接口提供系统配置数据的查询功能，无需认证即可访问。配置数据支持缓存机制，提高访问性能。
+            </div>
+
+            <!-- 获取所有系统配置 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/system-configs</span>
+                </div>
+                <p><strong>描述：</strong> 获取所有启用的系统配置数据</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/system-configs
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "name": "site_name",
+      "value": "我的网站",
+      "type": "string",
+      "group": "basic",
+      "description": "网站名称"
+    },
+    {
+      "id": 2,
+      "name": "site_url",
+      "value": "https://example.com",
+      "type": "string", 
+      "group": "basic",
+      "description": "网站地址"
+    }
+  ]
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>integer</td>
+                            <td>配置项ID</td>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td>string</td>
+                            <td>配置项名称</td>
+                        </tr>
+                        <tr>
+                            <td>value</td>
+                            <td>string</td>
+                            <td>配置值</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>string</td>
+                            <td>配置类型（string, number, boolean, json）</td>
+                        </tr>
+                        <tr>
+                            <td>group</td>
+                            <td>string</td>
+                            <td>配置分组</td>
+                        </tr>
+                        <tr>
+                            <td>description</td>
+                            <td>string</td>
+                            <td>配置项描述</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 获取前端配置 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/system-configs/frontend</span>
+                </div>
+                <p><strong>描述：</strong> 获取前端专用的配置数据</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/system-configs/frontend
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "site_name": "我的网站",
+    "site_url": "https://example.com",
+    "theme": "default",
+    "language": "zh-CN"
+  }
+}
+                </div>
+
+                <h4>使用说明</h4>
+                <div class="alert info">
+                    • 返回前端专用的配置数据，格式为键值对<br>
+                    • 适用于前端页面直接使用的配置项<br>
+                    • 数据经过过滤，只包含前端相关的配置
+                </div>
+            </div>
+
+            <!-- 检查系统配置状态 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/system-configs/status</span>
+                </div>
+                <p><strong>描述：</strong> 检查系统配置管理扩展的状态</p>
+                
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/system-configs/status
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "enabled": true,
+    "config_count": 15,
+    "cache_enabled": true,
+    "last_updated": "2025-01-25 10:00:00"
+  }
+}
+                </div>
+
+                <h4>使用说明</h4>
+                <div class="alert info">
+                    • 用于检查系统配置管理扩展是否正常运行<br>
+                    • 返回扩展的启用状态和配置统计信息<br>
+                    • 便于监控系统配置服务的健康状态
                 </div>
             </div>
         </div>

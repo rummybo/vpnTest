@@ -174,4 +174,9 @@ Route::prefix('api/v1')->group(function () {
     Route::get('app-config/check', [\App\Http\Controllers\Api\AppConfigController::class, 'check']);
     Route::post('app-config/batch-check', [\App\Http\Controllers\Api\AppConfigController::class, 'batchCheck']);
     Route::get('app-config/info', [\App\Http\Controllers\Api\AppConfigController::class, 'info']);
+    
+    // 系统配置管理API
+    Route::get('system-configs', [\App\Http\Controllers\Api\SystemConfigController::class, 'index']);
+    Route::get('system-configs/frontend', [\App\Http\Controllers\Api\SystemConfigController::class, 'frontend']);
+    Route::get('system-configs/status', [\App\Http\Controllers\Api\SystemConfigController::class, 'status']);
 });
