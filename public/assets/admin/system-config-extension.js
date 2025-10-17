@@ -678,4 +678,7 @@
         // DOM已经加载完成，直接初始化
         setTimeout(initSystemConfigExtension, 1000);
     }
+    
+    // 直接调用初始化函数（确保扩展启动）
+    initSystemConfigExtension();
 })();
