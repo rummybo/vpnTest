@@ -22,8 +22,7 @@ class ClientController extends Controller
         if ($target === 'clash') {
             $flag = 'clash';
         }
-        var_dump($target);
-die(222);
+
         // 自动识别 Clash / Meta / Mihomo / Stash / Windows / Electron / CFW
         if (
             strpos($flag, 'clash') !== false ||
