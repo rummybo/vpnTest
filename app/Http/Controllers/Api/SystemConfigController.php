@@ -42,14 +42,18 @@ class SystemConfigController extends Controller
     }
 
     /**
-     * 获取前端相关系统配置
+     * 获取前端相关系统配置（直接查库，不使用缓存）
      * 
      * @return \Illuminate\Http\JsonResponse
      */
     public function frontend()
     {
         try {
-            $configs = ConfigService::getFrontendConfig();
+            // 直接查询数据库，不使用缓存
+            $configs = \App\Models\SystemConfig::where('group', 'frontend')
+                ->where('status', 1)
+                ->pluck('value', 'key')
+                ->toArray();
             
             return response()->json([
                 'code' => 200,
@@ -59,7 +63,7 @@ class SystemConfigController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'code' => 500,
-                'message' => 'Internal Server Error',
+                'message' => 'Internal Server Error: ' . $e->getMessage(),
                 'data' => []
             ], 500);
         }

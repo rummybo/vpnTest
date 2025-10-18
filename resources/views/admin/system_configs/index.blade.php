@@ -1,9 +1,333 @@
-@extends('admin.layouts.default')
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>系统配置管理 - {{config('v2board.app_name', 'V2Board')}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            margin: 0; 
+            padding: 25px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333; 
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        .header { 
+            background: white; 
+            padding: 25px 30px; 
+            border-radius: 15px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 { 
+            margin: 0; 
+            color: #2c3e50; 
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 5px 0 0 0; 
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+        .btn { 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            margin-left: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+        }
+        .btn-success { 
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%); 
+            color: white; 
+        }
+        .btn-danger { 
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); 
+            color: white; 
+        }
+        .btn-sm { 
+            padding: 8px 16px; 
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+        .card { 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+            margin-bottom: 25px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .card-header { 
+            padding: 20px 25px; 
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .card-header h3 {
+            margin: 0;
+            color: #495057;
+            font-weight: 600;
+        }
+        .card-header label {
+            font-weight: 600;
+            color: #495057;
+            margin-right: 10px;
+        }
+        .card-body { padding: 25px; }
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .table th, .table td { 
+            padding: 15px 12px; 
+            text-align: center; 
+            border-bottom: 1px solid #f1f3f4; 
+        }
+        .table th { 
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+        .table tr:hover { 
+            background: #f8f9fa; 
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+        .badge { 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-success { 
+            background: linear-gradient(135deg, #28a745, #20c997); 
+            color: white; 
+        }
+        .badge-secondary { 
+            background: linear-gradient(135deg, #6c757d, #adb5bd); 
+            color: white; 
+        }
+        .badge-info { 
+            background: linear-gradient(135deg, #17a2b8, #6f42c1); 
+            color: white; 
+        }
+        .badge-warning { 
+            background: linear-gradient(135deg, #ffc107, #fd7e14); 
+            color: white; 
+        }
+        .loading { 
+            text-align: center; 
+            padding: 50px; 
+            color: #6c757d;
+        }
+        .error { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        .empty-state { 
+            text-align: center; 
+            padding: 80px 20px; 
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-control { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e9ecef; 
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+        select.form-control { 
+            margin-left: 15px; 
+            max-width: 220px;
+            background: white;
+            cursor: pointer;
+        }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-dialog { 
+            max-width: 700px; 
+            margin: 30px auto; 
+            background: white; 
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .modal-header { 
+            padding: 20px 25px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .modal-body { 
+            padding: 25px; 
+        }
+        .modal-footer { 
+            padding: 20px 25px; 
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6; 
+            text-align: right; 
+        }
+        .close { 
+            background: none; 
+            border: none; 
+            font-size: 28px; 
+            cursor: pointer;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        .close:hover {
+            opacity: 1;
+        }
+        .row { 
+            display: flex; 
+            margin: -10px; 
+        }
+        .col-md-6 { 
+            flex: 1; 
+            padding: 0 10px; 
+        }
+        code {
+            background: #f1f3f4;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.85rem;
+            color: #e83e8c;
+        }
+        .operation-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .operation-buttons .btn {
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+        .operation-buttons .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>系统配置管理</h1>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">管理系统的各种配置参数</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary" onclick="createConfig()">
+                ➕ 新增配置
+            </button>
+            <button type="button" class="btn btn-success" onclick="refreshCache()">
+                🔄 刷新缓存
+            </button>
+        </div>
+    </div>
 
-@section('title', '系统配置管理')
-
-@section('content')
-<div class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 style="margin: 0;">配置列表</h3>
+            <div>
+                <label>分组筛选:</label>
+                <select id="groupFilter" class="form-control" onchange="filterByGroup()">
+                    <option value="">所有分组</option>
+                    <option value="general">通用配置</option>
+                    <option value="frontend" selected>前端配置</option>
+                    <option value="system">系统配置</option>
+                    <option value="payment">支付配置</option>
+                    <option value="email">邮件配置</option>
+                    <option value="sms">短信配置</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
     <div class="content-header">
         <div class="content-header-left">
             <h2 class="content-title">系统配置管理</h2>
@@ -184,7 +508,8 @@
 
 <script>
 $(document).ready(function() {
-    loadConfigs();
+    // 默认加载前端配置
+    filterByGroup();
     
     // 表单提交
     $('#configForm').on('submit', function(e) {
@@ -262,17 +587,17 @@ function renderConfigTable(configs) {
                 <td>${statusBadge}</td>
                 <td>${config.updated_at || '-'}</td>
                 <td>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="editConfig(${config.id})">
-                            <i class="fa fa-edit"></i>
+                    <div class="operation-buttons">
+                        <button type="button" class="btn btn-sm" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white;" onclick="editConfig(${config.id})" title="编辑配置">
+                            ✏️ 编辑
                         </button>
                         ${config.is_system ? '' : `
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteConfig(${config.id}, '${config.key}')">
-                            <i class="fa fa-trash"></i>
+                        <button type="button" class="btn btn-sm" style="background: linear-gradient(135deg, #dc3545, #c82333); color: white;" onclick="deleteConfig(${config.id}, '${config.key}')" title="删除配置">
+                            🗑️ 删除
                         </button>
                         `}
-                        <button type="button" class="btn btn-sm btn-outline-success" onclick="toggleConfig(${config.id})">
-                            <i class="fa fa-toggle-${config.status ? 'on' : 'off'}"></i>
+                        <button type="button" class="btn btn-sm" style="background: linear-gradient(135deg, ${config.status ? '#28a745, #1e7e34' : '#6c757d, #545b62'}); color: white;" onclick="toggleConfig(${config.id})" title="${config.status ? '禁用' : '启用'}配置">
+                            ${config.status ? '✅ 启用' : '❌ 禁用'}
                         </button>
                     </div>
                 </td>
@@ -535,4 +860,7 @@ function showMessage(message, type) {
     }
 }
 </script>
-@endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
