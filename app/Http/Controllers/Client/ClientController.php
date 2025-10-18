@@ -18,7 +18,7 @@ class ClientController extends Controller
         $flag = strtolower($flag);
 
         // ✅ 强制通过 URL 参数 target=clash 返回 YAML
-        $target = strtolower($request->input('target') ?? '');
+        $target = strtolower($request->get('target') ?? '');
         if ($target === 'clash') {
             $flag = 'clash';
         }
