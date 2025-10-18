@@ -13,29 +13,42 @@ class ClientController extends Controller
 {
     public function subscribe(Request $request)
     {
-        $flag = $request->input('flag')
-            ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        // 获取 UA 或手动 flag 参数
+        $flag = $request->input('flag') ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
         $flag = strtolower($flag);
+
+        // 兼容 Clash / Clash Meta 安卓客户端自动识别
+        if (strpos($flag, 'clash') !== false || strpos($flag, 'meta') !== false) {
+            $flag = 'clash';
+        }
+
         $user = $request->user;
-        // account not expired and is not banned.
+
+        // 检查账户是否有效（未过期、未封禁）
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
+
             $serverService = new ServerService();
             $servers = $serverService->getAvailableServers($user);
+
             $this->setSubscribeInfoToServers($servers, $user);
-            if ($flag) {
-                foreach (array_reverse(glob(app_path('Http//Controllers//Client//Protocols') . '/*.php')) as $file) {
-                    $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
-                    $class = new $file($user, $servers);
-                    if (strpos($flag, $class->flag) !== false) {
-                        die($class->handle());
-                    }
+
+            // 遍历协议目录，找到匹配的类进行处理
+            foreach (array_reverse(glob(app_path('Http/Controllers/Client/Protocols') . '/*.php')) as $file) {
+                $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
+                $class = new $file($user, $servers);
+
+                if (strpos($flag, $class->flag) !== false) {
+                    die($class->handle());
                 }
             }
+
+            // 默认输出 General（兼容 vmess 订阅）
             $class = new General($user, $servers);
             die($class->handle());
         }
     }
+
 
     private function setSubscribeInfoToServers(&$servers, $user)
     {
