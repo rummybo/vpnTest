@@ -102,16 +102,24 @@ Route::get('admin/user_display/export', [\App\Http\Controllers\Admin\UserDisplay
 
 // 系统配置管理路由 (移除认证中间件，在控制器内部处理)
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('system_configs', \App\Http\Controllers\Admin\SystemConfigController::class);
+    // API格式路由先定义 (v2board后台使用)
+    Route::get('system_configs/fetch', [\App\Http\Controllers\Admin\SystemConfigController::class, 'fetch'])->name('system_configs.fetch');
+    Route::get('system_configs/groups', [\App\Http\Controllers\Admin\SystemConfigController::class, 'groups'])->name('system_configs.groups');
+    Route::post('system_configs/save', [\App\Http\Controllers\Admin\SystemConfigController::class, 'save'])->name('system_configs.save');
+    Route::post('system_configs/drop', [\App\Http\Controllers\Admin\SystemConfigController::class, 'drop'])->name('system_configs.drop');
+    Route::post('system_configs/toggle', [\App\Http\Controllers\Admin\SystemConfigController::class, 'toggle'])->name('system_configs.toggle');
+    Route::post('system_configs/batch-update', [\App\Http\Controllers\Admin\SystemConfigController::class, 'batchUpdate'])->name('system_configs.batch_update');
+    Route::post('system_configs/refresh-cache', [\App\Http\Controllers\Admin\SystemConfigController::class, 'refreshCache'])->name('system_configs.refresh_cache');
     
-    // API格式路由 (v2board后台使用)
-    Route::get('system_configs/fetch', [\App\Http\Controllers\Admin\SystemConfigController::class, 'fetch']);
-    Route::post('system_configs/save', [\App\Http\Controllers\Admin\SystemConfigController::class, 'save']);
-    Route::post('system_configs/drop', [\App\Http\Controllers\Admin\SystemConfigController::class, 'drop']);
-    Route::post('system_configs/toggle', [\App\Http\Controllers\Admin\SystemConfigController::class, 'toggle']);
-    Route::post('system_configs/batch-update', [\App\Http\Controllers\Admin\SystemConfigController::class, 'batchUpdate']);
-    Route::get('system_configs/groups', [\App\Http\Controllers\Admin\SystemConfigController::class, 'groups']);
-    Route::post('system_configs/refresh-cache', [\App\Http\Controllers\Admin\SystemConfigController::class, 'refreshCache']);
+    // 主要的CRUD路由
+    Route::get('system_configs', [\App\Http\Controllers\Admin\SystemConfigController::class, 'index'])->name('system_configs.index');
+    Route::get('system_configs/create', [\App\Http\Controllers\Admin\SystemConfigController::class, 'create'])->name('system_configs.create');
+    Route::post('system_configs', [\App\Http\Controllers\Admin\SystemConfigController::class, 'store'])->name('system_configs.store');
+    Route::get('system_configs/{system_config}', [\App\Http\Controllers\Admin\SystemConfigController::class, 'show'])->name('system_configs.show');
+    Route::get('system_configs/{system_config}/edit', [\App\Http\Controllers\Admin\SystemConfigController::class, 'edit'])->name('system_configs.edit');
+    Route::put('system_configs/{system_config}', [\App\Http\Controllers\Admin\SystemConfigController::class, 'update'])->name('system_configs.update');
+    Route::patch('system_configs/{system_config}', [\App\Http\Controllers\Admin\SystemConfigController::class, 'update'])->name('system_configs.patch');
+    Route::delete('system_configs/{system_config}', [\App\Http\Controllers\Admin\SystemConfigController::class, 'destroy'])->name('system_configs.destroy');
 });
 
 // v2board风格API路由 (管理后台)
