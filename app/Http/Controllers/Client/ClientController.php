@@ -22,7 +22,7 @@ class ClientController extends Controller
         $target = strtolower($request->input('target') ?? '');
 
         $user = $request->user;
-die(55666);
+
         // 检查账户是否有效
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
