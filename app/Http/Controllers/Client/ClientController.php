@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Client\Protocols\Clash;
 use App\Http\Controllers\Client\Protocols\General;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
@@ -55,8 +56,12 @@ class ClientController extends Controller
                 }
             }
 
-            // 默认输出 Base64（vmess/ss）
-            $class = new General($user, $servers);
+            if ($target = 'clash') {
+                $class = new Clash($user, $servers);
+            } else {
+                // 默认输出 Base64（vmess/ss）
+                $class = new General($user, $servers);
+            }
             die($class->handle());
         }
     }
