@@ -17,33 +17,36 @@ class ClientController extends Controller
         $flag = $request->input('flag') ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
         $flag = strtolower($flag);
 
-        // 兼容 Clash / Clash Meta 安卓客户端自动识别
-        if (strpos($flag, 'clash') !== false || strpos($flag, 'meta') !== false) {
+        // ✅ 自动识别 Clash / Meta / Stash / Mihomo UA
+        if (
+            strpos($flag, 'clash') !== false ||
+            strpos($flag, 'meta') !== false ||
+            strpos($flag, 'mihomo') !== false ||
+            strpos($flag, 'stash') !== false
+        ) {
             $flag = 'clash';
         }
 
         $user = $request->user;
 
-        // 检查账户是否有效（未过期、未封禁）
+        // 检查账户是否有效（未过期且未封禁）
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
-
             $serverService = new ServerService();
             $servers = $serverService->getAvailableServers($user);
 
             $this->setSubscribeInfoToServers($servers, $user);
 
-            // 遍历协议目录，找到匹配的类进行处理
+            // 修正路径问题（避免双斜杠错误）
             foreach (array_reverse(glob(app_path('Http/Controllers/Client/Protocols') . '/*.php')) as $file) {
                 $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
                 $class = new $file($user, $servers);
-
                 if (strpos($flag, $class->flag) !== false) {
                     die($class->handle());
                 }
             }
 
-            // 默认输出 General（兼容 vmess 订阅）
+            // 默认输出 vmess（兼容 v2rayN 等客户端）
             $class = new General($user, $servers);
             die($class->handle());
         }
