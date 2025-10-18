@@ -16,7 +16,7 @@
     
     console.log('window.settings.system_config_enable:', window.settings.system_config_enable);
     
-    if (window.settings.system_config_enable != 1) {
+    if (window.settings.system_config_enable !== 1 && window.settings.system_config_enable !== '1') {
         console.log('系统配置管理功能未启用');
         return;
     }
