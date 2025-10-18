@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Client\Protocols\Clash;
+use App\Http\Controllers\Client\Protocols\ClashMeta;
 use App\Http\Controllers\Client\Protocols\General;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
@@ -18,23 +19,7 @@ class ClientController extends Controller
         $flag = strtolower($flag);
 
         // ✅ 强制通过 URL 参数 target=clash 返回 YAML
-        $target = strtolower($request->get('target') ?? '');
-        if ($target === 'clash') {
-            $flag = 'clash';
-        }
-
-        // 自动识别 Clash / Meta / Mihomo / Stash / Windows / Electron / CFW
-        if (
-            strpos($flag, 'clash') !== false ||
-            strpos($flag, 'meta') !== false ||
-            strpos($flag, 'mihomo') !== false ||
-            strpos($flag, 'stash') !== false ||
-            strpos($flag, 'windows') !== false ||
-            strpos($flag, 'electron') !== false ||
-            strpos($flag, 'cfw') !== false
-        ) {
-            $flag = 'clash';
-        }
+        $target = strtolower($request->input('target') ?? '');
 
         $user = $request->user;
 
@@ -56,8 +41,8 @@ class ClientController extends Controller
                 }
             }
 
-            if ($target = 'clash') {
-                $class = new Clash($user, $servers);
+            if ($target === 'clash') {
+                $class = new ClashMeta($user, $servers);
             } else {
                 // 默认输出 Base64（vmess/ss）
                 $class = new General($user, $servers);
