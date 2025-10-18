@@ -17,19 +17,22 @@ class ClientController extends Controller
         $flag = $request->input('flag') ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
         $flag = strtolower($flag);
 
-        // ✅ 自动识别 Clash / Meta / Stash / Mihomo UA
+        // 自动识别 Clash / Meta / Mihomo / Stash / Windows 等 UA
         if (
             strpos($flag, 'clash') !== false ||
             strpos($flag, 'meta') !== false ||
             strpos($flag, 'mihomo') !== false ||
-            strpos($flag, 'stash') !== false
+            strpos($flag, 'stash') !== false ||
+            strpos($flag, 'windows') !== false ||  // ✅ 新增 Clash for Windows 识别
+            strpos($flag, 'electron') !== false || // ✅ 一些 Clash GUI 的 UA 特征
+            strpos($flag, 'cfw') !== false
         ) {
             $flag = 'clash';
         }
 
         $user = $request->user;
 
-        // 检查账户是否有效（未过期且未封禁）
+        // 检查账户是否有效
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
@@ -37,20 +40,23 @@ class ClientController extends Controller
 
             $this->setSubscribeInfoToServers($servers, $user);
 
-            // 修正路径问题（避免双斜杠错误）
+            // 修正双斜杠路径
             foreach (array_reverse(glob(app_path('Http/Controllers/Client/Protocols') . '/*.php')) as $file) {
                 $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
                 $class = new $file($user, $servers);
+
+                // ✅ 匹配到 Clash 协议类就输出 YAML
                 if (strpos($flag, $class->flag) !== false) {
                     die($class->handle());
                 }
             }
 
-            // 默认输出 vmess（兼容 v2rayN 等客户端）
+            // 默认输出 Base64 (V2RayN / Shadowrocket)
             $class = new General($user, $servers);
             die($class->handle());
         }
     }
+
 
 
     private function setSubscribeInfoToServers(&$servers, $user)
