@@ -93,6 +93,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     // API格式路由 (v2board后台使用)
     Route::get('user_display/fetch', [\App\Http\Controllers\Admin\UserDisplayController::class, 'fetch']);
+    
+    // 新增的用户管理功能路由
+    Route::post('user-display/find-by-phone', [\App\Http\Controllers\Admin\UserDisplayController::class, 'findByPhone']);
+    Route::post('user-display/change-password', [\App\Http\Controllers\Admin\UserDisplayController::class, 'changePassword']);
+    Route::post('user-display/create-user', [\App\Http\Controllers\Admin\UserDisplayController::class, 'createUser']);
+    Route::post('user-display/delete-user', [\App\Http\Controllers\Admin\UserDisplayController::class, 'deleteUser']);
 });
 
 // 用户显示导出路由 (单独配置，跳过CORS中间件)

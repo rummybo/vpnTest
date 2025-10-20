@@ -185,4 +185,244 @@ class UserDisplayController extends Controller
             'Content-Type' => 'text/csv; charset=UTF-8',
         ])->deleteFileAfterSend(true);
     }
+
+    /**
+     * 根据手机号查找用户
+     */
+    public function findByPhone(Request $request)
+    {
+        $phone = $request->input('phone');
+        
+        if (empty($phone)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入手机号'
+            ]);
+        }
+
+        $user = User::where('phone', $phone)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => '用户不存在'
+            ]);
+        }
+
+        // 格式化时间
+        $createdAt = '';
+        if ($user->created_at) {
+            if (is_numeric($user->created_at)) {
+                $createdAt = date('Y-m-d H:i:s', (int)$user->created_at);
+            } else {
+                $createdAt = $user->created_at;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => '查找成功',
+            'data' => [
+                'id' => $user->id,
+                'email' => $user->email ?: '-',
+                'phone' => $user->phone ?: '-',
+                'username' => $user->username ?: '-',
+                'last_login_ip' => $user->last_login_ip ?: '-',
+                'created_at' => $createdAt ?: '-'
+            ]
+        ]);
+    }
+
+    /**
+     * 修改用户密码（基于手机号）
+     */
+    public function changePassword(Request $request)
+    {
+        $phone = $request->input('phone');
+        $newPassword = $request->input('new_password');
+        
+        if (empty($phone)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入手机号'
+            ]);
+        }
+
+        if (empty($newPassword)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入新密码'
+            ]);
+        }
+
+        if (strlen($newPassword) < 6) {
+            return response()->json([
+                'success' => false,
+                'message' => '密码长度不能少于6位'
+            ]);
+        }
+
+        $user = User::where('phone', $phone)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => '用户不存在'
+            ]);
+        }
+
+        try {
+            $user->password = password_hash($newPassword, PASSWORD_DEFAULT);
+            $user->password_algo = NULL;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => '密码修改成功'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '密码修改失败：' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * 创建新用户（手机号为必填）
+     */
+    public function createUser(Request $request)
+    {
+        $phone = $request->input('phone');
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $username = $request->input('username');
+        
+        // 验证必填字段
+        if (empty($phone)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入手机号'
+            ]);
+        }
+
+        if (empty($email)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入邮箱'
+            ]);
+        }
+
+        if (empty($password)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入密码'
+            ]);
+        }
+
+        if (strlen($password) < 6) {
+            return response()->json([
+                'success' => false,
+                'message' => '密码长度不能少于6位'
+            ]);
+        }
+
+        // 验证邮箱格式
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json([
+                'success' => false,
+                'message' => '邮箱格式不正确'
+            ]);
+        }
+
+        // 检查手机号是否已存在
+        if (User::where('phone', $phone)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => '手机号已存在'
+            ]);
+        }
+
+        // 检查邮箱是否已存在
+        if (User::where('email', $email)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => '邮箱已存在'
+            ]);
+        }
+
+        try {
+            $user = new User();
+            $user->phone = $phone;
+            $user->email = $email;
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->password_algo = NULL;
+            $user->username = $username ?: '';
+            $user->uuid = \App\Utils\Helper::guid(true);
+            $user->token = \App\Utils\Helper::guid();
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => '用户创建成功',
+                'data' => [
+                    'id' => $user->id,
+                    'phone' => $user->phone,
+                    'email' => $user->email,
+                    'username' => $user->username
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '用户创建失败：' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * 删除用户（基于手机号）
+     */
+    public function deleteUser(Request $request)
+    {
+        $phone = $request->input('phone');
+        
+        if (empty($phone)) {
+            return response()->json([
+                'success' => false,
+                'message' => '请输入手机号'
+            ]);
+        }
+
+        $user = User::where('phone', $phone)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => '用户不存在'
+            ]);
+        }
+
+        try {
+            $deletedUserInfo = [
+                'id' => $user->id,
+                'phone' => $user->phone,
+                'email' => $user->email,
+                'username' => $user->username
+            ];
+
+            $user->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => '用户删除成功',
+                'data' => $deletedUserInfo
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '用户删除失败：' . $e->getMessage()
+            ]);
+        }
+    }
 }

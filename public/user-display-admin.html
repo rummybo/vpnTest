@@ -227,6 +227,196 @@
             color: #666;
             font-size: 13px;
         }
+        
+        /* 新增的管理面板样式 */
+        .management-panel {
+            background: #f9f9f9;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 20px;
+        }
+        
+        .management-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #1890ff;
+            border-color: #1890ff;
+            color: #fff;
+        }
+        
+        .tab-content {
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 0 6px 6px 6px;
+            padding: 20px;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .form-group label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .form-input.error {
+            border-color: #ff4d4f;
+        }
+        
+        .btn-danger {
+            background: #ff4d4f;
+            border-color: #ff4d4f;
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background: #ff7875;
+            border-color: #ff7875;
+        }
+        
+        .btn-warning {
+            background: #faad14;
+            border-color: #faad14;
+            color: #fff;
+        }
+        
+        .btn-warning:hover {
+            background: #ffc53d;
+            border-color: #ffc53d;
+        }
+        
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .message.success {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #389e0d;
+        }
+        
+        .message.error {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #cf1322;
+        }
+        
+        .user-info-display {
+            background: #f9f9f9;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: none;
+        }
+        
+        .user-info-display.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .user-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .user-info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-btn {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-input {
+                width: 100%;
+            }
+            
+            .management-tabs {
+                flex-wrap: wrap;
+            }
+        }
     </style>
 </head>
 <body>
@@ -243,6 +433,110 @@
                     <button onclick="resetSearch()" class="btn">🔄 重置</button>
                 </div>
                 <button onclick="exportUsers()" class="btn btn-success">📊 导出 CSV</button>
+                <button onclick="toggleManagementPanel()" class="btn btn-warning" id="managementToggle">⚙️ 用户管理</button>
+            </div>
+            
+            <!-- 用户管理面板 -->
+            <div id="managementPanel" class="management-panel" style="display: none;">
+                <div class="management-tabs">
+                    <button class="tab-btn active" onclick="switchTab('search')">🔍 查找用户</button>
+                    <button class="tab-btn" onclick="switchTab('password')">🔑 修改密码</button>
+                    <button class="tab-btn" onclick="switchTab('create')">➕ 添加用户</button>
+                    <button class="tab-btn" onclick="switchTab('delete')">❌ 删除用户</button>
+                </div>
+                
+                <!-- 查找用户 -->
+                <div id="search-tab" class="tab-content active">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>手机号</label>
+                            <input type="text" id="findPhone" class="form-input" placeholder="请输入手机号">
+                        </div>
+                        <button onclick="findUserByPhone()" class="btn btn-primary">查找用户</button>
+                    </div>
+                    <div id="findMessage" class="message"></div>
+                    <div id="userInfoDisplay" class="user-info-display">
+                        <h4 style="margin-bottom: 12px; color: #333;">👤 用户信息</h4>
+                        <div class="user-info-grid">
+                            <div class="user-info-item">
+                                <span class="user-info-label">用户ID</span>
+                                <span class="user-info-value" id="displayUserId">-</span>
+                            </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">手机号</span>
+                                <span class="user-info-value" id="displayUserPhone">-</span>
+                            </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">邮箱</span>
+                                <span class="user-info-value" id="displayUserEmail">-</span>
+                            </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">用户名</span>
+                                <span class="user-info-value" id="displayUserUsername">-</span>
+                            </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">最后登录IP</span>
+                                <span class="user-info-value" id="displayUserIp">-</span>
+                            </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">创建时间</span>
+                                <span class="user-info-value" id="displayUserCreated">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 修改密码 -->
+                <div id="password-tab" class="tab-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>手机号</label>
+                            <input type="text" id="passwordPhone" class="form-input" placeholder="请输入手机号">
+                        </div>
+                        <div class="form-group">
+                            <label>新密码</label>
+                            <input type="password" id="newPassword" class="form-input" placeholder="至少6位密码">
+                        </div>
+                        <button onclick="changeUserPassword()" class="btn btn-warning">修改密码</button>
+                    </div>
+                    <div id="passwordMessage" class="message"></div>
+                </div>
+                
+                <!-- 添加用户 -->
+                <div id="create-tab" class="tab-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>手机号 *</label>
+                            <input type="text" id="createPhone" class="form-input" placeholder="请输入手机号">
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱 *</label>
+                            <input type="email" id="createEmail" class="form-input" placeholder="请输入邮箱">
+                        </div>
+                        <div class="form-group">
+                            <label>密码 *</label>
+                            <input type="password" id="createPassword" class="form-input" placeholder="至少6位密码">
+                        </div>
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input type="text" id="createUsername" class="form-input" placeholder="用户名(可选)">
+                        </div>
+                        <button onclick="createNewUser()" class="btn btn-success">添加用户</button>
+                    </div>
+                    <div id="createMessage" class="message"></div>
+                </div>
+                
+                <!-- 删除用户 -->
+                <div id="delete-tab" class="tab-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>手机号</label>
+                            <input type="text" id="deletePhone" class="form-input" placeholder="请输入要删除的手机号">
+                        </div>
+                        <button onclick="deleteUserByPhone()" class="btn btn-danger">删除用户</button>
+                    </div>
+                    <div id="deleteMessage" class="message"></div>
+                </div>
             </div>
             
             <div id="stats" class="stats" style="display: none;"></div>
@@ -451,9 +745,345 @@
             }
         });
         
+        // 切换管理面板显示/隐藏
+        function toggleManagementPanel() {
+            const panel = document.getElementById('managementPanel');
+            const toggle = document.getElementById('managementToggle');
+            
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                toggle.innerHTML = '⚙️ 隐藏管理';
+                toggle.classList.add('active');
+            } else {
+                panel.style.display = 'none';
+                toggle.innerHTML = '⚙️ 用户管理';
+                toggle.classList.remove('active');
+            }
+        }
+        
+        // 切换标签页
+        function switchTab(tabName) {
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有标签按钮的激活状态
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示选中的标签内容
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // 激活选中的标签按钮
+            event.target.classList.add('active');
+        }
+        
+        // 显示消息
+        function showMessage(elementId, message, type = 'success') {
+            const messageEl = document.getElementById(elementId);
+            messageEl.textContent = message;
+            messageEl.className = `message ${type} show`;
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 设置按钮加载状态
+        function setButtonLoading(button, loading = true) {
+            if (loading) {
+                button.disabled = true;
+                button.classList.add('loading-btn');
+                button.dataset.originalText = button.textContent;
+                button.textContent = '处理中...';
+            } else {
+                button.disabled = false;
+                button.classList.remove('loading-btn');
+                button.textContent = button.dataset.originalText || button.textContent;
+            }
+        }
+        
+        // 验证手机号格式
+        function validatePhone(phone) {
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            return phoneRegex.test(phone);
+        }
+        
+        // 验证邮箱格式
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // 根据手机号查找用户
+        async function findUserByPhone() {
+            const phone = document.getElementById('findPhone').value.trim();
+            const button = event.target;
+            
+            if (!phone) {
+                showMessage('findMessage', '请输入手机号', 'error');
+                return;
+            }
+            
+            if (!validatePhone(phone)) {
+                showMessage('findMessage', '请输入正确的手机号格式', 'error');
+                return;
+            }
+            
+            setButtonLoading(button, true);
+            
+            try {
+                const response = await fetch('/admin/user-display/find-by-phone', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ phone: phone })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // 显示用户信息
+                    document.getElementById('displayUserId').textContent = data.data.id;
+                    document.getElementById('displayUserPhone').textContent = data.data.phone;
+                    document.getElementById('displayUserEmail').textContent = data.data.email;
+                    document.getElementById('displayUserUsername').textContent = data.data.username;
+                    document.getElementById('displayUserIp').textContent = data.data.last_login_ip;
+                    document.getElementById('displayUserCreated').textContent = data.data.created_at;
+                    
+                    document.getElementById('userInfoDisplay').classList.add('show');
+                    showMessage('findMessage', data.message, 'success');
+                } else {
+                    document.getElementById('userInfoDisplay').classList.remove('show');
+                    showMessage('findMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('查找用户失败:', error);
+                showMessage('findMessage', '查找失败，请稍后重试', 'error');
+            } finally {
+                setButtonLoading(button, false);
+            }
+        }
+        
+        // 修改用户密码
+        async function changeUserPassword() {
+            const phone = document.getElementById('passwordPhone').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const button = event.target;
+            
+            if (!phone) {
+                showMessage('passwordMessage', '请输入手机号', 'error');
+                return;
+            }
+            
+            if (!validatePhone(phone)) {
+                showMessage('passwordMessage', '请输入正确的手机号格式', 'error');
+                return;
+            }
+            
+            if (!newPassword) {
+                showMessage('passwordMessage', '请输入新密码', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showMessage('passwordMessage', '密码长度不能少于6位', 'error');
+                return;
+            }
+            
+            setButtonLoading(button, true);
+            
+            try {
+                const response = await fetch('/admin/user-display/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ 
+                        phone: phone,
+                        new_password: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('passwordMessage', data.message, 'success');
+                    // 清空表单
+                    document.getElementById('passwordPhone').value = '';
+                    document.getElementById('newPassword').value = '';
+                } else {
+                    showMessage('passwordMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('修改密码失败:', error);
+                showMessage('passwordMessage', '修改失败，请稍后重试', 'error');
+            } finally {
+                setButtonLoading(button, false);
+            }
+        }
+        
+        // 创建新用户
+        async function createNewUser() {
+            const phone = document.getElementById('createPhone').value.trim();
+            const email = document.getElementById('createEmail').value.trim();
+            const password = document.getElementById('createPassword').value.trim();
+            const username = document.getElementById('createUsername').value.trim();
+            const button = event.target;
+            
+            if (!phone) {
+                showMessage('createMessage', '请输入手机号', 'error');
+                return;
+            }
+            
+            if (!validatePhone(phone)) {
+                showMessage('createMessage', '请输入正确的手机号格式', 'error');
+                return;
+            }
+            
+            if (!email) {
+                showMessage('createMessage', '请输入邮箱', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showMessage('createMessage', '请输入正确的邮箱格式', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showMessage('createMessage', '请输入密码', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('createMessage', '密码长度不能少于6位', 'error');
+                return;
+            }
+            
+            setButtonLoading(button, true);
+            
+            try {
+                const response = await fetch('/admin/user-display/create-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ 
+                        phone: phone,
+                        email: email,
+                        password: password,
+                        username: username
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('createMessage', `${data.message} (ID: ${data.data.id})`, 'success');
+                    // 清空表单
+                    document.getElementById('createPhone').value = '';
+                    document.getElementById('createEmail').value = '';
+                    document.getElementById('createPassword').value = '';
+                    document.getElementById('createUsername').value = '';
+                    
+                    // 刷新用户列表
+                    loadUsers(currentPage, currentKeyword);
+                } else {
+                    showMessage('createMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('创建用户失败:', error);
+                showMessage('createMessage', '创建失败，请稍后重试', 'error');
+            } finally {
+                setButtonLoading(button, false);
+            }
+        }
+        
+        // 删除用户
+        async function deleteUserByPhone() {
+            const phone = document.getElementById('deletePhone').value.trim();
+            const button = event.target;
+            
+            if (!phone) {
+                showMessage('deleteMessage', '请输入手机号', 'error');
+                return;
+            }
+            
+            if (!validatePhone(phone)) {
+                showMessage('deleteMessage', '请输入正确的手机号格式', 'error');
+                return;
+            }
+            
+            // 确认删除
+            if (!confirm(`确认要删除手机号为 ${phone} 的用户吗？
+
+此操作不可恢复！`)) {
+                return;
+            }
+            
+            setButtonLoading(button, true);
+            
+            try {
+                const response = await fetch('/admin/user-display/delete-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ phone: phone })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('deleteMessage', `${data.message} (邮箱: ${data.data.email})`, 'success');
+                    // 清空表单
+                    document.getElementById('deletePhone').value = '';
+                    
+                    // 刷新用户列表
+                    loadUsers(currentPage, currentKeyword);
+                } else {
+                    showMessage('deleteMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('删除用户失败:', error);
+                showMessage('deleteMessage', '删除失败，请稍后重试', 'error');
+            } finally {
+                setButtonLoading(button, false);
+            }
+        }
+        
         // 页面加载完成后加载数据
         document.addEventListener('DOMContentLoaded', function() {
             loadUsers();
+            
+            // 为管理面板的输入框添加回车键支持
+            document.getElementById('findPhone').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') findUserByPhone();
+            });
+            
+            document.getElementById('newPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') changeUserPassword();
+            });
+            
+            document.getElementById('createUsername').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    createNewUser();
+                }
+            });
+            
+            document.getElementById('deletePhone').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') deleteUserByPhone();
+            });
         });
     </script>
 </body>
