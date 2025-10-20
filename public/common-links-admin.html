@@ -107,8 +107,15 @@
             overflow: hidden;
         }
         
+        /* 表格容器 - 添加水平滚动 */
+        .table-wrapper {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
         .table {
             width: 100%;
+            min-width: 1000px; /* 设置最小宽度确保所有列都能显示 */
             border-collapse: collapse;
             border: 1px solid #f0f0f0;
         }
@@ -118,16 +125,64 @@
             padding: 12px 16px;
             text-align: left;
             border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap; /* 防止内容换行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 长文本显示省略号 */
         }
+        
+        /* 设置各列的宽度 */
+        .table th:nth-child(1), .table td:nth-child(1) { width: 60px; } /* ID */
+        .table th:nth-child(2), .table td:nth-child(2) { width: 120px; } /* 标题 */
+        .table th:nth-child(3), .table td:nth-child(3) { width: 200px; max-width: 200px; } /* 链接 */
+        .table th:nth-child(4), .table td:nth-child(4) { width: 150px; max-width: 150px; } /* Logo */
+        .table th:nth-child(5), .table td:nth-child(5) { width: 80px; } /* 权重 */
+        .table th:nth-child(6), .table td:nth-child(6) { width: 80px; } /* 状态 */
+        .table th:nth-child(7), .table td:nth-child(7) { width: 140px; } /* 创建时间 */
+        .table th:nth-child(8), .table td:nth-child(8) { width: 160px; } /* 操作 */
         
         .table th {
             background: #fafafa;
             font-weight: 500;
             color: #262626;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .table tbody tr:hover {
             background: #f5f5f5;
+        }
+        
+        /* 链接列特殊样式 */
+        .table td:nth-child(3) a {
+            color: #1890ff;
+            text-decoration: none;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .table td:nth-child(3) a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Logo列样式 */
+        .logo-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+        
+        .logo-cell img {
+            flex-shrink: 0;
+        }
+        
+        .logo-cell .logo-url {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+            color: #8c8c8c;
         }
         
         .status-badge {
@@ -257,6 +312,91 @@
         .total-count {
             color: #8c8c8c;
             font-size: 14px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .common-links-container {
+                padding: 16px;
+            }
+            
+            .table {
+                min-width: 900px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .common-links-container {
+                padding: 12px;
+            }
+            
+            .page-header {
+                padding: 16px;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+            
+            .table {
+                min-width: 800px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .btn-sm {
+                padding: 2px 6px;
+                font-size: 11px;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        /* 滚动条样式优化 */
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* 表格加载状态 */
+        .table-loading {
+            text-align: center;
+            padding: 40px;
+            color: #8c8c8c;
+        }
+        
+        .table-loading::before {
+            content: "⏳";
+            font-size: 24px;
+            display: block;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -407,44 +547,55 @@
             }
             
             const tableHtml = `
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>标题</th>
-                            <th>链接</th>
-                            <th>Logo</th>
-                            <th>权重</th>
-                            <th>状态</th>
-                            <th>创建时间</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${commonLinks.map(item => `
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>${item.id}</td>
-                                <td>${escapeHtml(item.title)}</td>
-                                <td><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.url)}</a></td>
-                                <td>${item.logo ? `<img src="${escapeHtml(item.logo)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;"> ${escapeHtml(item.logo)}` : '-'}</td>
-                                <td>${item.weigh}</td>
-                                <td>
-                                    <span class="status-badge ${item.status == 'normal' ? 'status-active' : 'status-inactive'}">
-                                        ${item.status == 'normal' ? '显示' : '隐藏'}
-                                    </span>
-                                </td>
-                                <td>${formatDate(item.created_at)}</td>
-                                <td>
-                                    <div class="actions">
-                                        <button class="btn btn-sm" onclick="editCommonLink(${item.id})">编辑</button>
-                                        <button class="btn btn-sm" onclick="toggleStatus(${item.id}, '${item.status}')">${item.status == 'normal' ? '隐藏' : '显示'}</button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteCommonLink(${item.id})">删除</button>
-                                    </div>
-                                </td>
+                                <th>ID</th>
+                                <th>标题</th>
+                                <th>链接</th>
+                                <th>Logo</th>
+                                <th>权重</th>
+                                <th>状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            ${commonLinks.map(item => `
+                                <tr>
+                                    <td>${item.id}</td>
+                                    <td title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</td>
+                                    <td title="${escapeHtml(item.url)}">
+                                        <a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.url)}</a>
+                                    </td>
+                                    <td>
+                                        ${item.logo ? `
+                                            <div class="logo-cell">
+                                                <img src="${escapeHtml(item.logo)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;" alt="Logo">
+                                                <span class="logo-url" title="${escapeHtml(item.logo)}">${escapeHtml(item.logo)}</span>
+                                            </div>
+                                        ` : '-'}
+                                    </td>
+                                    <td>${item.weigh}</td>
+                                    <td>
+                                        <span class="status-badge ${item.status == 'normal' ? 'status-active' : 'status-inactive'}">
+                                            ${item.status == 'normal' ? '显示' : '隐藏'}
+                                        </span>
+                                    </td>
+                                    <td title="${formatDate(item.created_at)}">${formatDate(item.created_at)}</td>
+                                    <td>
+                                        <div class="actions">
+                                            <button class="btn btn-sm" onclick="editCommonLink(${item.id})">编辑</button>
+                                            <button class="btn btn-sm" onclick="toggleStatus(${item.id}, '${item.status}')">${item.status == 'normal' ? '隐藏' : '显示'}</button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteCommonLink(${item.id})">删除</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             `;
             
             container.innerHTML = tableHtml;
