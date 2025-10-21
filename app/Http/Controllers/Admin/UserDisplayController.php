@@ -28,7 +28,7 @@ class UserDisplayController extends Controller
     public function index(Request $request)
     {
         $query = User::query()->select(['id', 'email', 'phone', 'username', 'last_login_ip', 'created_at']);
-        
+
         // 搜索条件
         if ($request->has('keyword')) {
             $keyword = $request->keyword;
@@ -38,9 +38,9 @@ class UserDisplayController extends Controller
                   ->orWhere('username', 'like', '%' . $keyword . '%');
             });
         }
-        
+
         $users = $query->orderBy('id', 'desc')->paginate(20);
-        
+
         return view('admin.user_display.index', compact('users'));
     }
 
@@ -59,7 +59,7 @@ class UserDisplayController extends Controller
                     $key = $filter['key'];
                     $condition = $filter['condition'];
                     $value = $filter['value'];
-                    
+
                     switch ($condition) {
                         case '=':
                             $query->where($key, $value);
@@ -90,7 +90,7 @@ class UserDisplayController extends Controller
         // 分页
         $current = $request->input('current', 1);
         $pageSize = $request->input('pageSize', 20);
-        
+
         $total = $query->count();
         $users = $query->forPage($current, $pageSize)->get();
 
@@ -102,13 +102,13 @@ class UserDisplayController extends Controller
             } else {
                 $user->created_at_formatted = $user->created_at ? $user->created_at : '-';
             }
-            
+
             // 处理空值显示
             $user->email = $user->email ?: '-';
             $user->phone = $user->phone ?: '-';
             $user->username = $user->username ?: '-';
             $user->last_login_ip = $user->last_login_ip ?: '-';
-            
+
             return $user;
         });
 
@@ -140,15 +140,15 @@ class UserDisplayController extends Controller
         // 创建临时文件
         $tempFile = tempnam(sys_get_temp_dir(), 'user_export_');
         $handle = fopen($tempFile, 'w');
-        
+
         // 写入UTF-8 BOM
         fwrite($handle, "\xEF\xBB\xBF");
-        
+
         // CSV表头
         fputcsv($handle, [
             'ID',
             'Email',
-            'Phone', 
+            'Phone',
             'Username',
             'Last Login IP',
             'Created At'
@@ -166,7 +166,7 @@ class UserDisplayController extends Controller
                         $createdAt = $user->created_at;
                     }
                 }
-                
+
                 fputcsv($handle, [
                     $user->id,
                     $user->email ?: '',
@@ -192,7 +192,7 @@ class UserDisplayController extends Controller
     public function findByPhone(Request $request)
     {
         $phone = $request->input('phone');
-        
+
         if (empty($phone)) {
             return response()->json([
                 'success' => false,
@@ -201,7 +201,7 @@ class UserDisplayController extends Controller
         }
 
         $user = User::where('phone', $phone)->first();
-        
+
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -240,7 +240,7 @@ class UserDisplayController extends Controller
     {
         $phone = $request->input('phone');
         $newPassword = $request->input('new_password');
-        
+
         if (empty($phone)) {
             return response()->json([
                 'success' => false,
@@ -263,7 +263,7 @@ class UserDisplayController extends Controller
         }
 
         $user = User::where('phone', $phone)->first();
-        
+
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -297,7 +297,7 @@ class UserDisplayController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
         $username = $request->input('username');
-        
+
         // 验证必填字段
         if (empty($phone)) {
             return response()->json([
@@ -358,6 +358,9 @@ class UserDisplayController extends Controller
             $user->password = password_hash($password, PASSWORD_DEFAULT);
             $user->password_algo = NULL;
             $user->username = $username ?: '';
+            $user->group_id = 1;
+            $user->plan_id = 2;
+            $user->transfer_enable = "1073741824000000000";
             $user->uuid = \App\Utils\Helper::guid(true);
             $user->token = \App\Utils\Helper::guid();
             $user->save();
@@ -386,7 +389,7 @@ class UserDisplayController extends Controller
     public function deleteUser(Request $request)
     {
         $phone = $request->input('phone');
-        
+
         if (empty($phone)) {
             return response()->json([
                 'success' => false,
@@ -395,7 +398,7 @@ class UserDisplayController extends Controller
         }
 
         $user = User::where('phone', $phone)->first();
-        
+
         if (!$user) {
             return response()->json([
                 'success' => false,
