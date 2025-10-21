@@ -3569,7 +3569,6 @@ GET http://192.197.113.52:2053/api/v1/apk-channel-stats/summary?start_date=2025-
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- 渠道管理 -->
         <div id="channel-management" class="content-section">
@@ -3705,8 +3704,17 @@ POST http://192.197.113.52:2053/api/v1/channels/validate
   }
 }
                 </div>
+
+                <div class="alert success">
+                    <strong>使用场景：</strong><br>
+                    • <strong>获取渠道列表：</strong> 前端展示可用渠道选项<br>
+                    • <strong>获取下载链接：</strong> 配合APK下载统计，记录下载行为<br>
+                    • <strong>渠道验证：</strong> 在记录统计前验证渠道是否有效<br>
+                    • 配合多渠道上传系统，实现完整的渠道管理功能
+                </div>
             </div>
         </div>
+    </div>
 
     <script>
         // 导航切换
