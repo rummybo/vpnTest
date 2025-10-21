@@ -198,4 +198,10 @@ Route::prefix('api/v1')->group(function () {
     Route::post('apk-channel-stats/record', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'record']);
     Route::get('apk-channel-stats', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'stats']);
     Route::get('apk-channel-stats/summary', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'summary']);
+    
+    // 渠道管理API
+    Route::get('channels', [\App\Http\Controllers\Api\ChannelManagementController::class, 'getChannels']);
+    Route::get('channels/{channelCode}', [\App\Http\Controllers\Api\ChannelManagementController::class, 'getChannel']);
+    Route::get('channels/{channelCode}/download-url', [\App\Http\Controllers\Api\ChannelManagementController::class, 'getChannelDownloadUrl']);
+    Route::post('channels/validate', [\App\Http\Controllers\Api\ChannelManagementController::class, 'validateChannel']);
 });
