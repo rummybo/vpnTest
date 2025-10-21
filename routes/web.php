@@ -193,4 +193,9 @@ Route::prefix('api/v1')->group(function () {
     Route::get('system-configs', [\App\Http\Controllers\Api\SystemConfigController::class, 'index']);
     Route::get('system-configs/frontend', [\App\Http\Controllers\Api\SystemConfigController::class, 'frontend']);
     Route::get('system-configs/status', [\App\Http\Controllers\Api\SystemConfigController::class, 'status']);
+    
+    // APK渠道统计API
+    Route::post('apk-channel-stats/record', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'record']);
+    Route::get('apk-channel-stats', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'stats']);
+    Route::get('apk-channel-stats/summary', [\App\Http\Controllers\Api\ApkChannelStatController::class, 'summary']);
 });

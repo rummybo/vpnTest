@@ -298,6 +298,11 @@
                     <i class="fas fa-mobile-alt"></i> APP版本管理
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="#apk-channel-stats" class="nav-link">
+                    <i class="fas fa-chart-bar"></i> APK渠道统计
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -3163,6 +3168,399 @@ Content-Type: application/json
                     • 版本信息通过管理后台 <code>uploadAppUrl.php</code> 进行更新<br>
                     • APK文件存储在 <code>public/apk/</code> 目录下<br>
                     • 系统会自动计算APK文件大小
+                </div>
+            </div>
+        </div>
+
+        <!-- APK渠道统计 -->
+        <div id="apk-channel-stats" class="content-section">
+            <h1 class="section-title">APK渠道统计 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> APK渠道统计接口用于记录和分析APK应用的渠道推广效果，支持下载、注册、登录三种统计类型。
+            </div>
+
+            <!-- 记录渠道统计 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/apk-channel-stats/record</span>
+                </div>
+                <p><strong>描述：</strong> 记录APK渠道统计数据，支持下载、注册、登录三种类型的统计</p>
+                
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>channel_code</td>
+                            <td>string</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>渠道代码，最大50字符（如：google_play、huawei_store）</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>integer</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>统计类型：1=下载，2=注册，3=登录</td>
+                        </tr>
+                        <tr>
+                            <td>device_id</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>设备ID，最大100字符</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>用户ID（注册或登录时提供）</td>
+                        </tr>
+                        <tr>
+                            <td>app_version</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>APP版本号，最大20字符</td>
+                        </tr>
+                        <tr>
+                            <td>platform</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>平台类型，默认为android（android/ios/web）</td>
+                        </tr>
+                        <tr>
+                            <td>extra_data</td>
+                            <td>object</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>额外数据，JSON格式</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="showTab('record-download')">记录下载</div>
+                    <div class="tab-button" onclick="showTab('record-register')">记录注册</div>
+                    <div class="tab-button" onclick="showTab('record-login')">记录登录</div>
+                </div>
+                
+                <div id="record-download" class="tab-content active">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/apk-channel-stats/record
+Content-Type: application/json
+
+{
+  "channel_code": "google_play",
+  "type": 1,
+  "device_id": "device_123456",
+  "app_version": "1.0.0",
+  "platform": "android",
+  "extra_data": {
+    "referrer": "search",
+    "campaign": "summer_2025"
+  }
+}
+                    </div>
+                </div>
+                
+                <div id="record-register" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/apk-channel-stats/record
+Content-Type: application/json
+
+{
+  "channel_code": "google_play",
+  "type": 2,
+  "device_id": "device_123456",
+  "user_id": 1001,
+  "app_version": "1.0.0",
+  "platform": "android"
+}
+                    </div>
+                </div>
+                
+                <div id="record-login" class="tab-content">
+                    <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/apk-channel-stats/record
+Content-Type: application/json
+
+{
+  "channel_code": "google_play",
+  "type": 3,
+  "device_id": "device_123456",
+  "user_id": 1001,
+  "app_version": "1.0.0",
+  "platform": "android"
+}
+                    </div>
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "message": "统计记录成功",
+  "data": {
+    "id": 12345,
+    "type_text": "下载"
+  }
+}
+                </div>
+
+                <h4>错误响应示例</h4>
+                <div class="code-block">
+{
+  "success": false,
+  "message": "参数验证失败",
+  "errors": {
+    "channel_code": ["渠道代码不能为空"],
+    "type": ["统计类型必须为1、2或3"]
+  }
+}
+                </div>
+
+                <div class="alert success">
+                    <strong>统计类型说明：</strong><br>
+                    • <strong>type=1（下载）：</strong> 记录APK下载行为，通常在用户首次安装时调用<br>
+                    • <strong>type=2（注册）：</strong> 记录用户注册行为，需要提供user_id<br>
+                    • <strong>type=3（登录）：</strong> 记录用户登录行为，需要提供user_id<br>
+                    • 系统会自动记录IP地址、User-Agent等信息
+                </div>
+            </div>
+
+            <!-- 获取统计数据 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/apk-channel-stats</span>
+                </div>
+                <p><strong>描述：</strong> 获取APK渠道统计的详细数据，支持多种筛选条件和分页</p>
+                
+                <h4>查询参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>channel_code</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>筛选指定渠道代码</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>筛选统计类型：1=下载，2=注册，3=登录</td>
+                        </tr>
+                        <tr>
+                            <td>start_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>开始日期，格式：YYYY-MM-DD</td>
+                        </tr>
+                        <tr>
+                            <td>end_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>结束日期，格式：YYYY-MM-DD</td>
+                        </tr>
+                        <tr>
+                            <td>page</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>页码，默认为1</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>integer</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>每页数量，默认为20，最大100</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/apk-channel-stats?channel_code=google_play&type=1&start_date=2025-01-01&end_date=2025-01-31&page=1&limit=20
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "list": [
+      {
+        "id": 12345,
+        "channel_code": "google_play",
+        "type": 1,
+        "type_text": "下载",
+        "device_id": "device_123456",
+        "user_id": null,
+        "ip_address": "192.168.1.100",
+        "app_version": "1.0.0",
+        "platform": "android",
+        "extra_data": {
+          "referrer": "search",
+          "campaign": "summer_2025"
+        },
+        "created_at": 1640995200,
+        "created_at_formatted": "2025-01-25 10:00:00"
+      }
+    ],
+    "pagination": {
+      "total": 150,
+      "page": 1,
+      "limit": 20,
+      "pages": 8
+    }
+  }
+}
+                </div>
+            </div>
+
+            <!-- 获取汇总统计 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/apk-channel-stats/summary</span>
+                </div>
+                <p><strong>描述：</strong> 获取APK渠道的汇总统计数据，按渠道分组显示各类型统计</p>
+                
+                <h4>查询参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>channel_code</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>筛选指定渠道代码</td>
+                        </tr>
+                        <tr>
+                            <td>start_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>开始日期，格式：YYYY-MM-DD</td>
+                        </tr>
+                        <tr>
+                            <td>end_date</td>
+                            <td>string</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>结束日期，格式：YYYY-MM-DD</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/apk-channel-stats/summary?start_date=2025-01-01&end_date=2025-01-31
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "success": true,
+  "data": [
+    {
+      "channel_code": "google_play",
+      "download_count": 1250,
+      "register_count": 320,
+      "login_count": 2150,
+      "unique_devices": 980,
+      "unique_users": 280
+    },
+    {
+      "channel_code": "huawei_store",
+      "download_count": 850,
+      "register_count": 210,
+      "login_count": 1420,
+      "unique_devices": 720,
+      "unique_users": 190
+    }
+  ]
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>channel_code</td>
+                            <td>string</td>
+                            <td>渠道代码</td>
+                        </tr>
+                        <tr>
+                            <td>download_count</td>
+                            <td>integer</td>
+                            <td>下载次数统计</td>
+                        </tr>
+                        <tr>
+                            <td>register_count</td>
+                            <td>integer</td>
+                            <td>注册次数统计</td>
+                        </tr>
+                        <tr>
+                            <td>login_count</td>
+                            <td>integer</td>
+                            <td>登录次数统计</td>
+                        </tr>
+                        <tr>
+                            <td>unique_devices</td>
+                            <td>integer</td>
+                            <td>唯一设备数</td>
+                        </tr>
+                        <tr>
+                            <td>unique_users</td>
+                            <td>integer</td>
+                            <td>唯一用户数</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert success">
+                    <strong>使用场景：</strong><br>
+                    • <strong>渠道效果分析：</strong> 比较不同渠道的推广效果<br>
+                    • <strong>转化率统计：</strong> 分析从下载到注册、登录的转化情况<br>
+                    • <strong>用户行为分析：</strong> 了解用户在不同渠道的活跃度<br>
+                    • <strong>ROI计算：</strong> 结合推广成本计算投资回报率
+                </div>
+
+                <div class="alert info">
+                    <strong>数据说明：</strong><br>
+                    • 所有时间均为服务器时间（UTC+8）<br>
+                    • IP地址和User-Agent会自动记录<br>
+                    • 支持自定义额外数据字段<br>
+                    • 数据按创建时间倒序排列<br>
+                    • 汇总统计会去重计算唯一设备和用户数
                 </div>
             </div>
         </div>
