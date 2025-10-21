@@ -361,6 +361,7 @@ class UserDisplayController extends Controller
             $user->group_id = 1;
             $user->plan_id = 2;
             $user->transfer_enable = "1073741824000000000";
+            $user->expired_at = null;
             $user->uuid = \App\Utils\Helper::guid(true);
             $user->token = \App\Utils\Helper::guid();
             $user->save();
