@@ -25,9 +25,13 @@ class ChannelManagementController extends Controller
         try {
             $channels = $this->loadChannels();
             
+            $list = [];
+            foreach ($channels as $channelCode => $channelInfo) {
+                $list[] = array_merge(['channel_code' => $channelCode], $channelInfo);
+            }
             return response()->json([
                 'success' => true,
-                'data' => $channels
+                'data' => $list
             ]);
             
         } catch (\Exception $e) {
