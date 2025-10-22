@@ -57,6 +57,8 @@
 
 <body class="hold-transition skin-blue layout-top-nav">
     <div class="wrapper">
+        @hasSection('no_header')
+        @else
         <!-- Main Header -->
         <header class="main-header">
             <nav class="navbar navbar-static-top">
@@ -82,6 +84,10 @@
                                     <li><a href="{{ route('admin.nav_links.index') }}">福利导航</a></li>
                                     <li><a href="{{ route('admin.common_links.index') }}">常用导航</a></li>
                                     <li><a href="{{ route('admin.frontend_nav_pages.index') }}">前端导航页</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{{ route('admin.apk_channel_stats.index') }}">APK 渠道统计</a></li>
+                                    <li><a href="{{ route('admin.apk_channel_stats.summary') }}">APK 渠道汇总</a></li>
+                                    <li><a href="{{ route('admin.apk_channel_stats.dashboard') }}">APK 实时仪表盘</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('admin.user_display.index') }}">用户显示</a></li>
@@ -108,10 +114,13 @@
                 </div>
             </nav>
         </header>
+        @endif
 
         <!-- Content Wrapper -->
         @yield('content')
 
+        @hasSection('no_footer')
+        @else
         <!-- Main Footer -->
         <footer class="main-footer">
             <div class="container">
@@ -122,6 +131,7 @@
                 All rights reserved.
             </div>
         </footer>
+        @endif
     </div>
 
     <!-- jQuery 3 -->

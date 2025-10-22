@@ -52,7 +52,7 @@ Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_pa
 });
 
 // 福利导航管理路由
-Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('nav_links', \App\Http\Controllers\Admin\NavLinkController::class);
     
     // API格式路由 (v2board后台使用)
@@ -64,7 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
 });
 
 // 常用导航管理路由
-Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('common_links', \App\Http\Controllers\Admin\CommonLinkController::class);
     
     // API格式路由 (v2board后台使用)
@@ -76,7 +76,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
 });
 
 // 前端导航页管理路由
-Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('frontend_nav_pages', \App\Http\Controllers\Admin\FrontendNavPageController::class);
     
     // API格式路由 (v2board后台使用)
@@ -99,6 +99,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('user-display/change-password', [\App\Http\Controllers\Admin\UserDisplayController::class, 'changePassword']);
     Route::post('user-display/create-user', [\App\Http\Controllers\Admin\UserDisplayController::class, 'createUser']);
     Route::post('user-display/delete-user', [\App\Http\Controllers\Admin\UserDisplayController::class, 'deleteUser']);
+});
+
+// APK 渠道统计后台路由
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('apk-channel-stats', [\App\Http\Controllers\Admin\ApkChannelStatAdminController::class, 'index'])->name('apk_channel_stats.index');
+    Route::get('apk-channel-stats/summary', [\App\Http\Controllers\Admin\ApkChannelStatAdminController::class, 'summary'])->name('apk_channel_stats.summary');
+    Route::get('apk-channel-stats/dashboard', [\App\Http\Controllers\Admin\ApkChannelStatAdminController::class, 'dashboard'])->name('apk_channel_stats.dashboard');
+    Route::get('apk-channel-stats/export', [\App\Http\Controllers\Admin\ApkChannelStatAdminController::class, 'export'])->name('apk_channel_stats.export');
+    Route::get('apk-channel-stats/chart', [\App\Http\Controllers\Admin\ApkChannelStatAdminController::class, 'chartData'])->name('apk_channel_stats.chart');
 });
 
 // 用户显示导出路由 (单独配置，跳过CORS中间件)
