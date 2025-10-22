@@ -14,14 +14,30 @@ class ApkChannelStatController extends Controller
      */
     public function record(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // 预处理 extra_data：允许传入 JSON 字符串或数组
+        $data = $request->all();
+        if (isset($data['extra_data'])) {
+            if (is_array($data['extra_data'])) {
+                // 将数组转成 JSON 字符串以通过 json 校验
+                $data['extra_data'] = json_encode($data['extra_data'], JSON_UNESCAPED_UNICODE);
+            } elseif (!is_string($data['extra_data'])) {
+                // 其它类型一律视为无效，置空
+                $data['extra_data'] = null;
+            }
+        }
+
+        $validator = Validator::make($data, [
             'channel_code' => 'required|string|max:50',
             'type' => 'required|integer|in:1,2,3',
             'device_id' => 'nullable|string|max:100',
             'user_id' => 'nullable|integer|exists:v2_user,id',
             'app_version' => 'nullable|string|max:20',
             'platform' => 'nullable|string|max:20',
-            'extra_data' => 'nullable|array'
+            'extra_data' => 'nullable|json'
+        ]);
+
+        $validator->setCustomMessages([
+            'extra_data.json' => 'extra_data 必须是有效的 JSON 字符串或对象'
         ]);
 
         if ($validator->fails()) {
@@ -30,6 +46,15 @@ class ApkChannelStatController extends Controller
                 'message' => '参数验证失败',
                 'errors' => $validator->errors()
             ], 400);
+        }
+
+        // 通过验证后，将 extra_data 解析为数组以入库
+        $extraData = null;
+        if (isset($data['extra_data']) && is_string($data['extra_data'])) {
+            $decoded = json_decode($data['extra_data'], true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $extraData = $decoded;
+            }
         }
 
         try {
@@ -42,7 +67,7 @@ class ApkChannelStatController extends Controller
                 'user_agent' => $request->userAgent(),
                 'app_version' => $request->app_version,
                 'platform' => $request->platform ?? 'android',
-                'extra_data' => $request->extra_data,
+                'extra_data' => $extraData,
                 'created_at' => time(),
                 'updated_at' => time()
             ]);
