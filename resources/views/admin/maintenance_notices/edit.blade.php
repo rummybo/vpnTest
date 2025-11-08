@@ -19,7 +19,7 @@
                         <h3 class="box-title">通知内容</h3>
                     </div>
 
-                    <form action="{{ url('/admin/maintenance_notices/' . $notice->id) }}" method="POST">
+                    <form id="edit-form" action="{{ url('/admin/maintenance_notices/' . $notice->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="box-body">
@@ -71,4 +71,27 @@
         </div>
     </section>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(function() {
+    $('#edit-form').on('submit', function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var data = $form.serialize();
+        // 附带 id 字段以兼容 save 接口的更新逻辑
+        data += '&id={{ $notice->id }}';
+        var api = '/api/v1/' + (window.settings && window.settings.secure_path ? window.settings.secure_path : '') + '/maintenance_notices/save';
+        $.post(api, data)
+            .done(function() {
+                window.location.href = '{{ url('/admin/maintenance_notices') }}';
+            })
+            .fail(function(xhr) {
+                var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : '更新失败';
+                alert(msg);
+            });
+    });
+});
+</script>
 @endsection

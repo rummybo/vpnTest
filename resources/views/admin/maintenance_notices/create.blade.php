@@ -19,7 +19,7 @@
                         <h3 class="box-title">通知内容</h3>
                     </div>
 
-                    <form action="{{ url('/admin/maintenance_notices') }}" method="POST">
+                    <form id="create-form" action="{{ url('/admin/maintenance_notices') }}" method="POST">
                         @csrf
                         <div class="box-body">
                             <div class="form-group">
@@ -70,4 +70,25 @@
         </div>
     </section>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(function() {
+    $('#create-form').on('submit', function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var data = $form.serialize();
+        var api = '/api/v1/' + (window.settings && window.settings.secure_path ? window.settings.secure_path : '') + '/maintenance_notices/save';
+        $.post(api, data)
+            .done(function() {
+                window.location.href = '{{ url('/admin/maintenance_notices') }}';
+            })
+            .fail(function(xhr) {
+                var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : '保存失败';
+                alert(msg);
+            });
+    });
+});
+</script>
 @endsection
