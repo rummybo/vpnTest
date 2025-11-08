@@ -29,6 +29,7 @@
             system_config_enable: {{config('v2board.system_config_enable', 1)}},
             apk_channel_stats_enable: {{config('v2board.apk_channel_stats_enable', 1)}}
             ,maintenance_notices_enable: {{config('v2board.maintenance_notices_enable', 1)}}
+            ,messages_enable: {{config('v2board.messages_enable', 1)}}
         }
     </script>
 </head>
@@ -52,6 +53,8 @@
 <script src="/assets/admin/apk-channel-stats-extension.js?v={{$version}}"></script>
 <!-- 维护通知扩展 -->
 <script src="/assets/admin/maintenance-notices-extension.js?v={{$version}}"></script>
+<!-- 消息中心扩展 -->
+<script src="/assets/admin/messages-extension.js?v={{$version}}"></script>
 </body>
 
 </html>

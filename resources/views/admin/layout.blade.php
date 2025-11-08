@@ -18,13 +18,11 @@
     <style>
         /* 自定义样式 */
         .content-wrapper {
-            min-height: calc(100vh - 50px);
+            min-height: 100vh;
         }
         
         .main-header {
-            position: fixed;
-            max-height: 100px;
-            z-index: 1030;
+            display: none;
         }
         
         .main-header .navbar {
@@ -33,7 +31,7 @@
         
         .content-wrapper, .right-side, .main-footer {
             margin-left: 0;
-            padding-top: 50px;
+            padding-top: 0;
         }
         
         .main-sidebar {
@@ -86,9 +84,9 @@
                                     <li><a href="{{ url('/admin/frontend_nav_pages') }}">前端导航页</a></li>
                                     <li><a href="{{ url('/admin/maintenance_notices') }}">维护通知</a></li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="{{ route('admin.apk_channel_stats.index') }}">APK 渠道统计</a></li>
-                                    <li><a href="{{ route('admin.apk_channel_stats.summary') }}">APK 渠道汇总</a></li>
-                                    <li><a href="{{ route('admin.apk_channel_stats.dashboard') }}">APK 实时仪表盘</a></li>
+                                    <li><a href="{{ url('/admin/apk-channel-stats') }}">APK 渠道统计</a></li>
+                                    <li><a href="{{ url('/admin/apk-channel-stats/summary') }}">APK 渠道汇总</a></li>
+                                    <li><a href="{{ url('/admin/apk-channel-stats/dashboard') }}">APK 实时仪表盘</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ url('/admin/user_display') }}">用户显示</a></li>

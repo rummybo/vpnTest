@@ -288,6 +288,18 @@
                     <i class="fas fa-th-large"></i> 前端导航页
                 </a>
             </li>
+            <!-- 维护通知 -->
+            <li class="nav-item">
+                <a href="#maintenance-notices" class="nav-link">
+                    <i class="fas fa-bullhorn"></i> 维护通知
+                </a>
+            </li>
+            <!-- 消息中心 -->
+            <li class="nav-item">
+                <a href="#message-center" class="nav-link">
+                    <i class="fas fa-envelope"></i> 消息中心
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="#system-configs" class="nav-link">
                     <i class="fas fa-cog"></i> 系统配置管理
@@ -842,6 +854,226 @@ Content-Type: application/json
                     • 新密码和确认密码必须完全一致<br>
                     • 密码修改成功后会记录操作日志<br>
                     • 建议用户修改密码后重新登录
+                </div>
+            </div>
+        </div>
+
+        <!-- 消息中心 -->
+        <div id="message-center" class="content-section">
+            <h1 class="section-title">消息中心 API</h1>
+
+            <div class="alert info">
+                <strong>说明：</strong> 消息中心用于向所有用户或指定用户发布系统消息，前端可拉取消息列表并标记已读。
+            </div>
+
+            <!-- 获取消息列表 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/messages</span>
+                </div>
+                <p><strong>描述：</strong> 获取可见的消息列表。未传 <code>user_id</code> 时仅返回全体消息；传入 <code>user_id</code> 时返回该用户可见的全部消息，并附带阅读状态。</p>
+
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>user_id</td>
+                            <td>number</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>用户ID；提供时返回该用户可见消息并包含 <code>viewed</code>/<code>viewtime</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例（带 user_id）</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "系统维护通知",
+      "content": "今晚0点进行系统维护",
+      "weigh": 10,
+      "status": "normal",
+      "createtime": 1710000000,
+      "updatetime": 1710003600,
+      "to_all": 1,
+      "viewed": 1,
+      "viewtime": 1710004000
+    },
+    {
+      "id": 2,
+      "title": "账户重要提醒",
+      "content": "您的账户存在异常登录记录",
+      "weigh": 9,
+      "status": "normal",
+      "createtime": 1710100000,
+      "updatetime": 1710103600,
+      "to_all": 0,
+      "viewed": 0,
+      "viewtime": null
+    }
+  ]
+}
+                </div>
+            </div>
+
+            <!-- 获取未读数量 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/messages/unread-count</span>
+                </div>
+                <p><strong>描述：</strong> 获取指定用户的未读消息数量。</p>
+
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>user_id</td>
+                            <td>number</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>用户ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": { "count": 3 }
+}
+                </div>
+            </div>
+
+            <!-- 获取消息详情 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/messages/{id}</span>
+                </div>
+                <p><strong>描述：</strong> 获取消息详情。传入 <code>user_id</code> 时附带该用户的阅读状态并校验可见性。</p>
+
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>number</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>消息ID（路径参数）</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>number</td>
+                            <td><span class="badge optional">可选</span></td>
+                            <td>用户ID；若提供则返回 <code>viewed</code>/<code>viewtime</code> 并校验可见性</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "id": 1,
+    "title": "系统维护通知",
+    "content": "今晚0点进行系统维护",
+    "weigh": 10,
+    "status": "normal",
+    "createtime": 1710000000,
+    "updatetime": 1710003600,
+    "to_all": 1,
+    "viewed": 1,
+    "viewtime": 1710004000
+  }
+}
+                </div>
+            </div>
+
+            <!-- 标记消息为已读 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/v1/messages/mark-read</span>
+                </div>
+                <p><strong>描述：</strong> 标记消息为已读。对 <code>to_all</code> 消息也会为该用户创建阅读记录。</p>
+
+                <h4>请求参数</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>message_id</td>
+                            <td>number</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>消息ID</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>number</td>
+                            <td><span class="badge required">必填</span></td>
+                            <td>用户ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+POST http://192.197.113.52:2053/api/v1/messages/mark-read
+Content-Type: application/json
+
+{
+  "message_id": 2,
+  "user_id": 123
+}
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": { "message_id": 2, "user_id": 123, "viewed": 1 }
+}
                 </div>
             </div>
         </div>
@@ -2711,6 +2943,103 @@ GET http://192.197.113.52:2053/api/v1/frontend-nav-pages/grouped
                     • 数据按排序值进行分组，便于前端按组显示<br>
                     • 每个分组的key为排序值，value为该排序值的导航页数组<br>
                     • 适用于需要分组展示导航页的场景
+                </div>
+            </div>
+        </div>
+
+        <!-- 维护通知 -->
+        <div id="maintenance-notices" class="content-section">
+            <h1 class="section-title">维护通知 API</h1>
+            
+            <div class="alert info">
+                <strong>说明：</strong> 维护通知接口提供前端展示用的维护/公告信息，无需认证即可访问。返回状态为“显示”(normal) 的通知，按权重降序、ID降序排列。
+            </div>
+
+            <!-- 获取维护通知列表 -->
+            <div class="api-endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/maintenance-notices</span>
+                </div>
+                <p><strong>描述：</strong> 获取所有状态为显示(normal) 的维护通知列表</p>
+
+                <h4>请求示例</h4>
+                <div class="code-block">
+GET http://192.197.113.52:2053/api/v1/maintenance-notices
+                </div>
+
+                <h4>响应示例</h4>
+                <div class="code-block">
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "系统维护公告",
+      "content": "将在今晚进行系统升级维护，预计持续2小时。",
+      "weigh": 100,
+      "status": "normal",
+      "createtime": 1730966400,
+      "updatetime": 1730970000
+    }
+  ]
+}
+                </div>
+
+                <h4>响应字段说明</h4>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>integer</td>
+                            <td>通知ID</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>通知标题</td>
+                        </tr>
+                        <tr>
+                            <td>content</td>
+                            <td>string</td>
+                            <td>通知内容</td>
+                        </tr>
+                        <tr>
+                            <td>weigh</td>
+                            <td>integer</td>
+                            <td>权重（越大越靠前）</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>状态，固定为 <code>normal</code>（显示）</td>
+                        </tr>
+                        <tr>
+                            <td>createtime</td>
+                            <td>integer</td>
+                            <td>创建时间戳（秒）</td>
+                        </tr>
+                        <tr>
+                            <td>updatetime</td>
+                            <td>integer</td>
+                            <td>更新时间戳（秒）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>使用说明</h4>
+                <div class="alert info">
+                    • 前端直接使用 <code>title</code> 与 <code>content</code> 字段渲染公告<br>
+                    • 可根据 <code>weigh</code> 做自定义排序，或直接按返回顺序展示<br>
+                    • 接口仅返回“显示”的通知；如需后台管理，请使用管理员页面或对应管理接口
                 </div>
             </div>
         </div>

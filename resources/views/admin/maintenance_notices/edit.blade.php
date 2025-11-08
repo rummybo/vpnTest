@@ -20,44 +20,30 @@
                     </div>
 
                     <form id="edit-form" action="{{ url('/admin/maintenance_notices/' . $notice->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="title">标题 <span class="text-red">*</span></label>
                                 <input type="text" class="form-control" id="title" name="title"
-                                       value="{{ old('title', $notice->title) }}" placeholder="请输入通知标题" required>
-                                @error('title')
-                                    <span class="text-red">{{ $message }}</span>
-                                @enderror
+                                       value="{{ $notice->title }}" placeholder="请输入通知标题" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="content">内容 <span class="text-red">*</span></label>
-                                <textarea class="form-control" id="content" name="content" rows="6" placeholder="请输入通知内容" required>{{ old('content', $notice->content) }}</textarea>
-                                @error('content')
-                                    <span class="text-red">{{ $message }}</span>
-                                @enderror
+                                <textarea class="form-control" id="content" name="content" rows="6" placeholder="请输入通知内容" required>{{ $notice->content }}</textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="weigh">权重</label>
                                 <input type="number" class="form-control" id="weigh" name="weigh"
-                                       value="{{ old('weigh', $notice->weigh) }}" placeholder="数值越大排序越靠前">
-                                @error('weigh')
-                                    <span class="text-red">{{ $message }}</span>
-                                @enderror
+                                       value="{{ $notice->weigh }}" placeholder="数值越大排序越靠前">
                             </div>
 
                             <div class="form-group">
                                 <label for="status">状态</label>
                                 <select class="form-control" id="status" name="status">
-                                    <option value="normal" {{ old('status', $notice->status) === 'normal' ? 'selected' : '' }}>显示</option>
-                                    <option value="hidden" {{ old('status', $notice->status) === 'hidden' ? 'selected' : '' }}>隐藏</option>
+                                    <option value="normal" {{ $notice->status === 'normal' ? 'selected' : '' }}>显示</option>
+                                    <option value="hidden" {{ $notice->status === 'hidden' ? 'selected' : '' }}>隐藏</option>
                                 </select>
-                                @error('status')
-                                    <span class="text-red">{{ $message }}</span>
-                                @enderror
                             </div>
                         </div>
 
@@ -82,7 +68,8 @@ $(function() {
         var data = $form.serialize();
         // 附带 id 字段以兼容 save 接口的更新逻辑
         data += '&id={{ $notice->id }}';
-        var api = '/api/v1/' + (window.settings && window.settings.secure_path ? window.settings.secure_path : '') + '/maintenance_notices/save';
+        // 使用 /admin 前缀下的维护通知保存接口，避免 {secure_path} 为空导致 404
+        var api = '/admin/maintenance_notices/save';
         $.post(api, data)
             .done(function() {
                 window.location.href = '{{ url('/admin/maintenance_notices') }}';
