@@ -51,6 +51,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('maintenance_notices/sort', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'sort']);
 });
 
+// 消息中心管理路由
+Route::prefix('admin')->name('admin.')->group(function () {
+    // RouteServiceProvider 已为 web 路由添加 App\Http\Controllers 命名空间前缀
+    // 这里使用相对控制器名，避免出现双重前缀导致的解析错误
+    Route::resource('messages', 'Admin\\MessageController');
+
+    // API格式路由 (v2board后台使用)
+    Route::get('messages/fetch', [\App\Http\Controllers\Admin\MessageController::class, 'fetch']);
+    Route::post('messages/save', [\App\Http\Controllers\Admin\MessageController::class, 'save']);
+    Route::post('messages/drop', [\App\Http\Controllers\Admin\MessageController::class, 'drop']);
+    Route::post('messages/show', [\App\Http\Controllers\Admin\MessageController::class, 'show']);
+    Route::post('messages/sort', [\App\Http\Controllers\Admin\MessageController::class, 'sort']);
+});
+
 //TODO:: 兼容
 Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))), function () {
     return view('admin', [
@@ -176,6 +190,13 @@ Route::prefix('api/v1/{secure_path}')->group(function () {
     Route::post('maintenance_notices/drop', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'drop']);
     Route::post('maintenance_notices/show', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'show']);
     Route::post('maintenance_notices/sort', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'sort']);
+
+    // 消息中心管理API
+    Route::get('messages/fetch', [\App\Http\Controllers\Admin\MessageController::class, 'fetch']);
+    Route::post('messages/save', [\App\Http\Controllers\Admin\MessageController::class, 'save']);
+    Route::post('messages/drop', [\App\Http\Controllers\Admin\MessageController::class, 'drop']);
+    Route::post('messages/show', [\App\Http\Controllers\Admin\MessageController::class, 'show']);
+    Route::post('messages/sort', [\App\Http\Controllers\Admin\MessageController::class, 'sort']);
     
     // 前端导航页管理API
     Route::get('frontend_nav_pages/fetch', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'fetch']);
@@ -237,4 +258,10 @@ Route::prefix('api/v1')->group(function () {
     Route::get('channels/{channelCode}', [\App\Http\Controllers\Api\ChannelManagementController::class, 'getChannel']);
     Route::get('channels/{channelCode}/download-url', [\App\Http\Controllers\Api\ChannelManagementController::class, 'getChannelDownloadUrl']);
     Route::post('channels/validate', [\App\Http\Controllers\Api\ChannelManagementController::class, 'validateChannel']);
+
+    // 消息中心API（前端）
+    Route::get('messages', [\App\Http\Controllers\Api\MessageController::class, 'index']);
+    Route::get('messages/unread-count', [\App\Http\Controllers\Api\MessageController::class, 'unreadCount']);
+    Route::get('messages/{id}', [\App\Http\Controllers\Api\MessageController::class, 'show']);
+    Route::post('messages/mark-read', [\App\Http\Controllers\Api\MessageController::class, 'markRead']);
 });
