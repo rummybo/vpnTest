@@ -81,18 +81,18 @@
                                     导航管理 <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('admin.nav_links.index') }}">福利导航</a></li>
-                                    <li><a href="{{ route('admin.common_links.index') }}">常用导航</a></li>
-                                    <li><a href="{{ route('admin.frontend_nav_pages.index') }}">前端导航页</a></li>
-                                    <li><a href="{{ route('admin.maintenance_notices.index') }}">维护通知</a></li>
+                                    <li><a href="{{ url('/admin/nav_links') }}">福利导航</a></li>
+                                    <li><a href="{{ url('/admin/common_links') }}">常用导航</a></li>
+                                    <li><a href="{{ url('/admin/frontend_nav_pages') }}">前端导航页</a></li>
+                                    <li><a href="{{ url('/admin/maintenance_notices') }}">维护通知</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{{ route('admin.apk_channel_stats.index') }}">APK 渠道统计</a></li>
                                     <li><a href="{{ route('admin.apk_channel_stats.summary') }}">APK 渠道汇总</a></li>
                                     <li><a href="{{ route('admin.apk_channel_stats.dashboard') }}">APK 实时仪表盘</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('admin.user_display.index') }}">用户显示</a></li>
-                            <li><a href="{{ route('admin.system_configs.index') }}">系统配置</a></li>
+                            <li><a href="{{ url('/admin/user_display') }}">用户显示</a></li>
+                            <li><a href="{{ url('/admin/system_configs') }}">系统配置</a></li>
                         </ul>
                     </div>
 
