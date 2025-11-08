@@ -84,6 +84,7 @@
                                     <li><a href="{{ route('admin.nav_links.index') }}">福利导航</a></li>
                                     <li><a href="{{ route('admin.common_links.index') }}">常用导航</a></li>
                                     <li><a href="{{ route('admin.frontend_nav_pages.index') }}">前端导航页</a></li>
+                                    <li><a href="{{ route('admin.maintenance_notices.index') }}">维护通知</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{{ route('admin.apk_channel_stats.index') }}">APK 渠道统计</a></li>
                                     <li><a href="{{ route('admin.apk_channel_stats.summary') }}">APK 渠道汇总</a></li>

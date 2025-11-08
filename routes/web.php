@@ -37,6 +37,20 @@ Route::get('/', function (Request $request) {
     return view('theme::' . config('v2board.frontend_theme', 'v2board') . '.dashboard', $renderParams);
 });
 
+// 维护通知管理路由
+Route::prefix('admin')->name('admin.')->group(function () {
+    // RouteServiceProvider 已对 web 路由添加了 App\Http\Controllers 命名空间前缀
+    // 因此此处需使用相对控制器名，避免出现双重前缀导致的绑定解析错误
+    Route::resource('maintenance_notices', 'Admin\\MaintenanceNoticeController');
+    
+    // API格式路由 (v2board后台使用)
+    Route::get('maintenance_notices/fetch', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'fetch']);
+    Route::post('maintenance_notices/save', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'save']);
+    Route::post('maintenance_notices/drop', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'drop']);
+    Route::post('maintenance_notices/show', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'show']);
+    Route::post('maintenance_notices/sort', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'sort']);
+});
+
 //TODO:: 兼容
 Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))), function () {
     return view('admin', [
@@ -156,6 +170,13 @@ Route::prefix('api/v1/{secure_path}')->group(function () {
     Route::post('common_links/show', [\App\Http\Controllers\Admin\CommonLinkController::class, 'show']);
     Route::post('common_links/sort', [\App\Http\Controllers\Admin\CommonLinkController::class, 'sort']);
     
+    // 维护通知管理API
+    Route::get('maintenance_notices/fetch', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'fetch']);
+    Route::post('maintenance_notices/save', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'save']);
+    Route::post('maintenance_notices/drop', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'drop']);
+    Route::post('maintenance_notices/show', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'show']);
+    Route::post('maintenance_notices/sort', [\App\Http\Controllers\Admin\MaintenanceNoticeController::class, 'sort']);
+    
     // 前端导航页管理API
     Route::get('frontend_nav_pages/fetch', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'fetch']);
     Route::post('frontend_nav_pages/save', [\App\Http\Controllers\Admin\FrontendNavPageController::class, 'save']);
@@ -185,6 +206,9 @@ Route::prefix('api/v1')->group(function () {
     // 常用导航API
     Route::get('common-links', [\App\Http\Controllers\Api\CommonLinkController::class, 'index']);
     Route::get('common-links/grouped', [\App\Http\Controllers\Api\CommonLinkController::class, 'grouped']);
+    
+    // 维护通知API
+    Route::get('maintenance-notices', [\App\Http\Controllers\Api\MaintenanceNoticeController::class, 'index']);
     
     // 前端导航页API
     Route::get('frontend-nav-pages', [\App\Http\Controllers\Api\FrontendNavPageController::class, 'index']);
