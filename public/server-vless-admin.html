@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VLESS 节点管理</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px;background:#f6f7fb;color:#333}
+    h1{font-size:20px;margin:0 0 16px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    button{border:0;background:#3b82f6;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+    button.secondary{background:#64748b}
+    button.danger{background:#ef4444}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    th{background:#f1f5f9;font-weight:600}
+    tr:hover{background:#f9fafb}
+    .badge{display:inline-block;padding:2px 6px;border-radius:4px;background:#e5e7eb;color:#111;text-transform:uppercase;font-size:12px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center}
+    .modal.active{display:flex}
+    .card{background:#fff;border-radius:10px;padding:16px;max-width:640px;width:95%;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .grid .full{grid-column:1/-1}
+    label{font-size:12px;color:#555;margin-bottom:4px;display:block}
+    input,select,textarea{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+    .msg{margin:10px 0;padding:8px;border-radius:6px}
+    .msg.success{background:#dcfce7;color:#166534}
+    .msg.error{background:#fee2e2;color:#991b1b}
+  </style>
+</head>
+<body>
+  <h1>VLESS 节点管理</h1>
+  <div class="toolbar">
+    <button id="btnAdd">新增节点</button>
+    <button id="btnRefresh" class="secondary">刷新列表</button>
+  </div>
+  <div id="message" class="msg" style="display:none"></div>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>名称</th>
+      <th>地址</th>
+      <th>端口</th>
+      <th>网络</th>
+      <th>TLS</th>
+      <th>显示</th>
+      <th>排序</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="modal" id="editModal">
+    <div class="card">
+      <h3 style="margin:0 0 8px">编辑 VLESS 节点</h3>
+      <div id="formMsg" class="msg" style="display:none"></div>
+      <div class="grid">
+        <div>
+          <label>名称</label>
+          <input id="f_name" />
+        </div>
+        <div>
+          <label>所属组 ID 列表(JSON 数组)</label>
+          <input id="f_group_id" placeholder='例如 [1,2]' />
+        </div>
+        <div>
+          <label>路由组 ID 列表(JSON 数组)</label>
+          <input id="f_route_id" placeholder='例如 [1]' />
+        </div>
+        <div>
+          <label>父节点 ID(可空)</label>
+          <input id="f_parent_id" />
+        </div>
+        <div>
+          <label>地址</label>
+          <input id="f_host" />
+        </div>
+        <div>
+          <label>端口(支持区间)</label>
+          <input id="f_port" />
+        </div>
+        <div>
+          <label>后端服务端口</label>
+          <input id="f_server_port" />
+        </div>
+        <div>
+          <label>倍率</label>
+          <input id="f_rate" />
+        </div>
+        <div>
+          <label>网络</label>
+          <select id="f_network">
+            <option value="tcp">tcp</option>
+            <option value="ws">ws</option>
+            <option value="grpc">grpc</option>
+          </select>
+        </div>
+        <div>
+          <label>TLS</label>
+          <select id="f_tls">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>网络设置(JSON)</label>
+          <textarea id="f_networkSettings" rows="3" placeholder='{"path":"/","headers":{"Host":"example.com"}}'></textarea>
+        </div>
+        <div class="full">
+          <label>TLS 设置(JSON)</label>
+          <textarea id="f_tlsSettings" rows="3" placeholder='{"serverName":"example.com"}'></textarea>
+        </div>
+        <div class="full">
+          <label>DNS 设置(JSON)</label>
+          <textarea id="f_dnsSettings" rows="3"></textarea>
+        </div>
+        <div class="full">
+          <label>规则设置(JSON)</label>
+          <textarea id="f_ruleSettings" rows="3"></textarea>
+        </div>
+        <div class="full">
+          <label>标签(JSON 数组)</label>
+          <input id="f_tags" placeholder='["中国","深圳"]' />
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnSave">保存</button>
+        <button class="secondary" id="btnClose">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 与现有后台页面一致：通过 secure_path 拼接 /api/v1/<secure_path>
+    function getSecurePath(){
+      // 1) 优先读取 admin 环境的 window.settings.secure_path
+      if (window.settings && window.settings.secure_path) return window.settings.secure_path;
+      // 2) 尝试从 referrer 中提取（从后台打开新标签页时可用）
+      const ref = document.referrer || '';
+      const mRef = ref.match(/\/([a-f0-9]{8})/);
+      if (mRef) return mRef[1];
+      // 3) 当前路径中提取（某些部署把静态页放在 secure_path 下）
+      const m = (window.location.pathname||'').match(/\/([a-f0-9]{8})/);
+      if (m) return m[1];
+      // 4) 兜底默认值
+      return '149544e4';
+    }
+    const API_BASE = '/api/v1/' + getSecurePath();
+    const API_VLESS = API_BASE + '/server/vless';
+    const MANAGE_NODES_API = API_BASE + '/server/manage/getNodes';
+
+    // 认证与通用请求头，沿用已有页面约定：localStorage('authorization')
+    function getAuthToken(){ return localStorage.getItem('authorization'); }
+    function getHeaders(includeContentType=true){
+      const h = {
+        'Accept':'application/json',
+        'Authorization': getAuthToken()
+      };
+      if (includeContentType) h['Content-Type'] = 'application/json';
+      return h;
+    }
+
+    const message = (text, type='success') => {
+      const el = document.getElementById('message');
+      el.textContent = text;
+      el.className = `msg ${type}`;
+      el.style.display = 'block';
+      setTimeout(()=>{ el.style.display='none'; }, 2200);
+    };
+
+    const formMessage = (text, type='success') => {
+      const el = document.getElementById('formMsg');
+      el.textContent = text;
+      el.className = `msg ${type}`;
+      el.style.display = 'block';
+      setTimeout(()=>{ el.style.display='none'; }, 2200);
+    };
+
+    const renderRows = (rows) => {
+      const body = document.getElementById('tableBody');
+      body.innerHTML = '';
+      rows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.name}</td>
+          <td>${row.host}</td>
+          <td>${row.port}</td>
+          <td><span class="badge">${row.network || 'tcp'}</span></td>
+          <td>${row.tls ? '<span class="badge">TLS</span>' : '-'}</td>
+          <td>${row.show ? '显示' : '隐藏'}</td>
+          <td>${row.sort ?? ''}</td>
+          <td>
+            <button onclick="onEdit(${row.id})">编辑</button>
+            <button class="secondary" onclick="onToggle(${row.id}, ${row.show ? 0 : 1})">${row.show ? '隐藏' : '显示'}</button>
+            <button class="secondary" onclick="onCopy(${row.id})">复制</button>
+            <button class="danger" onclick="onDelete(${row.id})">删除</button>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+    };
+
+    async function loadList() {
+      try {
+        const res = await fetch(MANAGE_NODES_API, { headers: getHeaders(), credentials: 'include' });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          const text = await res.text();
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        const list = (json.data || []).filter(i => i.type === 'vless');
+        renderRows(list);
+      } catch (e) {
+        message('加载失败：' + e.message, 'error');
+      }
+    }
+
+    function openModal(data) {
+      const modal = document.getElementById('editModal');
+      modal.classList.add('active');
+      modal.setAttribute('data-id', data?.id || '');
+      f_name.value = data?.name || '';
+      f_group_id.value = data?.group_id ? JSON.stringify(data.group_id) : '';
+      f_route_id.value = data?.route_id ? JSON.stringify(data.route_id) : '';
+      f_parent_id.value = data?.parent_id ?? '';
+      f_host.value = data?.host || '';
+      f_port.value = data?.port || '';
+      f_server_port.value = data?.server_port || '';
+      f_rate.value = data?.rate || '1';
+      f_network.value = data?.network || 'tcp';
+      f_tls.value = data?.tls ? '1' : '0';
+      f_networkSettings.value = data?.networkSettings ? JSON.stringify(data.networkSettings) : '';
+      f_tlsSettings.value = data?.tlsSettings ? JSON.stringify(data.tlsSettings) : '';
+      f_dnsSettings.value = data?.dnsSettings ? JSON.stringify(data.dnsSettings) : '';
+      f_ruleSettings.value = data?.ruleSettings ? JSON.stringify(data.ruleSettings) : '';
+      f_tags.value = data?.tags ? JSON.stringify(data.tags) : '';
+    }
+
+    function closeModal(){
+      const modal = document.getElementById('editModal');
+      modal.classList.remove('active');
+      modal.removeAttribute('data-id');
+    }
+
+    async function onEdit(id){
+      try {
+        // 直接从 manage 列表里拿一次数据
+        const res = await fetch(MANAGE_NODES_API, { headers: getHeaders(), credentials: 'include' });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        const item = (json.data || []).find(i => i.type === 'vless' && i.id === id);
+        openModal(item || {});
+      } catch (e) {
+        message('获取节点失败：' + e.message, 'error');
+      }
+    }
+
+    function readJson(input){
+      const val = input.value.trim();
+      if (!val) return null;
+      try { return JSON.parse(val); } catch (e) { throw new Error('JSON 解析失败'); }
+    }
+
+    async function onSave(){
+      try {
+        const modal = document.getElementById('editModal');
+        const id = modal.getAttribute('data-id');
+        const payload = {
+          id: id || undefined,
+          name: f_name.value.trim(),
+          group_id: readJson(f_group_id) || [],
+          route_id: readJson(f_route_id) || [],
+          parent_id: f_parent_id.value ? Number(f_parent_id.value) : null,
+          host: f_host.value.trim(),
+          port: f_port.value.trim(),
+          server_port: Number(f_server_port.value),
+          rate: Number(f_rate.value || '1'),
+          network: f_network.value,
+          tls: Number(f_tls.value),
+          networkSettings: readJson(f_networkSettings) || null,
+          tlsSettings: readJson(f_tlsSettings) || null,
+          dnsSettings: readJson(f_dnsSettings) || null,
+          ruleSettings: readJson(f_ruleSettings) || null,
+          tags: readJson(f_tags) || []
+        };
+        const res = await fetch(`${API_VLESS}/save`, { method:'POST', headers: getHeaders(), credentials:'include', body: JSON.stringify(payload) });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          const text = await res.text();
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        if (json.data) {
+          formMessage('保存成功');
+          await loadList();
+          setTimeout(closeModal, 800);
+        } else {
+          throw new Error(json.message || '保存失败');
+        }
+      } catch (e) {
+        formMessage('保存失败：' + e.message, 'error');
+      }
+    }
+
+    async function onToggle(id, show){
+      try {
+        const res = await fetch(`${API_VLESS}/update`, { method:'POST', headers: getHeaders(), credentials:'include', body: JSON.stringify({ id, show }) });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        if (json.data) { message('状态更新成功'); await loadList(); }
+        else throw new Error(json.message || '更新失败');
+      } catch (e) { message('更新失败：' + e.message, 'error'); }
+    }
+
+    async function onCopy(id){
+      try {
+        const res = await fetch(`${API_VLESS}/copy`, { method:'POST', headers: getHeaders(), credentials:'include', body: JSON.stringify({ id }) });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        if (json.data) { message('复制成功'); await loadList(); }
+        else throw new Error(json.message || '复制失败');
+      } catch (e) { message('复制失败：' + e.message, 'error'); }
+    }
+
+    async function onDelete(id){
+      if (!confirm('确认删除该节点吗？')) return;
+      try {
+        const res = await fetch(`${API_VLESS}/drop`, { method:'POST', headers: getHeaders(), credentials:'include', body: JSON.stringify({ id }) });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) {
+          throw new Error('非JSON响应（可能未登录或鉴权失败）');
+        }
+        const json = await res.json();
+        if (json.data) { message('删除成功'); await loadList(); }
+        else throw new Error(json.message || '删除失败');
+      } catch (e) { message('删除失败：' + e.message, 'error'); }
+    }
+
+    document.getElementById('btnAdd').onclick = () => openModal({});
+    document.getElementById('btnRefresh').onclick = () => loadList();
+    document.getElementById('btnClose').onclick = () => closeModal();
+    document.getElementById('btnSave').onclick = () => onSave();
+
+    loadList();
+  </script>
+</body>
+</html>

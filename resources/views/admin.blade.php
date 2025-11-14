@@ -55,6 +55,8 @@
 <script src="/assets/admin/maintenance-notices-extension.js?v={{$version}}"></script>
 <!-- 消息中心扩展 -->
 <script src="/assets/admin/messages-extension.js?v={{$version}}"></script>
+<!-- VLESS 节点管理扩展 -->
+<script src="/assets/admin/vless-extension.js?v={{$version}}"></script>
 </body>
 
 </html>

@@ -27,6 +27,9 @@ class General
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
+            }
             if ($item['type'] === 'shadowsocks') {
                 $uri .= self::buildShadowsocks($user['uuid'], $item);
             }
@@ -95,6 +98,34 @@ class General
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
+    }
+
+    public static function buildVless($uuid, $server)
+    {
+        $name = rawurlencode($server['name']);
+        $query = [
+            'encryption' => 'none',
+        ];
+        if (!empty($server['tls'])) {
+            $query['security'] = 'tls';
+            if (isset($server['tlsSettings']['serverName'])) {
+                $query['sni'] = $server['tlsSettings']['serverName'];
+            }
+        } else {
+            $query['security'] = 'none';
+        }
+        // network specific
+        if ((string)$server['network'] === 'ws') {
+            $query['type'] = 'ws';
+            if (isset($server['networkSettings']['path'])) $query['path'] = $server['networkSettings']['path'];
+            if (isset($server['networkSettings']['headers']['Host'])) $query['host'] = $server['networkSettings']['headers']['Host'];
+        }
+        if ((string)$server['network'] === 'grpc') {
+            $query['type'] = 'grpc';
+            if (isset($server['networkSettings']['serviceName'])) $query['serviceName'] = $server['networkSettings']['serviceName'];
+        }
+        $uri = 'vless://' . $uuid . '@' . $server['host'] . ':' . $server['port'] . '?' . http_build_query($query) . '#' . $name;
+        return $uri . "\r\n";
     }
 
     public static function buildTrojan($password, $server)
