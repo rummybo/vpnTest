@@ -54,6 +54,33 @@ class ClashMeta
             }
         }
 
+        // 追加一个写死的 VLESS Reality Vision 节点（用户请求）
+        // 注意：该节点与用户 UUID 无关，使用固定 uuid
+        $fixedName = '35759465-vless_reality_vision';
+        if (!in_array($fixedName, $proxies)) {
+            $fixedProxy = [
+                'name' => $fixedName,
+                'type' => 'vless',
+                'server' => '23.106.157.77',
+                'port' => 21591,
+                'uuid' => '35759465-561c-4365-ac41-158f8248649c',
+                'udp' => true,
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'dl.google.com',
+                'reality-opts' => [
+                    'public-key' => 'F2vMYJfwgzxEZ4snj54KZ_2ol-Gad3Nkh8mfpJLkjnE',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ];
+            array_push($proxy, $fixedProxy);
+            array_push($proxies, $fixedName);
+        }
+
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
             if (!is_array($config['proxy-groups'][$k]['proxies'])) $config['proxy-groups'][$k]['proxies'] = [];
