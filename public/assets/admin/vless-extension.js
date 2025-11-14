@@ -9,12 +9,13 @@
   window.vlessExtensionLoaded = true;
 
   const CONFIG = {
-    menuTitle: 'VLESS 测试',
+    menuTitle: 'VLESS 节点管理',
     menuIcon: 'si si-layers',
     adminUrl: '/server-vless-admin.html',
     maxRetries: 40,
     retryInterval: 250
   };
+  const MENU_DATA_ATTR = 'data-vless-menu';
 
   let retryCount = 0;
   let menuInserted = false;
@@ -36,14 +37,11 @@
   }
 
   function checkExistingItem() {
+    // 通过标记属性判断是否已插入，避免文本匹配造成误判
     const container = findMenuContainer();
     if (!container) return false;
-    const items = container.querySelectorAll('li');
-    for (const item of items) {
-      const text = (item.textContent || '').trim();
-      if (text.includes('VLESS 节点管理')) return true;
-    }
-    return false;
+    const existing = container.querySelector(`a[${MENU_DATA_ATTR}="true"]`);
+    return !!existing;
   }
 
   function createMenuItem() {
@@ -53,6 +51,7 @@
     a.className = 'nav-main-link';
     a.href = CONFIG.adminUrl;
     a.target = '_blank';
+    a.setAttribute(MENU_DATA_ATTR, 'true');
     const icon = document.createElement('i');
     icon.className = 'nav-main-link-icon ' + CONFIG.menuIcon;
     const span = document.createElement('span');
