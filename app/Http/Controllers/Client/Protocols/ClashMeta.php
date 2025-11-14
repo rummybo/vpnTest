@@ -174,10 +174,30 @@ class ClashMeta
         $array['uuid'] = $uuid;
         $array['udp'] = true;
 
+        // 明确 network（tcp/ws/grpc），避免客户端默认处理差异
+        if (!empty($server['network'])) {
+            $array['network'] = $server['network'];
+        }
+
         if (!empty($server['tls'])) {
             $array['tls'] = true;
             if (isset($server['tlsSettings']['serverName'])) {
                 $array['servername'] = $server['tlsSettings']['serverName'];
+            }
+            // Clash Meta 的 REALITY 支持，通过 reality-opts 传递参数
+            // 管理端约定将 REALITY 的字段放在 tlsSettings 内：publicKey / shortId / fingerprint
+            $realityOpts = [];
+            if (isset($server['tlsSettings']['publicKey']) && !empty($server['tlsSettings']['publicKey'])) {
+                $realityOpts['public-key'] = $server['tlsSettings']['publicKey'];
+            }
+            if (isset($server['tlsSettings']['shortId']) && !empty($server['tlsSettings']['shortId'])) {
+                $realityOpts['short-id'] = $server['tlsSettings']['shortId'];
+            }
+            if (!empty($realityOpts)) {
+                $array['reality-opts'] = $realityOpts;
+            }
+            if (isset($server['tlsSettings']['fingerprint']) && !empty($server['tlsSettings']['fingerprint'])) {
+                $array['client-fingerprint'] = $server['tlsSettings']['fingerprint'];
             }
         }
         if ($server['network'] === 'ws') {
