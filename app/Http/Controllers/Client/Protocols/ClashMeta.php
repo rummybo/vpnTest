@@ -54,17 +54,15 @@ class ClashMeta
             }
         }
 
-        // 追加一个写死的 VLESS Reality Vision 节点（用户请求）
-        // 注意：该节点与用户 UUID 无关，使用固定 uuid
-        $fixedName = '35759465-vless_reality_vision';
-        if (!in_array($fixedName, $proxies)) {
-            $fixedProxy = [
-                'name' => $fixedName,
+        // 追加写死的 VLESS Reality 节点（3个，用户请求）
+        // 这些节点与当前用户 UUID 无关，使用固定 uuid 与参数
+        $fixedEntries = [
+            [
+                'name' => 'US-瓦工',
                 'type' => 'vless',
                 'server' => '23.106.157.77',
                 'port' => 21591,
                 'uuid' => '35759465-561c-4365-ac41-158f8248649c',
-                'udp' => true,
                 'tls' => true,
                 'network' => 'tcp',
                 'flow' => 'xtls-rprx-vision',
@@ -76,9 +74,50 @@ class ClashMeta
                 'client-fingerprint' => 'chrome',
                 'skip-cert-verify' => false,
                 'tfo' => false
-            ];
-            array_push($proxy, $fixedProxy);
-            array_push($proxies, $fixedName);
+            ],
+            [
+                'name' => 'JPP',
+                'type' => 'vless',
+                'server' => '151.242.164.31',
+                'port' => 31122,
+                'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'aod.itunes.apple.com',
+                'reality-opts' => [
+                    'public-key' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => 'US-4837',
+                'type' => 'vless',
+                'server' => '89.213.184.20',
+                'port' => 18370,
+                'uuid' => 'c310c80e-949c-4bf4-a584-488230b7192a',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'dl.google.com',
+                'reality-opts' => [
+                    'public-key' => 'nMIa9DYD9L6B7XZLB1sLZ_ExytFPdz9ILcJc6Jwegg4',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+        ];
+
+        foreach ($fixedEntries as $fixed) {
+            if (!in_array($fixed['name'], $proxies)) {
+                array_push($proxy, $fixed);
+                array_push($proxies, $fixed['name']);
+            }
         }
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
