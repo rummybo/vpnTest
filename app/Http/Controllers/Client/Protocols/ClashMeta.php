@@ -58,24 +58,6 @@ class ClashMeta
         // 这些节点与当前用户 UUID 无关，使用固定 uuid 与参数
         $fixedEntries = [
             [
-                'name' => 'US-瓦工',
-                'type' => 'vless',
-                'server' => '23.106.157.77',
-                'port' => 21591,
-                'uuid' => '35759465-561c-4365-ac41-158f8248649c',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'dl.google.com',
-                'reality-opts' => [
-                    'public-key' => 'F2vMYJfwgzxEZ4snj54KZ_2ol-Gad3Nkh8mfpJLkjnE',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
                 'name' => 'JPP',
                 'type' => 'vless',
                 'server' => '151.242.164.31',

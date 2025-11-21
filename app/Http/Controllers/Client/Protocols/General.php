@@ -41,16 +41,6 @@ class General
         $existingNames = array_column($servers, 'name');
         $fixedEntries = [
             [
-                'name' => 'US-瓦工',
-                'server' => '23.106.157.77',
-                'port' => 21591,
-                'uuid' => '35759465-561c-4365-ac41-158f8248649c',
-                'servername' => 'dl.google.com',
-                'pbk' => 'F2vMYJfwgzxEZ4snj54KZ_2ol-Gad3Nkh8mfpJLkjnE',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
                 'name' => 'JPP',
                 'server' => '151.242.164.31',
                 'port' => 31122,
