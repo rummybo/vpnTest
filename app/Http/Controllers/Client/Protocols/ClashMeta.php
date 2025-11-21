@@ -113,7 +113,7 @@ class ClashMeta
             ],
             // 新增 5 个硬编码 Reality 节点（用户补充）
             [
-                'name' => '53c2f063-vless_reality_vision',
+                'name' => 'HK2P',
                 'type' => 'vless',
                 'server' => '82.27.11.30',
                 'port' => 26651,
@@ -131,7 +131,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => '3837424d-vless_reality_vision',
+                'name' => 'JPP-wap1',
                 'type' => 'vless',
                 'server' => '103.238.129.181',
                 'port' => 24187,
@@ -149,7 +149,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => 'a5d2efee-vless_reality_vision',
+                'name' => 'JPP-wap2',
                 'type' => 'vless',
                 'server' => '216.238.55.31',
                 'port' => 25704,
@@ -167,7 +167,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => '6aaa5635-vless_reality_vision',
+                'name' => 'USP-wap1',
                 'type' => 'vless',
                 'server' => '23.156.152.168',
                 'port' => 26988,
@@ -185,7 +185,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => 'c6c5e498-vless_reality_vision',
+                'name' => 'USP-wap2',
                 'type' => 'vless',
                 'server' => '23.156.152.96',
                 'port' => 13211,
@@ -196,6 +196,61 @@ class ClashMeta
                 'servername' => 'www.cisco.com',
                 'reality-opts' => [
                     'public-key' => 'xr-FoTwrFjs0_YqNCCH7srhVCI1ckHcp9XiZCZRJ2j8',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            // 新增 3 个硬编码 Reality 节点（用户补充第二批）
+            [
+                'name' => 'JPP2',
+                'type' => 'vless',
+                'server' => '103.232.213.21',
+                'port' => 10360,
+                'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'software.download.prss.microsoft.com',
+                'reality-opts' => [
+                    'public-key' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => 'JPP3',
+                'type' => 'vless',
+                'server' => '103.232.213.121',
+                'port' => 11840,
+                'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'cdn-dynmedia-1.microsoft.com',
+                'reality-opts' => [
+                    'public-key' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => 'USP',
+                'type' => 'vless',
+                'server' => '166.0.188.172',
+                'port' => 17155,
+                'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'cdn-dynmedia-1.microsoft.com',
+                'reality-opts' => [
+                    'public-key' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
                     'short-id' => '6ba85179e30d4fc2'
                 ],
                 'client-fingerprint' => 'chrome',
