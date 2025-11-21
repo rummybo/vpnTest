@@ -70,6 +70,57 @@ class General
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
             ],
+            // 新增 5 个硬编码 Reality 节点（对应 Base64 原始订阅）
+            [
+                'name' => '53c2f063-vless_reality_vision',
+                'server' => '82.27.11.30',
+                'port' => 26651,
+                'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
+                'servername' => 'osxapps.itunes.apple.com',
+                'pbk' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => '3837424d-vless_reality_vision',
+                'server' => '103.238.129.181',
+                'port' => 24187,
+                'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'pbk' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => 'a5d2efee-vless_reality_vision',
+                'server' => '216.238.55.31',
+                'port' => 25704,
+                'uuid' => 'a5d2efee-3b23-46ce-9f69-c2dd0c50ffd6',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'pbk' => 'QZ2JGMfLgriHUcbRhDwhmmQmrN4fe5CrPUa-bf3H61s',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => '6aaa5635-vless_reality_vision',
+                'server' => '23.156.152.168',
+                'port' => 26988,
+                'uuid' => '6aaa5635-9157-4ebc-9274-8570545db4b8',
+                'servername' => 'cdn-dynmedia-1.microsoft.com',
+                'pbk' => '34VmgcF-Ei4JbThTZGqIM8NY5_Une45etie7jEyN6h0',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => 'c6c5e498-vless_reality_vision',
+                'server' => '23.156.152.96',
+                'port' => 13211,
+                'uuid' => 'c6c5e498-fdd6-4aa1-8846-8b6169258f66',
+                'servername' => 'www.cisco.com',
+                'pbk' => 'xr-FoTwrFjs0_YqNCCH7srhVCI1ckHcp9XiZCZRJ2j8',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
         ];
         foreach ($fixedEntries as $f) {
             if (in_array($f['name'], $existingNames)) continue;

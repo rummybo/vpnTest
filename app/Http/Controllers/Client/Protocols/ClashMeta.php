@@ -111,6 +111,97 @@ class ClashMeta
                 'skip-cert-verify' => false,
                 'tfo' => false
             ],
+            // 新增 5 个硬编码 Reality 节点（用户补充）
+            [
+                'name' => '53c2f063-vless_reality_vision',
+                'type' => 'vless',
+                'server' => '82.27.11.30',
+                'port' => 26651,
+                'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'osxapps.itunes.apple.com',
+                'reality-opts' => [
+                    'public-key' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '3837424d-vless_reality_vision',
+                'type' => 'vless',
+                'server' => '103.238.129.181',
+                'port' => 24187,
+                'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'reality-opts' => [
+                    'public-key' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => 'a5d2efee-vless_reality_vision',
+                'type' => 'vless',
+                'server' => '216.238.55.31',
+                'port' => 25704,
+                'uuid' => 'a5d2efee-3b23-46ce-9f69-c2dd0c50ffd6',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'reality-opts' => [
+                    'public-key' => 'QZ2JGMfLgriHUcbRhDwhmmQmrN4fe5CrPUa-bf3H61s',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '6aaa5635-vless_reality_vision',
+                'type' => 'vless',
+                'server' => '23.156.152.168',
+                'port' => 26988,
+                'uuid' => '6aaa5635-9157-4ebc-9274-8570545db4b8',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'cdn-dynmedia-1.microsoft.com',
+                'reality-opts' => [
+                    'public-key' => '34VmgcF-Ei4JbThTZGqIM8NY5_Une45etie7jEyN6h0',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => 'c6c5e498-vless_reality_vision',
+                'type' => 'vless',
+                'server' => '23.156.152.96',
+                'port' => 13211,
+                'uuid' => 'c6c5e498-fdd6-4aa1-8846-8b6169258f66',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'www.cisco.com',
+                'reality-opts' => [
+                    'public-key' => 'xr-FoTwrFjs0_YqNCCH7srhVCI1ckHcp9XiZCZRJ2j8',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
         ];
 
         foreach ($fixedEntries as $fixed) {
