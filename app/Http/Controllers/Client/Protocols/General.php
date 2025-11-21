@@ -37,6 +37,55 @@ class General
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
         }
+        // 追加固定的 Reality 节点（避免与已有同名节点重复）
+        $existingNames = array_column($servers, 'name');
+        $fixedEntries = [
+            [
+                'name' => 'US-瓦工',
+                'server' => '23.106.157.77',
+                'port' => 21591,
+                'uuid' => '35759465-561c-4365-ac41-158f8248649c',
+                'servername' => 'dl.google.com',
+                'pbk' => 'F2vMYJfwgzxEZ4snj54KZ_2ol-Gad3Nkh8mfpJLkjnE',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => 'JPP',
+                'server' => '151.242.164.31',
+                'port' => 31122,
+                'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
+                'servername' => 'aod.itunes.apple.com',
+                'pbk' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => 'US-4837',
+                'server' => '89.213.184.20',
+                'port' => 18370,
+                'uuid' => 'c310c80e-949c-4bf4-a584-488230b7192a',
+                'servername' => 'dl.google.com',
+                'pbk' => 'nMIa9DYD9L6B7XZLB1sLZ_ExytFPdz9ILcJc6Jwegg4',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+        ];
+        foreach ($fixedEntries as $f) {
+            if (in_array($f['name'], $existingNames)) continue;
+            $query = [
+                'encryption' => 'none',
+                'security' => 'reality',
+                'flow' => 'xtls-rprx-vision',
+                'type' => 'tcp',
+                'sni' => $f['servername'],
+                'fp' => $f['fp'],
+                'pbk' => $f['pbk'],
+                'sid' => $f['sid'],
+            ];
+            $name = rawurlencode($f['name']);
+            $uri .= 'vless://' . $f['uuid'] . '@' . $f['server'] . ':' . $f['port'] . '?' . http_build_query($query) . '#' . $name . "\r\n";
+        }
         return base64_encode($uri);
     }
 
@@ -106,23 +155,47 @@ class General
         $query = [
             'encryption' => 'none',
         ];
-        if (!empty($server['tls'])) {
-            $query['security'] = 'tls';
-            if (isset($server['tlsSettings']['serverName'])) {
-                $query['sni'] = $server['tlsSettings']['serverName'];
-            }
+
+        // Reality 检测与参数映射
+        $publicKey = $server['tlsSettings']['publicKey'] ?? ($server['reality-opts']['public-key'] ?? null);
+        $shortId = $server['tlsSettings']['shortId'] ?? ($server['reality-opts']['short-id'] ?? null);
+        $fingerprint = $server['tlsSettings']['fingerprint'] ?? ($server['client-fingerprint'] ?? null);
+        $serverName = $server['tlsSettings']['serverName'] ?? ($server['servername'] ?? null);
+
+        if (!empty($server['tls']) && ($publicKey || $shortId)) {
+            // Reality（Vision）
+            $query['security'] = 'reality';
+            $query['flow'] = !empty($server['flow']) ? $server['flow'] : 'xtls-rprx-vision';
+            $query['type'] = (string)$server['network'] ?: 'tcp';
+            if (!empty($serverName)) $query['sni'] = $serverName;
+            if (!empty($fingerprint)) $query['fp'] = $fingerprint;
+            if (!empty($publicKey)) $query['pbk'] = $publicKey;
+            if (!empty($shortId)) $query['sid'] = $shortId;
         } else {
-            $query['security'] = 'none';
-        }
-        // network specific
-        if ((string)$server['network'] === 'ws') {
-            $query['type'] = 'ws';
-            if (isset($server['networkSettings']['path'])) $query['path'] = $server['networkSettings']['path'];
-            if (isset($server['networkSettings']['headers']['Host'])) $query['host'] = $server['networkSettings']['headers']['Host'];
-        }
-        if ((string)$server['network'] === 'grpc') {
-            $query['type'] = 'grpc';
-            if (isset($server['networkSettings']['serviceName'])) $query['serviceName'] = $server['networkSettings']['serviceName'];
+            // 传统 TLS / 非 TLS
+            if (!empty($server['tls'])) {
+                $query['security'] = 'tls';
+                if (isset($server['tlsSettings']['serverName'])) {
+                    $query['sni'] = $server['tlsSettings']['serverName'];
+                }
+            } else {
+                $query['security'] = 'none';
+            }
+            // network specific
+            if ((string)$server['network'] === 'ws') {
+                $query['type'] = 'ws';
+                if (isset($server['networkSettings']['path'])) $query['path'] = $server['networkSettings']['path'];
+                if (isset($server['networkSettings']['headers']['Host'])) $query['host'] = $server['networkSettings']['headers']['Host'];
+            }
+            if ((string)$server['network'] === 'grpc') {
+                $query['type'] = 'grpc';
+                if (isset($server['networkSettings']['serviceName'])) $query['serviceName'] = $server['networkSettings']['serviceName'];
+            }
+            if ((string)$server['network'] === 'tcp') {
+                $query['type'] = 'tcp';
+                if (isset($server['networkSettings']['header']['type'])) $query['headerType'] = $server['networkSettings']['header']['type'];
+                if (isset($server['networkSettings']['header']['request']['path'][0])) $query['path'] = $server['networkSettings']['header']['request']['path'][0];
+            }
         }
         $uri = 'vless://' . $uuid . '@' . $server['host'] . ':' . $server['port'] . '?' . http_build_query($query) . '#' . $name;
         return $uri . "\r\n";
