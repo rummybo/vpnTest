@@ -96,7 +96,7 @@ class ClashMeta
             [
                 'name' => 'US-4837',
                 'type' => 'vless',
-                'server' => '89.213.184.20',
+                'server' => '23.144.12.20',
                 'port' => 18370,
                 'uuid' => 'c310c80e-949c-4bf4-a584-488230b7192a',
                 'tls' => true,
