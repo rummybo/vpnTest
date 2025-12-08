@@ -40,18 +40,18 @@ class General
         // 追加固定的 Reality 节点（避免与已有同名节点重复）
         $existingNames = array_column($servers, 'name');
         $fixedEntries = [
+//            [
+//                'name' => 'JPP',
+//                'server' => '151.242.164.31',
+//                'port' => 31122,
+//                'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
+//                'servername' => 'aod.itunes.apple.com',
+//                'pbk' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
             [
-                'name' => 'JPP',
-                'server' => '151.242.164.31',
-                'port' => 31122,
-                'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
-                'servername' => 'aod.itunes.apple.com',
-                'pbk' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => 'US-4837',
+                'name' => '美国-a',
                 'server' => '23.144.12.20',
                 'port' => 18370,
                 'uuid' => 'c310c80e-949c-4bf4-a584-488230b7192a',
@@ -61,28 +61,28 @@ class General
                 'fp' => 'chrome'
             ],
             // 新增 5 个硬编码 Reality 节点（对应 Base64 原始订阅）
+//            [
+//                'name' => 'HK2P',
+//                'server' => '82.27.11.30',
+//                'port' => 26651,
+//                'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
+//                'servername' => 'osxapps.itunes.apple.com',
+//                'pbk' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
+//            [
+//                'name' => 'JPP-wap1',
+//                'server' => '103.238.129.181',
+//                'port' => 24187,
+//                'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
+//                'servername' => 'download-installer.cdn.mozilla.net',
+//                'pbk' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
             [
-                'name' => 'HK2P',
-                'server' => '82.27.11.30',
-                'port' => 26651,
-                'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
-                'servername' => 'osxapps.itunes.apple.com',
-                'pbk' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => 'JPP-wap1',
-                'server' => '103.238.129.181',
-                'port' => 24187,
-                'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
-                'servername' => 'download-installer.cdn.mozilla.net',
-                'pbk' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => 'JPP-wap2',
+                'name' => '日本-w',
                 'server' => '216.238.55.31',
                 'port' => 25704,
                 'uuid' => 'a5d2efee-3b23-46ce-9f69-c2dd0c50ffd6',
@@ -92,7 +92,7 @@ class General
                 'fp' => 'chrome'
             ],
             [
-                'name' => 'USP-wap1',
+                'name' => '美国-w1',
                 'server' => '23.156.152.168',
                 'port' => 26988,
                 'uuid' => '6aaa5635-9157-4ebc-9274-8570545db4b8',
@@ -102,7 +102,7 @@ class General
                 'fp' => 'chrome'
             ],
             [
-                'name' => 'USP-wap2',
+                'name' => '美国-w2',
                 'server' => '23.156.152.96',
                 'port' => 13211,
                 'uuid' => 'c6c5e498-fdd6-4aa1-8846-8b6169258f66',
@@ -112,33 +112,43 @@ class General
                 'fp' => 'chrome'
             ],
             // 新增 3 个硬编码 Reality 节点（对应 Base64 原始订阅第二批）
+//            [
+//                'name' => 'JPP2',
+//                'server' => '103.232.213.21',
+//                'port' => 10360,
+//                'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
+//                'servername' => 'software.download.prss.microsoft.com',
+//                'pbk' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
+//            [
+//                'name' => 'JPP3',
+//                'server' => '103.232.213.121',
+//                'port' => 11840,
+//                'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
+//                'servername' => 'cdn-dynmedia-1.microsoft.com',
+//                'pbk' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
+//            [
+//                'name' => 'USP',
+//                'server' => '166.0.188.172',
+//                'port' => 17155,
+//                'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
+//                'servername' => 'cdn-dynmedia-1.microsoft.com',
+//                'pbk' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
+//                'sid' => '6ba85179e30d4fc2',
+//                'fp' => 'chrome'
+//            ],
             [
-                'name' => 'JPP2',
-                'server' => '103.232.213.21',
-                'port' => 10360,
-                'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
-                'servername' => 'software.download.prss.microsoft.com',
-                'pbk' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => 'JPP3',
-                'server' => '103.232.213.121',
-                'port' => 11840,
-                'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'pbk' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => 'USP',
-                'server' => '166.0.188.172',
-                'port' => 17155,
-                'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'pbk' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
+                'name' => '香港-A1',
+                'server' => '47.242.181.156',
+                'port' => 22323,
+                'uuid' => '12873fb3-1131-4eb6-bee7-8cc263e7468d',
+                'servername' => 'addons.mozilla.org',
+                'pbk' => 'NBQvZE68PWQq_rdl1tAQ7PveKYzheiWP7iaYaI6A91o',
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
             ],

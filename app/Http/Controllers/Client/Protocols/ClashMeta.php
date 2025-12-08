@@ -57,26 +57,26 @@ class ClashMeta
         // 追加写死的 VLESS Reality 节点（3个，用户请求）
         // 这些节点与当前用户 UUID 无关，使用固定 uuid 与参数
         $fixedEntries = [
+            // [
+            //     'name' => 'JPP',
+            //     'type' => 'vless',
+            //     'server' => '151.242.164.31',
+            //     'port' => 31122,
+            //     'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'aod.itunes.apple.com',
+            //     'reality-opts' => [
+            //         'public-key' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
             [
-                'name' => 'JPP',
-                'type' => 'vless',
-                'server' => '151.242.164.31',
-                'port' => 31122,
-                'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'aod.itunes.apple.com',
-                'reality-opts' => [
-                    'public-key' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => 'US-4837',
+                'name' => '美国-a',
                 'type' => 'vless',
                 'server' => '23.144.12.20',
                 'port' => 18370,
@@ -94,44 +94,44 @@ class ClashMeta
                 'tfo' => false
             ],
             // 新增 5 个硬编码 Reality 节点（用户补充）
+            // [
+            //     'name' => 'HK2P',
+            //     'type' => 'vless',
+            //     'server' => '82.27.11.30',
+            //     'port' => 26651,
+            //     'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'osxapps.itunes.apple.com',
+            //     'reality-opts' => [
+            //         'public-key' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
+            // [
+            //     'name' => 'JPP-wap1',
+            //     'type' => 'vless',
+            //     'server' => '103.238.129.181',
+            //     'port' => 24187,
+            //     'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'download-installer.cdn.mozilla.net',
+            //     'reality-opts' => [
+            //         'public-key' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
             [
-                'name' => 'HK2P',
-                'type' => 'vless',
-                'server' => '82.27.11.30',
-                'port' => 26651,
-                'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'osxapps.itunes.apple.com',
-                'reality-opts' => [
-                    'public-key' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => 'JPP-wap1',
-                'type' => 'vless',
-                'server' => '103.238.129.181',
-                'port' => 24187,
-                'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'download-installer.cdn.mozilla.net',
-                'reality-opts' => [
-                    'public-key' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => 'JPP-wap2',
+                'name' => '日本-w',
                 'type' => 'vless',
                 'server' => '216.238.55.31',
                 'port' => 25704,
@@ -149,7 +149,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => 'USP-wap1',
+                'name' => '美国-w1',
                 'type' => 'vless',
                 'server' => '23.156.152.168',
                 'port' => 26988,
@@ -167,7 +167,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => 'USP-wap2',
+                'name' => '美国-w2',
                 'type' => 'vless',
                 'server' => '23.156.152.96',
                 'port' => 13211,
@@ -185,60 +185,78 @@ class ClashMeta
                 'tfo' => false
             ],
             // 新增 3 个硬编码 Reality 节点（用户补充第二批）
+            // [
+            //     'name' => 'JPP2',
+            //     'type' => 'vless',
+            //     'server' => '103.232.213.21',
+            //     'port' => 10360,
+            //     'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'software.download.prss.microsoft.com',
+            //     'reality-opts' => [
+            //         'public-key' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
+            // [
+            //     'name' => 'JPP3',
+            //     'type' => 'vless',
+            //     'server' => '103.232.213.121',
+            //     'port' => 11840,
+            //     'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'cdn-dynmedia-1.microsoft.com',
+            //     'reality-opts' => [
+            //         'public-key' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
+            // [
+            //     'name' => 'USP',
+            //     'type' => 'vless',
+            //     'server' => '166.0.188.172',
+            //     'port' => 17155,
+            //     'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
+            //     'tls' => true,
+            //     'network' => 'tcp',
+            //     'flow' => 'xtls-rprx-vision',
+            //     'servername' => 'cdn-dynmedia-1.microsoft.com',
+            //     'reality-opts' => [
+            //         'public-key' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
+            //         'short-id' => '6ba85179e30d4fc2'
+            //     ],
+            //     'client-fingerprint' => 'chrome',
+            //     'skip-cert-verify' => false,
+            //     'tfo' => false
+            // ],
             [
-                'name' => 'JPP2',
+                'name' => '香港-A1',
                 'type' => 'vless',
-                'server' => '103.232.213.21',
-                'port' => 10360,
-                'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
+                'server' => '47.242.181.156',
+                'port' => 22323,
+                'uuid' => '12873fb3-1131-4eb6-bee7-8cc263e7468d',
                 'tls' => true,
                 'network' => 'tcp',
                 'flow' => 'xtls-rprx-vision',
-                'servername' => 'software.download.prss.microsoft.com',
+                'servername' => 'addons.mozilla.org',
                 'reality-opts' => [
-                    'public-key' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
+                    'public-key' => 'NBQvZE68PWQq_rdl1tAQ7PveKYzheiWP7iaYaI6A91o',
                     'short-id' => '6ba85179e30d4fc2'
                 ],
                 'client-fingerprint' => 'chrome',
                 'skip-cert-verify' => false,
                 'tfo' => false
-            ],
-            [
-                'name' => 'JPP3',
-                'type' => 'vless',
-                'server' => '103.232.213.121',
-                'port' => 11840,
-                'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'reality-opts' => [
-                    'public-key' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => 'USP',
-                'type' => 'vless',
-                'server' => '166.0.188.172',
-                'port' => 17155,
-                'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'reality-opts' => [
-                    'public-key' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
+            ]
         ];
 
         foreach ($fixedEntries as $fixed) {
