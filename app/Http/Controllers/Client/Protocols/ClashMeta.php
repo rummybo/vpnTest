@@ -54,27 +54,9 @@ class ClashMeta
             }
         }
 
-        // 追加写死的 VLESS Reality 节点（3个，用户请求）
+        // 追加写死的 VLESS Reality 节点（10个，用户请求）
         // 这些节点与当前用户 UUID 无关，使用固定 uuid 与参数
         $fixedEntries = [
-            // [
-            //     'name' => 'JPP',
-            //     'type' => 'vless',
-            //     'server' => '151.242.164.31',
-            //     'port' => 31122,
-            //     'uuid' => '8ca57d9c-545f-4417-b65f-1ca9692e9ee5',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'aod.itunes.apple.com',
-            //     'reality-opts' => [
-            //         'public-key' => 'SMhrERlTCqtbZqS9H6oa5jzieaAnV5HvTwPgFw7V-1c',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
             [
                 'name' => '美国-a',
                 'type' => 'vless',
@@ -93,43 +75,6 @@ class ClashMeta
                 'skip-cert-verify' => false,
                 'tfo' => false
             ],
-            // 新增 5 个硬编码 Reality 节点（用户补充）
-            // [
-            //     'name' => 'HK2P',
-            //     'type' => 'vless',
-            //     'server' => '82.27.11.30',
-            //     'port' => 26651,
-            //     'uuid' => '53c2f063-c2e5-49c7-b9b8-c8e3019077d4',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'osxapps.itunes.apple.com',
-            //     'reality-opts' => [
-            //         'public-key' => 'ICZUHkfKHIg9d_0BlZAMlNNLQV7UGC1qnT-IC-FuPnA',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
-            // [
-            //     'name' => 'JPP-wap1',
-            //     'type' => 'vless',
-            //     'server' => '103.238.129.181',
-            //     'port' => 24187,
-            //     'uuid' => '3837424d-e3da-4aee-8a85-6645a010b137',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'download-installer.cdn.mozilla.net',
-            //     'reality-opts' => [
-            //         'public-key' => 'urTG2gj0lQ1XTAXYyxK_pqOzspBCEUHOao_jesG1JFk',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
             [
                 'name' => '日本-w',
                 'type' => 'vless',
@@ -184,73 +129,108 @@ class ClashMeta
                 'skip-cert-verify' => false,
                 'tfo' => false
             ],
-            // 新增 3 个硬编码 Reality 节点（用户补充第二批）
-            // [
-            //     'name' => 'JPP2',
-            //     'type' => 'vless',
-            //     'server' => '103.232.213.21',
-            //     'port' => 10360,
-            //     'uuid' => 'fa322981-8c55-45b8-a09b-879a2abfebea',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'software.download.prss.microsoft.com',
-            //     'reality-opts' => [
-            //         'public-key' => 'QPj_sdVFY8a8tBj1wSLEzlXvq0cKOIly2WLp3OOF3QE',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
-            // [
-            //     'name' => 'JPP3',
-            //     'type' => 'vless',
-            //     'server' => '103.232.213.121',
-            //     'port' => 11840,
-            //     'uuid' => 'f6cd2943-f1a9-4e91-945c-bfaf5463cb8e',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'cdn-dynmedia-1.microsoft.com',
-            //     'reality-opts' => [
-            //         'public-key' => '4G8OknODlJve723d5Eyul-2yNM1Te7aTVZvEFxv6hRU',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
-            // [
-            //     'name' => 'USP',
-            //     'type' => 'vless',
-            //     'server' => '166.0.188.172',
-            //     'port' => 17155,
-            //     'uuid' => '9bf14a1d-ed43-4a4b-ba53-5d79cbd21361',
-            //     'tls' => true,
-            //     'network' => 'tcp',
-            //     'flow' => 'xtls-rprx-vision',
-            //     'servername' => 'cdn-dynmedia-1.microsoft.com',
-            //     'reality-opts' => [
-            //         'public-key' => '3Favw49jpcmuV81YRNphCtQaYZB-5SktZ4TK-ZRTMzI',
-            //         'short-id' => '6ba85179e30d4fc2'
-            //     ],
-            //     'client-fingerprint' => 'chrome',
-            //     'skip-cert-verify' => false,
-            //     'tfo' => false
-            // ],
             [
-                'name' => '香港-A1',
+                'name' => '韩国-A1',
                 'type' => 'vless',
-                'server' => '47.242.181.156',
-                'port' => 22323,
-                'uuid' => '12873fb3-1131-4eb6-bee7-8cc263e7468d',
+                'server' => '47.80.13.206',
+                'port' => 27100,
+                'uuid' => 'fcb7c900-6547-4093-813e-f99b8d5e280b',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'www.google-analytics.com',
+                'reality-opts' => [
+                    'public-key' => 'rA6oL41w0B_XZqc7WVWe3tWvN3C2gF9PJa6v7VXcAiU',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '香港-A2',
+                'type' => 'vless',
+                'server' => '8.217.71.79',
+                'port' => 22917,
+                'uuid' => 'fa95d895-5de7-431e-b4ec-1c271b55d1bb',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'swdist.apple.com',
+                'reality-opts' => [
+                    'public-key' => 'QgYm7xBp61D6GpPRxpdohnvOWI6Q5E-NzkPGsA5V1yg',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '香港-A3',
+                'type' => 'vless',
+                'server' => '47.243.178.198',
+                'port' => 21407,
+                'uuid' => 'f68a8d44-b1f7-4b86-bded-83a44fae9e9f',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'aod.itunes.apple.com',
+                'reality-opts' => [
+                    'public-key' => 't2Uem_Bw4c4PPCb5QxJYk6ApE1WeBG3grtoveeukH0U',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '日本-A1',
+                'type' => 'vless',
+                'server' => '47.74.1.249',
+                'port' => 19488,
+                'uuid' => '83f830c2-65a2-4e56-937d-5ee9d84f3fd6',
                 'tls' => true,
                 'network' => 'tcp',
                 'flow' => 'xtls-rprx-vision',
                 'servername' => 'addons.mozilla.org',
                 'reality-opts' => [
-                    'public-key' => 'NBQvZE68PWQq_rdl1tAQ7PveKYzheiWP7iaYaI6A91o',
+                    'public-key' => 'H9NeFhMNl6hTIEn19vQRw-Jc2i2smDUz0b8gBi8JM3U',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '日本-A2',
+                'type' => 'vless',
+                'server' => '8.211.175.186',
+                'port' => 13903,
+                'uuid' => '91927198-186d-4bd2-9011-5fb71e07c7d7',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'www.google-analytics.com',
+                'reality-opts' => [
+                    'public-key' => 'xzCyKNL1exnRtf-CjwIZOlZ_JEP5Dc7zUieWCxYvDWA',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '新加坡-A1',
+                'type' => 'vless',
+                'server' => '8.219.15.63',
+                'port' => 19706,
+                'uuid' => '52f92f1b-830b-46f4-be90-931c57974e4c',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'gateway.icloud.com',
+                'reality-opts' => [
+                    'public-key' => 'UoBtpSqvkiTC9w57aAKTvWXUInyG5ON-8iZD_dLMPSQ',
                     'short-id' => '6ba85179e30d4fc2'
                 ],
                 'client-fingerprint' => 'chrome',
