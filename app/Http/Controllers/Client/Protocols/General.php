@@ -110,36 +110,6 @@ class General
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
             ],
-            [
-                'name' => '日本-A1',
-                'server' => '47.74.1.249',
-                'port' => 19488,
-                'uuid' => '83f830c2-65a2-4e56-937d-5ee9d84f3fd6',
-                'servername' => 'addons.mozilla.org',
-                'pbk' => 'H9NeFhMNl6hTIEn19vQRw-Jc2i2smDUz0b8gBi8JM3U',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '日本-A2',
-                'server' => '8.211.175.186',
-                'port' => 13903,
-                'uuid' => '91927198-186d-4bd2-9011-5fb71e07c7d7',
-                'servername' => 'www.google-analytics.com',
-                'pbk' => 'xzCyKNL1exnRtf-CjwIZOlZ_JEP5Dc7zUieWCxYvDWA',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '新加坡-A1',
-                'server' => '8.219.15.63',
-                'port' => 19706,
-                'uuid' => '52f92f1b-830b-46f4-be90-931c57974e4c',
-                'servername' => 'gateway.icloud.com',
-                'pbk' => 'UoBtpSqvkiTC9w57aAKTvWXUInyG5ON-8iZD_dLMPSQ',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
         ];
         foreach ($fixedEntries as $f) {
             if (in_array($f['name'], $existingNames)) continue;
