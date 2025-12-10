@@ -182,60 +182,6 @@ class ClashMeta
                 'client-fingerprint' => 'chrome',
                 'skip-cert-verify' => false,
                 'tfo' => false
-            ],
-            [
-                'name' => '日本-A1',
-                'type' => 'vless',
-                'server' => '47.74.1.249',
-                'port' => 19488,
-                'uuid' => '83f830c2-65a2-4e56-937d-5ee9d84f3fd6',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'addons.mozilla.org',
-                'reality-opts' => [
-                    'public-key' => 'H9NeFhMNl6hTIEn19vQRw-Jc2i2smDUz0b8gBi8JM3U',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '日本-A2',
-                'type' => 'vless',
-                'server' => '8.211.175.186',
-                'port' => 13903,
-                'uuid' => '91927198-186d-4bd2-9011-5fb71e07c7d7',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'www.google-analytics.com',
-                'reality-opts' => [
-                    'public-key' => 'xzCyKNL1exnRtf-CjwIZOlZ_JEP5Dc7zUieWCxYvDWA',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '新加坡-A1',
-                'type' => 'vless',
-                'server' => '8.219.15.63',
-                'port' => 19706,
-                'uuid' => '52f92f1b-830b-46f4-be90-931c57974e4c',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'gateway.icloud.com',
-                'reality-opts' => [
-                    'public-key' => 'UoBtpSqvkiTC9w57aAKTvWXUInyG5ON-8iZD_dLMPSQ',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
             ]
         ];
 
