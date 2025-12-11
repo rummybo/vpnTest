@@ -94,6 +94,42 @@ class ClashMeta
                 'tfo' => false
             ],
             [
+                'name' => '美国-a3',
+                'type' => 'vless',
+                'server' => '154.29.154.242',
+                'port' => 18438,
+                'uuid' => '0aa008f1-1f21-455e-b7df-3bb884821871',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'dl.google.com',
+                'reality-opts' => [
+                    'public-key' => 'JyMHrG50t_fVfRKRCr-AXHVppLBlY9rT-N3rQHKLEA4',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '美国-a4',
+                'type' => 'vless',
+                'server' => '23.144.20.33',
+                'port' => 15526,
+                'uuid' => 'b247f45f-1207-44be-a212-eaa09c8c63a8',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'dl.google.com',
+                'reality-opts' => [
+                    'public-key' => 'FJY6rsLEdKJkTmTCps6gBZFkTAh_MGubvLS84yvtvWk',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
                 'name' => '日本-w',
                 'type' => 'vless',
                 'server' => '216.238.55.31',
