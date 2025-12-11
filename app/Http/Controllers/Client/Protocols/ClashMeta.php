@@ -166,7 +166,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => '日本-3',
+                'name' => '日本-w3',
                 'type' => 'vless',
                 'server' => '216.238.55.44',
                 'port' => 15375,
@@ -184,7 +184,7 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => '日本-4',
+                'name' => '日本-w4',
                 'type' => 'vless',
                 'server' => '216.238.55.45',
                 'port' => 16346,
