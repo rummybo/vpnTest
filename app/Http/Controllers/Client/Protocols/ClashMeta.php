@@ -110,42 +110,6 @@ class ClashMeta
                 'client-fingerprint' => 'chrome',
                 'skip-cert-verify' => false,
                 'tfo' => false
-            ],
-            [
-                'name' => '香港-A2',
-                'type' => 'vless',
-                'server' => '8.217.71.79',
-                'port' => 22917,
-                'uuid' => 'fa95d895-5de7-431e-b4ec-1c271b55d1bb',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'swdist.apple.com',
-                'reality-opts' => [
-                    'public-key' => 'QgYm7xBp61D6GpPRxpdohnvOWI6Q5E-NzkPGsA5V1yg',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '香港-A3',
-                'type' => 'vless',
-                'server' => '47.243.178.198',
-                'port' => 21407,
-                'uuid' => 'f68a8d44-b1f7-4b86-bded-83a44fae9e9f',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'aod.itunes.apple.com',
-                'reality-opts' => [
-                    'public-key' => 't2Uem_Bw4c4PPCb5QxJYk6ApE1WeBG3grtoveeukH0U',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
             ]
         ];
 
