@@ -61,36 +61,6 @@ class General
                 'fp' => 'chrome'
             ],
             [
-                'name' => '美国-w1',
-                'server' => '23.156.152.168',
-                'port' => 26988,
-                'uuid' => '6aaa5635-9157-4ebc-9274-8570545db4b8',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'pbk' => '34VmgcF-Ei4JbThTZGqIM8NY5_Une45etie7jEyN6h0',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '美国-w2',
-                'server' => '23.156.152.96',
-                'port' => 13211,
-                'uuid' => 'c6c5e498-fdd6-4aa1-8846-8b6169258f66',
-                'servername' => 'www.cisco.com',
-                'pbk' => 'xr-FoTwrFjs0_YqNCCH7srhVCI1ckHcp9XiZCZRJ2j8',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '韩国-A1',
-                'server' => '47.80.13.206',
-                'port' => 27100,
-                'uuid' => 'fcb7c900-6547-4093-813e-f99b8d5e280b',
-                'servername' => 'www.google-analytics.com',
-                'pbk' => 'rA6oL41w0B_XZqc7WVWe3tWvN3C2gF9PJa6v7VXcAiU',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
                 'name' => '香港-A2',
                 'server' => '8.217.71.79',
                 'port' => 22917,
