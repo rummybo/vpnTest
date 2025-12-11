@@ -70,26 +70,6 @@ class General
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
             ],
-            [
-                'name' => '香港-A2',
-                'server' => '8.217.71.79',
-                'port' => 22917,
-                'uuid' => 'fa95d895-5de7-431e-b4ec-1c271b55d1bb',
-                'servername' => 'swdist.apple.com',
-                'pbk' => 'QgYm7xBp61D6GpPRxpdohnvOWI6Q5E-NzkPGsA5V1yg',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '香港-A3',
-                'server' => '47.243.178.198',
-                'port' => 21407,
-                'uuid' => 'f68a8d44-b1f7-4b86-bded-83a44fae9e9f',
-                'servername' => 'aod.itunes.apple.com',
-                'pbk' => 't2Uem_Bw4c4PPCb5QxJYk6ApE1WeBG3grtoveeukH0U',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
         ];
         foreach ($fixedEntries as $f) {
             if (in_array($f['name'], $existingNames)) continue;
