@@ -90,6 +90,36 @@ class General
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
             ],
+            [
+                'name' => '日本-2',
+                'server' => '216.238.55.43',
+                'port' => 14247,
+                'uuid' => 'eb813b83-286c-4f24-a8a2-61309a00a313',
+                'servername' => 'swcdn.apple.com',
+                'pbk' => 'SIGFM4H-WBBrjbocBOqGcIJtFe1A_mG7U9BL3qYaw1Y',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => '日本-3',
+                'server' => '216.238.55.44',
+                'port' => 15375,
+                'uuid' => '9d604987-a2e0-4d2b-969b-49bcd73e18e9',
+                'servername' => 'www.google-analytics.com',
+                'pbk' => 'haVWGowZWyKCqBp0wZBxj5AqUgFzySpL3sbZUmpqmls',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => '日本-4',
+                'server' => '216.238.55.45',
+                'port' => 16346,
+                'uuid' => 'fb8b1b17-eea3-4119-8ed5-579183859290',
+                'servername' => 'academy.nvidia.com',
+                'pbk' => 'CPtHLmSRv81nZb8kLVCLquBABfoxv4dN8u6K8X2BdXs',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
         ];
         foreach ($fixedEntries as $f) {
             if (in_array($f['name'], $existingNames)) continue;
