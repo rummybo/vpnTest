@@ -61,6 +61,26 @@ class General
                 'fp' => 'chrome'
             ],
             [
+                'name' => '美国-a3',
+                'server' => '154.29.154.242',
+                'port' => 18438,
+                'uuid' => '0aa008f1-1f21-455e-b7df-3bb884821871',
+                'servername' => 'dl.google.com',
+                'pbk' => 'JyMHrG50t_fVfRKRCr-AXHVppLBlY9rT-N3rQHKLEA4',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
+                'name' => '美国-a4',
+                'server' => '23.144.20.33',
+                'port' => 15526,
+                'uuid' => 'b247f45f-1207-44be-a212-eaa09c8c63a8',
+                'servername' => 'dl.google.com',
+                'pbk' => 'FJY6rsLEdKJkTmTCps6gBZFkTAh_MGubvLS84yvtvWk',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
                 'name' => '日本-w',
                 'server' => '216.238.55.31',
                 'port' => 25704,
