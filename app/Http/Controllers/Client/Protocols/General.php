@@ -62,10 +62,10 @@ class General
             ],
             [
                 'name' => '美国-a3',
-                'server' => '154.29.154.242',
-                'port' => 18438,
-                'uuid' => '0aa008f1-1f21-455e-b7df-3bb884821871',
-                'servername' => 'dl.google.com',
+                'server' => '154.29.154.188',
+                'port' => 27625,
+                'uuid' => '92ca7f85-cddf-48fe-a9a9-236e1f28666e',
+                'servername' => 'osxapps.itunes.apple.com',
                 'pbk' => 'JyMHrG50t_fVfRKRCr-AXHVppLBlY9rT-N3rQHKLEA4',
                 'sid' => '6ba85179e30d4fc2',
                 'fp' => 'chrome'
