@@ -146,6 +146,60 @@ class ClashMeta
                 'client-fingerprint' => 'chrome',
                 'skip-cert-verify' => false,
                 'tfo' => false
+            ],
+            [
+                'name' => '日本-w2',
+                'type' => 'vless',
+                'server' => '216.238.55.43',
+                'port' => 14247,
+                'uuid' => 'eb813b83-286c-4f24-a8a2-61309a00a313',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'reality-opts' => [
+                    'public-key' => 'SIGFM4H-WBBrjbocBOqGcIJtFe1A_mG7U9BL3qYaw1Y',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '日本-3',
+                'type' => 'vless',
+                'server' => '216.238.55.44',
+                'port' => 15375,
+                'uuid' => '9d604987-a2e0-4d2b-969b-49bcd73e18e9',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'reality-opts' => [
+                    'public-key' => 'haVWGowZWyKCqBp0wZBxj5AqUgFzySpL3sbZUmpqmls',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
+            ],
+            [
+                'name' => '日本-4',
+                'type' => 'vless',
+                'server' => '216.238.55.45',
+                'port' => 16346,
+                'uuid' => 'fb8b1b17-eea3-4119-8ed5-579183859290',
+                'tls' => true,
+                'network' => 'tcp',
+                'flow' => 'xtls-rprx-vision',
+                'servername' => 'download-installer.cdn.mozilla.net',
+                'reality-opts' => [
+                    'public-key' => 'CPtHLmSRv81nZb8kLVCLquBABfoxv4dN8u6K8X2BdXs',
+                    'short-id' => '6ba85179e30d4fc2'
+                ],
+                'client-fingerprint' => 'chrome',
+                'skip-cert-verify' => false,
+                'tfo' => false
             ]
         ];
 
