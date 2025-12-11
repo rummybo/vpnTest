@@ -94,60 +94,6 @@ class ClashMeta
                 'tfo' => false
             ],
             [
-                'name' => '美国-w1',
-                'type' => 'vless',
-                'server' => '23.156.152.168',
-                'port' => 26988,
-                'uuid' => '6aaa5635-9157-4ebc-9274-8570545db4b8',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'cdn-dynmedia-1.microsoft.com',
-                'reality-opts' => [
-                    'public-key' => '34VmgcF-Ei4JbThTZGqIM8NY5_Une45etie7jEyN6h0',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '美国-w2',
-                'type' => 'vless',
-                'server' => '23.156.152.96',
-                'port' => 13211,
-                'uuid' => 'c6c5e498-fdd6-4aa1-8846-8b6169258f66',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'www.cisco.com',
-                'reality-opts' => [
-                    'public-key' => 'xr-FoTwrFjs0_YqNCCH7srhVCI1ckHcp9XiZCZRJ2j8',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '韩国-A1',
-                'type' => 'vless',
-                'server' => '47.80.13.206',
-                'port' => 27100,
-                'uuid' => 'fcb7c900-6547-4093-813e-f99b8d5e280b',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'www.google-analytics.com',
-                'reality-opts' => [
-                    'public-key' => 'rA6oL41w0B_XZqc7WVWe3tWvN3C2gF9PJa6v7VXcAiU',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
                 'name' => '香港-A2',
                 'type' => 'vless',
                 'server' => '8.217.71.79',
