@@ -51,6 +51,16 @@ class General
                 'fp' => 'chrome'
             ],
             [
+                'name' => '美国-a2',
+                'server' => '23.144.20.135',
+                'port' => 13041,
+                'uuid' => '123b8dc0-cdf9-4030-b913-2eefa82775a6',
+                'servername' => 'dl.google.com',
+                'pbk' => '9-dH2LJiQ6z6j7MX8t69bWVuI0Lx3LdPyu3cokTxgC0',
+                'sid' => '6ba85179e30d4fc2',
+                'fp' => 'chrome'
+            ],
+            [
                 'name' => '日本-w',
                 'server' => '216.238.55.31',
                 'port' => 25704,
