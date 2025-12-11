@@ -174,7 +174,7 @@ class ClashMeta
                 'tls' => true,
                 'network' => 'tcp',
                 'flow' => 'xtls-rprx-vision',
-                'servername' => 'download-installer.cdn.mozilla.net',
+                'servername' => 'swcdn.apple.com',
                 'reality-opts' => [
                     'public-key' => 'haVWGowZWyKCqBp0wZBxj5AqUgFzySpL3sbZUmpqmls',
                     'short-id' => '6ba85179e30d4fc2'
@@ -192,7 +192,7 @@ class ClashMeta
                 'tls' => true,
                 'network' => 'tcp',
                 'flow' => 'xtls-rprx-vision',
-                'servername' => 'download-installer.cdn.mozilla.net',
+                'servername' => 'academy.nvidia.com',
                 'reality-opts' => [
                     'public-key' => 'CPtHLmSRv81nZb8kLVCLquBABfoxv4dN8u6K8X2BdXs',
                     'short-id' => '6ba85179e30d4fc2'
