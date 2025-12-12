@@ -96,24 +96,6 @@ class ClashMeta
             [
                 'name' => '美国-a3',
                 'type' => 'vless',
-                'server' => '154.29.154.188',
-                'port' => 27625,
-                'uuid' => '92ca7f85-cddf-48fe-a9a9-236e1f28666e',
-                'tls' => true,
-                'network' => 'tcp',
-                'flow' => 'xtls-rprx-vision',
-                'servername' => 'osxapps.itunes.apple.com',
-                'reality-opts' => [
-                    'public-key' => 'JyMHrG50t_fVfRKRCr-AXHVppLBlY9rT-N3rQHKLEA4',
-                    'short-id' => '6ba85179e30d4fc2'
-                ],
-                'client-fingerprint' => 'chrome',
-                'skip-cert-verify' => false,
-                'tfo' => false
-            ],
-            [
-                'name' => '美国-a4',
-                'type' => 'vless',
                 'server' => '23.144.20.33',
                 'port' => 15526,
                 'uuid' => 'b247f45f-1207-44be-a212-eaa09c8c63a8',
