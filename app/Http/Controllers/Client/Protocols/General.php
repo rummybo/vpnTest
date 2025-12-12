@@ -62,16 +62,6 @@ class General
             ],
             [
                 'name' => '美国-a3',
-                'server' => '154.29.154.188',
-                'port' => 27625,
-                'uuid' => '92ca7f85-cddf-48fe-a9a9-236e1f28666e',
-                'servername' => 'osxapps.itunes.apple.com',
-                'pbk' => 'JyMHrG50t_fVfRKRCr-AXHVppLBlY9rT-N3rQHKLEA4',
-                'sid' => '6ba85179e30d4fc2',
-                'fp' => 'chrome'
-            ],
-            [
-                'name' => '美国-a4',
                 'server' => '23.144.20.33',
                 'port' => 15526,
                 'uuid' => 'b247f45f-1207-44be-a212-eaa09c8c63a8',
